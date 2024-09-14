@@ -1,4 +1,5 @@
-Representacion de la solucion: vector de permutaciones
+Representacion de la solucion: mapa de ciudades
+							   matriz de distancias
 
 objetivo: minimizar la distancia del recorrido, pasando por todas las ciudades sin 
 repetirlas y volver al origen 
