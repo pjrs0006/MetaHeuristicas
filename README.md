@@ -16,3 +16,13 @@ repetirlas y volver al origen
    metodos: 
 		constructor(list<ficheros>) : Debe cargar las ciudades que hay en los ficheros 
         float conseguirdistancia() -> devuelve la distancia entre dos ciudades dadas
+
+Ayudas: 
+ Lista para almacenar múltiples valores
+        self.lista_datos = []
+
+         Diccionario para asociar claves con valores
+        self.diccionario_datos = {}
+		
+		Conjunto para almacenar valores únicos
+        self.conjunto_datos = set()
