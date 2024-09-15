@@ -9,10 +9,10 @@ repetirlas y volver al origen
 
 1. Crear la clase ciudad atr(numero, x,y )
    metodos: 
-		Constructores destructores
+		Constructores 
 		getter setter 
 		
-2. crear la clase Mapa atr(list<ciudad>)
+2. crear la clase Mapa atr(list<ciudad>,matriz<float>)
    metodos: 
 		constructor(list<ficheros>) : Debe cargar las ciudades que hay en los ficheros 
         float conseguirdistancia() -> devuelve la distancia entre dos ciudades dadas
