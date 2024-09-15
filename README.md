@@ -11,8 +11,8 @@ repetirlas y volver al origen
    metodos: 
 		Constructores destructores
 		getter setter 
-		float conseguirdistancia() -> devuelve la distancia entre dos ciudades dadas
-
+		
 2. crear la clase Mapa atr(list<ciudad>)
    metodos: 
 		constructor(list<ficheros>) : Debe cargar las ciudades que hay en los ficheros 
+        float conseguirdistancia() -> devuelve la distancia entre dos ciudades dadas
