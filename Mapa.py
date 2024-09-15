@@ -19,6 +19,7 @@ class Mapa:
     def __init__(self):
         self.ciudades = {}
         self.matriz_distancias = np.inf
+        #Añadir los atributos correspondientes a la cabezera indicada en el archivo.
 
     ##
     #  \brief Añade una nueva ciudad al mapa.

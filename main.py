@@ -14,3 +14,11 @@ if __name__ == '__main__':
     print_hi('Fernando')
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+#A partir de aqui comenzara el codigo para la lectura de ficheros.
+
+#Crearemos una lista donde tendremos la ubicacion de todos los archivos para cargarlos cuando los seleccionemos
+
+#Seleccionamos el fichero que queremos leer
+
+#Volcamos los datos del fichero a la clase
