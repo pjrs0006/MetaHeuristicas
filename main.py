@@ -1,73 +1,118 @@
-#Realizamos las importaciones necesarias
-
+# Realizamos los imports necesarios
 import os
-
-from numpy import select
-
-
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+from Ciudad import Ciudad
+from Mapa import Mapa
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('Fernando')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
-
-# A partir de aqui comenzara el codigo para la lectura de ficheros:
-
-# Para empezar comenzaremos obteniendo todos los nombres de los archivos que se encuentran en la carpeta:
+# Función para listar todos los archivos que contenga una carpeta
 def buscarCarpeta(carpeta):
+    #Creamos una lista para guardar los titulos de los ficheros
     contenidoCarpeta = []
+    #Para cada archivo que encontremos en la carpeta metemos su titulo en la lista
     for archivo in os.listdir(carpeta):
-        # Crear la ruta completa
         ruta = os.path.join(carpeta, archivo)
-        # Comprobar que es un archivo (no directorio)
         if os.path.isfile(ruta):
             contenidoCarpeta.append(ruta)
     return contenidoCarpeta
 
-# Ahora mostramos al usuario la lista de archivos y le pedimos que seleccione uno
+
+# Función para que el usuario seleccione un archivo
 def selecciona_archivo(contenidoCarpeta):
     print("Seleccione el archivo que desea procesar:")
-    # Mostrar solo los nombres de los archivos
     nombres_archivos = [os.path.basename(archivo) for archivo in contenidoCarpeta]
+    # Mostramos al usuario los archivos que tenemos en la lista
     for i, archivo in enumerate(nombres_archivos):
-        print(f"    {i+1}................... {archivo}")
-
+        print(f"    {i + 1}................... {archivo}")
     while True:
         try:
+            # Pedimos al usuario que ingrese el numero correspondiente al fichero que desea procesar
             seleccion = int(input("Seleccione el número del archivo que desea procesar: "))
             if 1 <= seleccion <= len(contenidoCarpeta):
-                return contenidoCarpeta[seleccion-1]  # Devolver la ruta completa
+                return contenidoCarpeta[seleccion - 1]  # Devolver la ruta completa
             else:
                 print("Por favor, introduzca un número válido:")
         except ValueError:
             print("Por favor, introduzca un número válido:")
-# Ahora tenemos que leer el archivo seleccionado por el usuario
-def leer_archivo(archivo):
-    print("Leyendo archivo")
 
-# Definimos la función principal del programa
+
+# Función para leer el archivo seleccionado
+def leer_archivo(archivo):
+    print("Procesando archivo...")
+    # Creamos un objeto mapa con el constructor por defecto
+    miMapa = Mapa()
+    # El siguiente booleano servira para decirle al codigo cuando nos encontremos en la seccion de coordenadas
+    seccionCoordenadas = False
+
+    # Abrimos el archivo en modo lectura
+    with open(archivo, "r") as archivo:
+        for linea in archivo:
+            linea = linea.strip()
+
+            # Detectar cuando empieza la sección de coordenadas
+            if linea == "NODE_COORD_SECTION":
+                seccionCoordenadas = True
+                continue
+
+            # Detectar el final del archivo
+            if linea == "EOF":
+                break
+
+            # Procesar las líneas de la cabecera
+            if not seccionCoordenadas:
+                if ":" in linea:
+                    clave, valor = linea.split(":", 1)
+                    clave = clave.strip().upper()
+                    valor = valor.strip()
+
+                    # Asignar los valores correspondientes a la clase Mapa
+                    if clave == "NAME":
+                        miMapa.nombre = valor
+                    elif clave == "COMMENT":
+                        miMapa.comentario = valor
+                    elif clave == "TYPE":
+                        miMapa.tipo = valor
+                    elif clave == "DIMENSION":
+                        miMapa.tam = int(valor)
+                    elif clave == "EDGE_WEIGHT_TYPE":
+                        miMapa.edge_type = valor
+            else:
+                # Procesar las coordenadas después de "NODE_COORD_SECTION"
+                partes = linea.split()
+                if len(partes) == 3:
+                    id_nodo = int(partes[0])
+                    x = float(partes[1])
+                    y = float(partes[2])
+                    # Crear una instancia de la clase Ciudad
+                    ciudad = Ciudad(id_nodo, x, y)
+                    # Almacenar la instancia de 'Ciudad' en el diccionario 'ciudades'
+                    miMapa.ciudades[id_nodo] = ciudad
+
+    return miMapa
+
+
+# Función principal del programa
 def main():
-    # Ruta relativa desde el script
     ruta_relativa = os.path.join('recursos', 'practicaUnoDos')
     archivos = buscarCarpeta(ruta_relativa)
+
     if archivos:
         archivo_seleccionado = selecciona_archivo(archivos)
-        leer_archivo(archivo_seleccionado)
+        resultado = leer_archivo(archivo_seleccionado)
+
+        # Imprimir la cabecera del mapa
+        print(f"Nombre: {resultado.nombre}")
+        print(f"Comentario: {resultado.comentario}")
+        print(f"Tipo: {resultado.tipo}")
+        print(f"Dimensión: {resultado.tam}")
+        print(f"Tipo de peso de arista: {resultado.edge_type}")
+
+        # Imprimir las coordenadas de las ciudades
+        print("Coordenadas de las ciudades:")
+        for ciudad in resultado.ciudades.values():
+            print(f"ID: {ciudad.id}, X: {ciudad.x}, Y: {ciudad.y}")
     else:
         print("No hay archivos seleccionados")
 
-# Llamamos a la funcion Main
+
+# Llamada a la función principal
 main()
-#Crearemos una lista donde tendremos la ubicacion de todos los archivos para cargarlos cuando los seleccionemos
-
-#Seleccionamos el fichero que queremos leer
-
-#Volcamos los datos del fichero a la clase

@@ -22,6 +22,7 @@ class Mapa:
         # Ahora añadimos los atributos correspondientes a la cabezera del archivo .tsp
         self.nombre = None
         self.comentario = None
+        self.tipo = None
         self.tam = None
         self.edge_type = None
     ##
