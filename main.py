@@ -18,7 +18,7 @@ def buscarCarpeta(carpeta):
 
 # Función para que el usuario seleccione un archivo
 def selecciona_archivo(contenidoCarpeta):
-    print("Seleccione el archivo que desea procesar:")
+    print("Listando los archivos TSP disponibles en el directorio:")
     nombres_archivos = [os.path.basename(archivo) for archivo in contenidoCarpeta]
     # Mostramos al usuario los archivos que tenemos en la lista
     for i, archivo in enumerate(nombres_archivos):
@@ -37,7 +37,6 @@ def selecciona_archivo(contenidoCarpeta):
 
 # Función para leer el archivo seleccionado
 def leer_archivo(archivo):
-    print("Procesando archivo...")
     # Creamos un objeto mapa con el constructor por defecto
     miMapa = Mapa()
     # El siguiente booleano servira para decirle al codigo cuando nos encontremos en la seccion de coordenadas
@@ -86,9 +85,20 @@ def leer_archivo(archivo):
                     ciudad = Ciudad(id_nodo, x, y)
                     # Almacenar la instancia de 'Ciudad' en el diccionario 'ciudades'
                     miMapa.ciudades[id_nodo] = ciudad
-
+    print("Archivo procesado con exito.")
     return miMapa
+def imprimirMapa(miMapa):
+    # Imprimir la cabecera del mapa
+    print(f"Nombre: {miMapa.nombre}")
+    print(f"Comentario: {miMapa.comentario}")
+    print(f"Tipo: {miMapa.tipo}")
+    print(f"Dimensión: {miMapa.tam}")
+    print(f"Tipo de peso de arista: {miMapa.edge_type}")
 
+    # Imprimir las coordenadas de las ciudades
+    print("Coordenadas de las ciudades:")
+    for ciudad in miMapa.ciudades.values():
+        print(f"ID: {ciudad.id}, X: {ciudad.x}, Y: {ciudad.y}")
 
 # Función principal del programa
 def main():
@@ -98,18 +108,15 @@ def main():
     if archivos:
         archivo_seleccionado = selecciona_archivo(archivos)
         resultado = leer_archivo(archivo_seleccionado)
+        print ('¿Desea mostrar los datos almacenados en la estructura?')
+        mostrarResultados = input('Si/No: ')
+        if mostrarResultados == 'Si' or mostrarResultados == 'si':
+            imprimirMapa(resultado)
+        else:
+            print('Perfecto, no se imprimiran los datos almacenados en el mapa.')
 
-        # Imprimir la cabecera del mapa
-        print(f"Nombre: {resultado.nombre}")
-        print(f"Comentario: {resultado.comentario}")
-        print(f"Tipo: {resultado.tipo}")
-        print(f"Dimensión: {resultado.tam}")
-        print(f"Tipo de peso de arista: {resultado.edge_type}")
 
-        # Imprimir las coordenadas de las ciudades
-        print("Coordenadas de las ciudades:")
-        for ciudad in resultado.ciudades.values():
-            print(f"ID: {ciudad.id}, X: {ciudad.x}, Y: {ciudad.y}")
+
     else:
         print("No hay archivos seleccionados")
 

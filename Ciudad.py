@@ -24,8 +24,8 @@ class Ciudad:
     #
     def __init__(self, id, x, y):
         self.id = int(id)
-        self.x = int(x)
-        self.y = int(y)
+        self.x = x
+        self.y = y
 
     ## \brief Obtiene el identificador de la ciudad.
     #  \return El \a id de la ciudad.
