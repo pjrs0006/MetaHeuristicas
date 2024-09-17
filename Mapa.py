@@ -46,6 +46,27 @@ class Mapa:
         x1, y1 = C1.x, C1.y
         x2, y2 = C2.x, C2.y
         return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+    # La siguiente funcion se encarga de generar y rellenar la matriz de distancias
+    def matrizDistancias(self):
+        # En primer lugar guardamo en una variable el numero de ciudades presentes en el mapa
+        numCiudades = len(self.ciudades)
+        # Ahora crearemos la matriz de distancias como una lista de listas e inicializamos a 0
+        miMatriz = [[0 for i in range(numCiudades)] for j in range(numCiudades)]
+        #Lo siguiente que haremos sera convertir el diccionario a lista para poder almacenar
+        listaCiudades = list(self.ciudades.values())
+        #Finalmente rellenamos la matriz de distancias
+        for i in range(numCiudades):
+            for j in range(numCiudades):
+                if i == j:
+                    #La distancia de una ciudad a si misma siempre sera 0
+                    miMatriz[i][j] = 0
+                else:
+                    #Almacenamos en una variable la distancia entre las dos ciudades apuntadas
+                    distancia = self.calculadistancia(listaCiudades[i], listaCiudades[j])
+                    #Guardamos en la matriz de forma simetrica:
+                    miMatriz[i][j] = distancia
+                    miMatriz[j][i] = distancia
+        return miMatriz
 
     ##
     #  \brief Muestra una submatriz de distancias entre las ciudades.
