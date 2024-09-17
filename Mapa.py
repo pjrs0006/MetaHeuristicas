@@ -18,7 +18,7 @@ class Mapa:
     #
     def __init__(self):
         self.ciudades = {}
-        self.matriz_distancias = np.inf
+        self.matriz_distancias = []
         # Ahora añadimos los atributos correspondientes a la cabezera del archivo .tsp
         self.nombre = None
         self.comentario = None
@@ -66,6 +66,7 @@ class Mapa:
                     #Guardamos en la matriz de forma simetrica:
                     miMatriz[i][j] = distancia
                     miMatriz[j][i] = distancia
+        self.matriz_distancias=miMatriz
         return miMatriz
 
     ##
@@ -86,3 +87,20 @@ class Mapa:
         submatriz = self.matriz_distancias[np.ix_(filas, columnas)]
         print(submatriz)
 
+    def greedy(self):
+        nc=self.tam
+        suma=0
+        marcaje=[0]*nc
+        proxciudad=0
+        marcaje[0]=1
+        for _ in range(nc-1):
+            mejor = float('inf')
+            for j in range(nc):
+                if(self.matriz_distancias[proxciudad][j]<mejor and marcaje[j]==0):
+                    mejor=self.matriz_distancias[proxciudad][j]
+                    siguiente=j
+            suma+=mejor
+            proxciudad=siguiente
+            marcaje[proxciudad]=1
+        suma+=self.matriz_distancias[proxciudad][0]
+        return suma

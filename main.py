@@ -123,10 +123,15 @@ def main():
             print('Mostrando la matriz de distancias:')
             for fila in matriz_d:
                 print(fila)
-
-
+        print('¿Ejecuto el algoritmo greedy para saber la distancia minima?')
+        greedy = input('Si/No: ')
+        if greedy == 'Si' or greedy == 'si':
+            print('Mostrando distancia minima:')
+            minima=resultado.greedy()
+            print(minima)
     else:
         print("No hay archivos seleccionados")
+
 
 
 # Llamada a la función principal
