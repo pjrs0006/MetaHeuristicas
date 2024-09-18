@@ -1,5 +1,5 @@
 import math
-
+import sys
 import numpy as np
 
 
@@ -61,8 +61,50 @@ class Mapa:
         submatriz = self.matriz_distancias[np.ix_(filas, columnas)]
         print(submatriz)
 
+    import sys
+
+    def prim(self):
+        n = self.tam  # Número de nodos/ciudades
+        T = []  # Lista para almacenar los bordes del MST
+        mascer = [0] * n  # Nodo más cercano
+        mindist = [0] * n  # Distancia mínima
+        total_distancia = 0  # Variable para acumular la distancia total del MST
+
+        # Inicialización: asumimos que la ciudad 0 está en el MST
+        for i in range(1, n):
+            mascer[i] = 0
+            mindist[i] = [i][0]
+
+        # Ciclo Greedy para construir el MST
+        for _ in range(n - 1):
+            # Encontrar el nodo con la distancia mínima
+            min_dist = sys.maxsize
+            k = -1
+            for j in range(1, n):
+                if 0 < mindist[j] < min_dist:
+                    min_dist = mindist[j]
+                    k = j
+
+            # Añadir el borde al MST
+            T.append((k, mascer[k]))
+
+            # Sumar la distancia de este borde a la distancia total
+            total_distancia += self.distancias[k][mascer[k]]
+
+            # Marcar el nodo como añadido al MST
+            mindist[k] = -1
+
+            # Actualizar las distancias a los nodos restantes
+            for j in range(1, n):
+                if self.distancias[k][j] < mindist[j]:
+                    mindist[j] = self.distancias[k][j]
+                    mascer[j] = k
+
+        return total_distancia
+
+'''
     def greedy(self):
-        nc = self.tam  # Número de ciudades
+      nc = self.tam  # Número de ciudades
         suma = 0  # Acumula la distancia total recorrida
         marcaje = [0] * nc  # Lista para marcar qué ciudades ya han sido visitadas
         proxciudad = 0  # Comenzamos en la ciudad 0
@@ -88,6 +130,7 @@ class Mapa:
         suma += self.matriz_distancias[proxciudad][0]
 
         return suma  # Retornamos la distancia total mínima estimada
+'''
     # def greedy(self):
     #     nc = self.tam  # Número de ciudades
     #     tour = [0]  # Comenzamos en la ciudad 0
