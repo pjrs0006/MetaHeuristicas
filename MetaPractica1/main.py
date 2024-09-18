@@ -1,46 +1,67 @@
-# Realizamos los imports necesarios
+## \file main.py
+#  \brief Este archivo contiene la lógica principal para procesar un conjunto de ciudades desde un archivo, generar la matriz de distancias y ejecutar un algoritmo greedy.
+
 import os
 from Ciudad import Ciudad
 from Mapa import Mapa
 
 
-
-# Función para listar todos los archivos que contenga una carpeta
+## \brief Función para listar todos los archivos que contiene una carpeta.
+#
+#  Esta función busca todos los archivos en un directorio específico y devuelve una lista con sus rutas completas.
+#
+#  \param carpeta La ruta del directorio en el que se buscan archivos.
+#  \return Una lista con los archivos encontrados en la carpeta.
+#
 def buscarCarpeta(carpeta):
-    #Creamos una lista para guardar los titulos de los ficheros
     contenidoCarpeta = []
-    #Para cada archivo que encontremos en la carpeta metemos su titulo en la lista
+    # Itera sobre los archivos en el directorio proporcionado
     for archivo in os.listdir(carpeta):
         ruta = os.path.join(carpeta, archivo)
+        # Verifica si es un archivo y no un directorio
         if os.path.isfile(ruta):
             contenidoCarpeta.append(ruta)
     return contenidoCarpeta
 
 
-# Función para que el usuario seleccione un archivo
+## \brief Función para que el usuario seleccione un archivo de una lista.
+#
+#  Presenta al usuario una lista de archivos y le permite seleccionar uno.
+#
+#  \param contenidoCarpeta Una lista con las rutas de los archivos disponibles.
+#  \return La ruta completa del archivo seleccionado por el usuario.
+#
 def selecciona_archivo(contenidoCarpeta):
     print("Listando los archivos TSP disponibles en el directorio:")
+    # Extrae solo los nombres de archivo de las rutas
     nombres_archivos = [os.path.basename(archivo) for archivo in contenidoCarpeta]
-    # Mostramos al usuario los archivos que tenemos en la lista
+    # Muestra los archivos disponibles con su número correspondiente
     for i, archivo in enumerate(nombres_archivos):
         print(f"    {i + 1}................... {archivo}")
+    # Solicita al usuario que seleccione un archivo
     while True:
         try:
-            # Pedimos al usuario que ingrese el numero correspondiente al fichero que desea procesar
             seleccion = int(input("Seleccione el número del archivo que desea procesar: "))
+            # Verifica que la selección sea válida
             if 1 <= seleccion <= len(contenidoCarpeta):
-                return contenidoCarpeta[seleccion - 1]  # Devolver la ruta completa
+                return contenidoCarpeta[seleccion - 1]  # Devuelve la ruta completa
             else:
                 print("Por favor, introduzca un número válido:")
         except ValueError:
             print("Por favor, introduzca un número válido:")
 
 
-# Función para leer el archivo seleccionado
+## \brief Función para leer un archivo de ciudades en formato TSP.
+#
+#  Esta función abre un archivo seleccionado, lee sus contenidos y procesa las ciudades, almacenando sus datos en un objeto de la clase Mapa.
+#
+#  \param archivo La ruta completa del archivo que se va a leer.
+#  \return Un objeto de la clase Mapa con las ciudades cargadas.
+#
 def leer_archivo(archivo):
-    # Creamos un objeto mapa con el constructor por defecto
+    # Creamos un objeto Mapa
     miMapa = Mapa()
-    # El siguiente booleano servira para decirle al codigo cuando nos encontremos en la seccion de coordenadas
+    # Bandera para indicar si hemos llegado a la sección de coordenadas
     seccionCoordenadas = False
 
     # Abrimos el archivo en modo lectura
@@ -57,14 +78,14 @@ def leer_archivo(archivo):
             if linea == "EOF":
                 break
 
-            # Procesar las líneas de la cabecera
+            # Procesar las líneas de la cabecera antes de la sección de coordenadas
             if not seccionCoordenadas:
                 if ":" in linea:
                     clave, valor = linea.split(":", 1)
                     clave = clave.strip().upper()
                     valor = valor.strip()
 
-                    # Asignar los valores correspondientes a la clase Mapa
+                    # Asignar los valores correspondientes a los atributos de Mapa
                     if clave == "NAME":
                         miMapa.nombre = valor
                     elif clave == "COMMENT":
@@ -76,18 +97,24 @@ def leer_archivo(archivo):
                     elif clave == "EDGE_WEIGHT_TYPE":
                         miMapa.edge_type = valor
             else:
-                # Procesar las coordenadas después de "NODE_COORD_SECTION"
+                # Procesar las coordenadas de las ciudades
                 partes = linea.split()
                 if len(partes) == 3:
                     id_nodo = int(partes[0])
                     x = float(partes[1])
                     y = float(partes[2])
-                    # Crear una instancia de la clase Ciudad
+                    # Crear una nueva instancia de Ciudad
                     ciudad = Ciudad(id_nodo, x, y)
-                    # Almacenar la instancia de 'Ciudad' en el diccionario 'ciudades'
+                    # Añadir la ciudad al objeto Mapa
                     miMapa.ciudades[id_nodo] = ciudad
-    print("Archivo procesado con exito.")
+    print("Archivo procesado con éxito.")
     return miMapa
+
+
+## \brief Función para imprimir los datos del mapa, incluyendo las ciudades y sus coordenadas.
+#
+#  \param miMapa Un objeto de la clase Mapa que contiene la información del mapa y las ciudades.
+#
 def imprimirMapa(miMapa):
     # Imprimir la cabecera del mapa
     print(f"Nombre: {miMapa.nombre}")
@@ -101,39 +128,49 @@ def imprimirMapa(miMapa):
     for ciudad in miMapa.ciudades.values():
         print(f"ID: {ciudad.id}, X: {ciudad.x}, Y: {ciudad.y}")
 
-# Función principal del programa
+
+## \brief Función principal del programa.
+#
+#  Esta función coordina todo el proceso: desde listar archivos, permitir al usuario seleccionar uno, leer el archivo, mostrar el mapa, generar la matriz de distancias y ejecutar el algoritmo greedy.
+#
 def main():
+    # Definir la ruta donde están los archivos TSP
     ruta_relativa = os.path.join('recursos', 'practicaUnoDos')
     archivos = buscarCarpeta(ruta_relativa)
 
     if archivos:
+        # El usuario selecciona un archivo
         archivo_seleccionado = selecciona_archivo(archivos)
+        # Leer el archivo y procesar las ciudades
         resultado = leer_archivo(archivo_seleccionado)
-        print ('¿Desea mostrar los datos almacenados en la estructura?')
+
+        # Preguntar si se deben mostrar los datos del mapa
+        print('¿Desea mostrar los datos almacenados en la estructura?')
         mostrarResultados = input('Si/No: ')
-        if mostrarResultados == 'Si' or mostrarResultados == 'si':
+        if mostrarResultados.lower() == 'si':
             imprimirMapa(resultado)
         else:
-            print('Perfecto, no se imprimiran los datos almacenados en el mapa.')
+            print('Perfecto, no se imprimirán los datos almacenados en el mapa.')
 
-        # Ahora rellenamos la matriz de distancias y la mostramos si el usuario lo desea:
+        # Generar y mostrar la matriz de distancias si el usuario lo desea
         print('¿Desea imprimir la matriz de distancias?')
         mostrarMatriz = input('Si/No: ')
         matriz_d = resultado.generar_matriz_distancias()
 
-        if mostrarMatriz == 'Si' or mostrarMatriz == 'si':
+        if mostrarMatriz.lower() == 'si':
             print('Mostrando la matriz de distancias:')
             for fila in matriz_d:
                 print(fila)
-        print('¿Ejecuto el algoritmo greedy para saber la distancia minima?')
+
+        # Ejecutar el algoritmo greedy si el usuario lo desea
+        print('¿Ejecuto el algoritmo greedy para saber la distancia mínima?')
         greedy = input('Si/No: ')
-        if greedy == 'Si' or greedy == 'si':
-            print('Mostrando distancia minima:')
-            minima=resultado.greedy()
+        if greedy.lower() == 'si':
+            print('Mostrando distancia mínima:')
+            minima = resultado.greedy()
             print(minima)
     else:
         print("No hay archivos seleccionados")
-
 
 
 # Llamada a la función principal
