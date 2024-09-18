@@ -64,23 +64,23 @@ class Mapa:
     import sys
 
     def prim(self):
-        n = self.tam  # Número de nodos/ciudades
+        nc = self.tam  # Número de nodos (ciudades)
         T = []  # Lista para almacenar los bordes del MST
-        mascer = [0] * n  # Nodo más cercano
-        mindist = [0] * n  # Distancia mínima
+        mascer = [0] * nc  # Nodo más cercano
+        mindist = [0] * nc  # Distancia mínima
         total_distancia = 0  # Variable para acumular la distancia total del MST
 
         # Inicialización: asumimos que la ciudad 0 está en el MST
-        for i in range(1, n):
+        for i in range(1, nc):
             mascer[i] = 0
-            mindist[i] = [i][0]
+            mindist[i] = self.matriz_distancias[i][0]  # Usar la matriz de distancias en lugar de un diccionario
 
         # Ciclo Greedy para construir el MST
-        for _ in range(n - 1):
+        for _ in range(nc - 1):
             # Encontrar el nodo con la distancia mínima
             min_dist = sys.maxsize
             k = -1
-            for j in range(1, n):
+            for j in range(1, nc):
                 if 0 < mindist[j] < min_dist:
                     min_dist = mindist[j]
                     k = j
@@ -89,18 +89,18 @@ class Mapa:
             T.append((k, mascer[k]))
 
             # Sumar la distancia de este borde a la distancia total
-            total_distancia += self.distancias[k][mascer[k]]
+            total_distancia += self.matriz_distancias[k][mascer[k]]  # Asegúrate de usar self.matriz_distancias
 
             # Marcar el nodo como añadido al MST
             mindist[k] = -1
 
             # Actualizar las distancias a los nodos restantes
-            for j in range(1, n):
-                if self.distancias[k][j] < mindist[j]:
-                    mindist[j] = self.distancias[k][j]
+            for j in range(1, nc):
+                if self.matriz_distancias[k][j] < mindist[j]:
+                    mindist[j] = self.matriz_distancias[k][j]
                     mascer[j] = k
 
-        return total_distancia
+        return total_distancia #+ self.matriz_distancias[k][0]
 
 '''
     def greedy(self):
