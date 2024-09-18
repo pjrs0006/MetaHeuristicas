@@ -116,9 +116,10 @@ def main():
             print('Perfecto, no se imprimiran los datos almacenados en el mapa.')
 
         # Ahora rellenamos la matriz de distancias y la mostramos si el usuario lo desea:
-        matriz_d = resultado.matrizDistancias()
         print('¿Desea imprimir la matriz de distancias?')
         mostrarMatriz = input('Si/No: ')
+        matriz_d = resultado.matrizDistancias()
+
         if mostrarMatriz == 'Si' or mostrarMatriz == 'si':
             print('Mostrando la matriz de distancias:')
             for fila in matriz_d:

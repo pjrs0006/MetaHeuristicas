@@ -65,6 +65,7 @@ class Mapa:
                     #Guardamos en la matriz de forma simetrica:
                     miMatriz[i][j] = distancia
                     miMatriz[j][i] = distancia
+                    print(distancia)
         self.matriz_distancias=miMatriz
         return miMatriz
 
