@@ -118,7 +118,7 @@ def main():
         # Ahora rellenamos la matriz de distancias y la mostramos si el usuario lo desea:
         print('¿Desea imprimir la matriz de distancias?')
         mostrarMatriz = input('Si/No: ')
-        matriz_d = resultado.matrizDistancias()
+        matriz_d = resultado.generar_matriz_distancias()
 
         if mostrarMatriz == 'Si' or mostrarMatriz == 'si':
             print('Mostrando la matriz de distancias:')
