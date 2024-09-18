@@ -62,19 +62,84 @@ class Mapa:
         print(submatriz)
 
     def greedy(self):
-        nc=self.tam
-        suma=0
-        marcaje=[0]*nc
-        proxciudad=0
-        marcaje[0]=1
-        for _ in range(nc-1):
-            mejor = float('inf')
+        nc = self.tam  # Número de ciudades
+        suma = 0  # Acumula la distancia total recorrida
+        marcaje = [0] * nc  # Lista para marcar qué ciudades ya han sido visitadas
+        proxciudad = 0  # Comenzamos en la ciudad 0
+        marcaje[0] = 1  # Marcamos la ciudad 0 como visitada
+
+        for _ in range(nc - 1):  # Iteramos nc-1 veces (todas las ciudades menos la inicial)
+            mejor = float('inf')  # Inicializamos la mejor distancia a infinito
+            siguiente = -1  # Para almacenar la próxima ciudad a visitar
+
+            # Buscamos la ciudad más cercana que no ha sido visitada
             for j in range(nc):
-                if(self.matriz_distancias[proxciudad][j]<mejor and marcaje[j]==0):
-                    mejor=self.matriz_distancias[proxciudad][j]
-                    siguiente=j
-            suma+=mejor
-            proxciudad=siguiente
-            marcaje[proxciudad]=1
-        suma+=self.matriz_distancias[proxciudad][0]
-        return suma
+                if self.matriz_distancias[proxciudad][j] < mejor and marcaje[j] == 0:
+                    mejor = self.matriz_distancias[proxciudad][j]
+                    siguiente = j
+
+            # Si encontramos una ciudad válida, actualizamos
+            if siguiente != -1:
+                suma += mejor  # Sumamos la distancia recorrida
+                proxciudad = siguiente  # Actualizamos la ciudad actual
+                marcaje[proxciudad] = 1  # Marcamos la nueva ciudad como visitada
+
+        # Finalmente, volvemos a la ciudad de origen (ciudad 0)
+        suma += self.matriz_distancias[proxciudad][0]
+
+        return suma  # Retornamos la distancia total mínima estimada
+    # def greedy(self):
+    #     nc = self.tam  # Número de ciudades
+    #     tour = [0]  # Comenzamos en la ciudad 0
+    #     marcaje = [0] * nc  # Lista para marcar qué ciudades ya han sido visitadas
+    #     marcaje[0] = 1  # Marcamos la ciudad 0 como visitada
+    #     proxciudad = 0  # Ciudad inicial
+    #
+    #     for _ in range(nc - 1):  # Visitamos nc-1 ciudades adicionales
+    #         mejor = float('inf')
+    #         siguiente = -1
+    #         for j in range(nc):
+    #             if self.matriz_distancias[proxciudad][j] < mejor and marcaje[j] == 0:
+    #                 mejor = self.matriz_distancias[proxciudad][j]
+    #                 siguiente = j
+    #         proxciudad = siguiente
+    #         tour.append(proxciudad)  # Añadimos la ciudad al recorrido
+    #         marcaje[proxciudad] = 1  # Marcamos la ciudad como visitada
+    #
+    #     # Añadimos la vuelta al origen (ciudad 0)
+    #     tour.append(0)
+    #
+    #     # Aplicamos la optimización 2-opt para mejorar la solución
+    #     tour = self.aplicar_2opt(tour)
+    #
+    #     # Calculamos la distancia total del recorrido mejorado
+    #     distancia_total = self.calcular_distancia_tour(tour)
+    #     return distancia_total, tour
+    #
+    # def calcular_distancia_tour(self, tour):
+    #     """Calcula la distancia total para un tour dado"""
+    #     distancia = 0
+    #     for i in range(len(tour) - 1):
+    #         distancia += self.matriz_distancias[tour[i]][tour[i + 1]]
+    #     return distancia
+    #
+    # def aplicar_2opt(self, tour):
+    #     """Aplica el algoritmo 2-opt para mejorar el tour"""
+    #     mejorado = True
+    #     while mejorado:
+    #         mejorado = False
+    #         for i in range(1, len(tour) - 2):
+    #             for j in range(i + 1, len(tour) - 1):
+    #                 # Verificamos si el intercambio de dos aristas reduce la distancia
+    #                 if self.intercambiar_si_mejora(tour, i, j):
+    #                     tour[i:j + 1] = reversed(tour[i:j + 1])  # Revertimos la porción entre i y j
+    #                     mejorado = True
+    #     return tour
+    #
+    # def intercambiar_si_mejora(self, tour, i, j):
+    #     """Verifica si al intercambiar dos aristas se obtiene una mejora"""
+    #     a, b = tour[i - 1], tour[i]
+    #     c, d = tour[j], tour[j + 1]
+    #     # Verificamos si intercambiar mejora la distancia
+    #     return (self.matriz_distancias[a][c] + self.matriz_distancias[b][d]) < \
+    #         (self.matriz_distancias[a][b] + self.matriz_distancias[c][d])
