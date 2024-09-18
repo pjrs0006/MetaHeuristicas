@@ -44,7 +44,7 @@ class Mapa:
     def calculadistancia(self, C1, C2):
         x1, y1 = C1.x, C1.y
         x2, y2 = C2.x, C2.y
-        return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+        return math.sqrt(math.pow(x2 - x1,2) + math.pow(y2 - y1,2))
     # La siguiente funcion se encarga de generar y rellenar la matriz de distancias
     def matrizDistancias(self):
         # En primer lugar guardamo en una variable el numero de ciudades presentes en el mapa
