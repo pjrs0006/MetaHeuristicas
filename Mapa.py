@@ -90,46 +90,4 @@ class Mapa:
         suma+=self.matriz_distancias[proxciudad][0]
         return suma
 
-    def greedyDos(self):
-        """
-        Optimización del algoritmo Greedy usando un heap para acelerar la búsqueda
-        de la ciudad más cercana no visitada.
-
-        Returns:
-            La suma total de distancias recorridas por la ruta greedy.
-        """
-        nc = self.tam  # Número de ciudades
-        suma = 0
-        marcaje = [False] * nc  # Lista para marcar las ciudades visitadas
-        proxciudad = 0  # Empezamos desde la ciudad 0
-        marcaje[0] = True  # Marcamos la ciudad inicial como visitada
-
-        # Usamos un heap para almacenar las ciudades más cercanas
-        heap = []
-
-        # Añadir todas las distancias desde la ciudad inicial (0)
-        for j in range(1, nc):
-            heapq.heappush(heap, (self.matriz_distancias[proxciudad][j], j))
-
-        # Iterar sobre las ciudades restantes
-        for _ in range(nc - 1):
-            # Extraer la ciudad no visitada más cercana del heap
-            while True:
-                mejor_distancia, siguiente = heapq.heappop(heap)
-                if not marcaje[siguiente]:
-                    break
-
-            # Marcar la ciudad como visitada
-            suma += mejor_distancia
-            proxciudad = siguiente
-            marcaje[proxciudad] = True
-
-            # Añadir nuevas distancias desde la ciudad actual a las ciudades no visitadas
-            for j in range(nc):
-                if not marcaje[j]:
-                    heapq.heappush(heap, (self.matriz_distancias[proxciudad][j], j))
-
-        # Finalmente, sumar la distancia para volver a la ciudad inicial
-        suma += self.matriz_distancias[proxciudad][0]
-        return suma
 
