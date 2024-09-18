@@ -79,13 +79,17 @@ class Mapa:
     #
     def mostrar_matriz(self, filas=None, columnas=None):
         # Usar la lista completa si `filas` o `columnas` no se especifican
-        # shape es un atributo del array que devuelve el tamaño del mismo
-        filas = filas if filas is not None else range(self.matriz_distancias.shape[0])
-        columnas = columnas if columnas is not None else range(self.matriz_distancias.shape[1])
+        # len(self.matriz_distancias) te da el número de filas
+        # len(self.matriz_distancias[0]) te da el número de columnas
+
+        filas = filas if filas is not None else range(len(self.matriz_distancias))
+        columnas = columnas if columnas is not None else range(len(self.matriz_distancias[0]))
 
         # Extraer y mostrar la submatriz
-        submatriz = self.matriz_distancias[np.ix_(filas, columnas)]
-        print(submatriz)
+        submatriz = [[self.matriz_distancias[fila][columna] for columna in columnas] for fila in filas]
+
+        for fila in submatriz:
+            print(fila)
 
     def greedy(self):
         nc=self.tam
