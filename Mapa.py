@@ -75,6 +75,8 @@ class Mapa:
             mascer[i] = 0
             mindist[i] = self.matriz_distancias[i][0]  # Usar la matriz de distancias en lugar de un diccionario
 
+        total_distancia += self.matriz_distancias[0][1]
+
         # Ciclo Greedy para construir el MST
         for _ in range(nc - 1):
             # Encontrar el nodo con la distancia mínima
@@ -100,7 +102,7 @@ class Mapa:
                     mindist[j] = self.matriz_distancias[k][j]
                     mascer[j] = k
 
-        return total_distancia #+ self.matriz_distancias[k][0]
+        return total_distancia + self.matriz_distancias[k][0]
 
 '''
     def greedy(self):
