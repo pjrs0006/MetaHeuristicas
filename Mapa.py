@@ -1,5 +1,4 @@
-from Ciudad import Ciudad
-import numpy as np
+
 import math
 ##
 #  \class Mapa
