@@ -4,6 +4,7 @@ from Ciudad import Ciudad
 from Mapa import Mapa
 
 
+
 # Función para listar todos los archivos que contenga una carpeta
 def buscarCarpeta(carpeta):
     #Creamos una lista para guardar los titulos de los ficheros
@@ -128,7 +129,7 @@ def main():
         greedy = input('Si/No: ')
         if greedy == 'Si' or greedy == 'si':
             print('Mostrando distancia minima:')
-            minima=resultado.greedy()
+            minima=resultado.greedyDos()
             print(minima)
     else:
         print("No hay archivos seleccionados")
