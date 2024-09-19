@@ -7,6 +7,10 @@
 import heapq
 import math
 import numpy as np
+import random
+
+from numpy.array_api import empty
+
 
 ## \class Mapa
 #  \brief Clase que representa un mapa con ciudades y una matriz de distancias entre ellas.
@@ -99,4 +103,40 @@ class Mapa:
             marcaje[proxciudad] = 1
         suma += self.matriz_distancias[proxciudad][0]
         return suma
+
+    # Algoritmo aleatorio:
+
+    def randomGreedy(self, k, seed):
+        # Cargamos la semilla en el random
+        random.seed(seed)
+        # En primer lugar tomaremos los datos que necesitaremos:
+        nc = self.tam
+        suma = 0
+        '''marcaje = [False] * nc  # Lista para marcar las ciudades visitadas'''
+        '''ruta = []''' # Almacena el orden de las ciudades que visitemos
+        # Calcularemos el vector de sumas de distancias para cada ciudad
+        suma_distancias = []
+        for i in range(nc):
+            suma_distancias.append((i, np.sum(self.matriz_distancias[i])))
+        # Ordenamos el vector de menor a mayor
+        suma_distancias.sort(key=lambda x: x[1])
+        while suma_distancias is not empty():
+            # Seleccionamos de manera aleatoria entre los K primeros uno de ellos
+            filaSel = random.randint(0, k-1)
+            ciudad_actual = suma_distancias[filaSel][0]
+            # Ahora añadiremos la ciudad actual a la ruta que recorremos
+            '''ruta.append(ciudad_actual)'''
+            # Marcamos la ciudad en el vector de marcaje
+            '''marcaje[ciudad_actual] = True'''
+            # Eliminamos la tupla seleccionada y volvemos a lanzar
+            suma += ciudad_actual
+            suma_distancias.pop(filaSel)
+        return suma
+
+
+
+
+
+
+
 
