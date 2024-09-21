@@ -135,7 +135,7 @@ def imprimirMapa(miMapa):
 #
 def main():
     # Definir la ruta donde están los archivos TSP
-    ruta_relativa = os.path.join('recursos', 'practicaUnoDos')
+    ruta_relativa = os.path.join('recursos', 'tsp_folder')
     archivos = buscarCarpeta(ruta_relativa)
 
     if archivos:

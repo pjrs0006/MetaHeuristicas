@@ -4,8 +4,6 @@
 #  La clase Mapa permite añadir ciudades, generar una matriz de distancias entre todas las ciudades usando
 #  las capacidades vectorizadas de numpy, y realizar cálculos como encontrar el camino más corto usando un algoritmo greedy.
 
-import heapq
-import math
 import numpy as np
 
 ## \class Mapa
