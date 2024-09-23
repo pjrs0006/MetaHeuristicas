@@ -167,7 +167,7 @@ def main():
         greedy = input('Si/No: ')
         if greedy.lower() == 'si':
             print('Mostrando distancia mínima:')
-            minima = resultado.greedy()
+            minima = resultado.randomGreedy(5,12345678)
             print(minima)
     else:
         print("No hay archivos seleccionados")
