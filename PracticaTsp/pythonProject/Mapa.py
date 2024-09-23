@@ -9,7 +9,7 @@ import math
 import numpy as np
 import random
 
-from numpy.array_api import empty
+from numpy import empty
 
 
 ## \class Mapa
