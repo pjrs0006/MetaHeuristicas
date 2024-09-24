@@ -5,8 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1c39819e-fdbd-415c-aafc-0bbb919b524a" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Mapa.py" beforeDir="false" afterPath="$PROJECT_DIR$/Mapa.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/recursos/archivosConf/Config_1.txt" beforeDir="false" afterPath="$PROJECT_DIR$/recursos/archivosConf/Config_1.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,6 +30,7 @@
     "Python.main.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master",
+    "last_opened_file_path": "C:/Users/ferna/OneDrive/Escritorio/UJA/MetaHeuristicas/MetaHeuristicas/PracticaTsp",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -59,6 +59,9 @@
       <workItem from="1726661795306" duration="147000" />
       <workItem from="1726737068110" duration="449000" />
       <workItem from="1726737586780" duration="3670000" />
+      <workItem from="1727175913476" duration="1000000" />
+      <workItem from="1727197449941" duration="442000" />
+      <workItem from="1727197909296" duration="77000" />
     </task>
     <servers />
   </component>

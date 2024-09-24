@@ -144,6 +144,7 @@ class Mapa:
                 # Eliminamos la tupla seleccionada y volvemos a lanzar
                 suma += self.matriz_distancias[inicio][ciudad_actual]
                 inicio=ciudad_actual
+                print(inicio)
                 suma_distancias.pop(filaSel)
         return suma + self.matriz_distancias[inicio][0]
 
