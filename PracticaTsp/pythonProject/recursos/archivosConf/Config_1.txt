@@ -1,4 +1,4 @@
 Archivos=a280.tsp ch130.tsp d18512.tsp pr144.tsp u1060.tsp
 Semillas=77693013 76930137 69301377 93013776
-Algoritmos=RandomGreedy
-otroparametros=0 0 5
+Algoritmos=randomgreedy
+otroparametros=0 0 0 5

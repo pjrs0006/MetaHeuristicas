@@ -1,12 +1,9 @@
 import os
-from Mapa import Mapa  # Asumo que tienes esta clase creada
-from Ciudad import Ciudad  # Asumo que tienes esta clase creada
-
-## \file main.py
-#  \brief Este archivo contiene la lógica principal para procesar un conjunto de ciudades desde un archivo, generar la matriz de distancias y ejecutar un algoritmo greedy.
-
-import os
 import importlib
+
+import numpy as np
+from numpy import double
+
 from Ciudad import Ciudad
 from Mapa import Mapa
 
@@ -19,10 +16,9 @@ class Configurador:
 
     def leer_archivo_config(self, ruta_config):
         if os.path.isfile(ruta_config):
-            # Abre el archivo y procesa cada línea
             with open(ruta_config, "r") as archivo_config:
                 for linea in archivo_config:
-                    linea = linea.strip()  # Elimina espacios en blanco alrededor de la línea
+                    linea = linea.strip()
                     if "Archivos=" in linea:
                         self.archivos = linea.split("=")[1].strip().split()
                     elif "Semillas=" in linea:
@@ -35,33 +31,26 @@ class Configurador:
             raise FileNotFoundError(f"El archivo de configuración {ruta_config} no existe.")
 
     def leer_archivo(self, archivo):
-        # Creamos un objeto Mapa
         miMapa = Mapa()
-        # Bandera para indicar si hemos llegado a la sección de coordenadas
         seccionCoordenadas = False
 
-        # Abrimos el archivo en modo lectura
         with open(archivo, "r") as archivo_tsp:
             for linea in archivo_tsp:
                 linea = linea.strip()
 
-                # Detectar cuando empieza la sección de coordenadas
                 if linea == "NODE_COORD_SECTION":
                     seccionCoordenadas = True
                     continue
 
-                # Detectar el final del archivo
                 if linea == "EOF":
                     break
 
-                # Procesar las líneas de la cabecera antes de la sección de coordenadas
                 if not seccionCoordenadas:
                     if ":" in linea:
                         clave, valor = linea.split(":", 1)
                         clave = clave.strip().upper()
                         valor = valor.strip()
 
-                        # Asignar los valores correspondientes a los atributos de Mapa
                         if clave == "NAME":
                             miMapa.nombre = valor
                         elif clave == "COMMENT":
@@ -73,35 +62,30 @@ class Configurador:
                         elif clave == "EDGE_WEIGHT_TYPE":
                             miMapa.edge_type = valor
                 else:
-                    # Procesar las coordenadas de las ciudades
                     partes = linea.split()
                     if len(partes) == 3:
                         id_nodo = int(partes[0])
                         x = float(partes[1])
                         y = float(partes[2])
-                        # Crear una nueva instancia de Ciudad
                         ciudad = Ciudad(id_nodo, x, y)
-                        # Añadir la ciudad al objeto Mapa
                         miMapa.ciudades[id_nodo] = ciudad
         print("Archivo procesado con éxito.")
         return miMapa
 
     def imprimirMapa(self, miMapa):
-        # Imprimir la cabecera del mapa
         print(f"Nombre: {miMapa.nombre}")
         print(f"Comentario: {miMapa.comentario}")
         print(f"Tipo: {miMapa.tipo}")
         print(f"Dimensión: {miMapa.tam}")
         print(f"Tipo de peso de arista: {miMapa.edge_type}")
 
-        # Imprimir las coordenadas de las ciudades
         print("Coordenadas de las ciudades:")
         for ciudad in miMapa.ciudades.values():
             print(f"ID: {ciudad.id}, X: {ciudad.x}, Y: {ciudad.y}")
 
     def ejecutar_algoritmo(self, nombre_algoritmo, *args, **kwargs):
         try:
-            # Asumiendo que cada algoritmo está en un módulo separado dentro de la carpeta 'algoritmos'
+            # Importa dinámicamente el módulo del algoritmo desde la carpeta 'algoritmos'
             modulo = importlib.import_module(f"algoritmos.{nombre_algoritmo.lower()}")
             clase_algoritmo = getattr(modulo, nombre_algoritmo)
             instancia = clase_algoritmo(*args, **kwargs)
@@ -109,10 +93,6 @@ class Configurador:
         except (ModuleNotFoundError, AttributeError) as e:
             raise ImportError(f"El algoritmo {nombre_algoritmo} no se encontró o está mal definido.") from e
 
-    ## \brief Función principal del programa.
-    #
-    #  Esta función coordina todo el proceso: desde listar archivos, permitir al usuario seleccionar uno, leer el archivo, mostrar el mapa, generar la matriz de distancias y ejecutar el algoritmo seleccionado.
-    #
     def ejecutar(self):
         # Rutas de configuración y TSP
         ruta_config = os.path.join('recursos', 'archivosConf', 'Config_1.txt')
@@ -126,7 +106,7 @@ class Configurador:
             raise ValueError("No se han especificado archivos en la configuración.")
         if not self.algoritmos:
             raise ValueError("No se han especificado algoritmos en la configuración.")
-        if not self.parametros or len(self.parametros) < 2:
+        if not self.parametros or len(self.parametros) < 3:
             raise ValueError("Los parámetros de configuración son insuficientes.")
 
         # Obtener el archivo TSP a utilizar
@@ -169,21 +149,27 @@ class Configurador:
 
         # Obtener la semilla correspondiente
         if self.semillas:
-            seed = self.semillas[indice_archivo % len(self.semillas)]  # Seleccionar semilla basada en el índice del archivo
+            seed = self.semillas[int(self.parametros[2])]
         else:
             seed = None
 
         # Ejecutar el algoritmo seleccionado
         if nombre_algoritmo.lower() == "randomgreedy":
             # Obtener 'k' de parámetros o usar un valor por defecto
-            k = int(self.parametros[2]) if len(self.parametros) > 2 else 2
+            if len(self.parametros) > 2:
+                k = int(self.parametros[3])
+            else:
+                k = 5  # Valor por defecto si no se especifica
+
+            # Ejecutar el algoritmo pasando todos los parámetros necesarios, incluyendo 'tam'
             algoritmo = self.ejecutar_algoritmo(
                 nombre_algoritmo,
                 matriz_distancias=matriz_d,
                 k=k,
-                seed=seed
+                seed=seed,
+                tam=mapautilizado.tam  # Pasar el tamaño del mapa
             )
-            distancia_total, ruta = algoritmo
+            distancia_total= algoritmo
+            print(f"Distancia Total: {distancia_total}")
         else:
             print(f"Algoritmo {nombre_algoritmo} no está implementado.")
-
