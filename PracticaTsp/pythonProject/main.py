@@ -7,7 +7,6 @@ from Configurador import Configurador
 def main():
     # Crear una instancia del objeto Configurador
     configurador = Configurador()
-
     # Ejecutar el proceso de configuración, lectura de archivo y ejecución de algoritmo
     configurador.ejecutar()
 
