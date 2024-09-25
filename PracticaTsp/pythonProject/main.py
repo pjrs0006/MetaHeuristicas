@@ -10,3 +10,5 @@ def main():
 
     # Ejecutar el proceso de configuración, lectura de archivo y ejecución de algoritmo
     configurador.ejecutar()
+
+main()
