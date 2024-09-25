@@ -66,6 +66,7 @@ class Mapa:
     #  \param filas Lista de índices de filas a mostrar. Si es None, se muestran todas las filas.
     #  \param columnas Lista de índices de columnas a mostrar. Si es None, se muestran todas las columnas.
     #
+
     def mostrar_matriz(self, filas=None, columnas=None):
         if self.matriz_distancias is None:
             print("Matriz de distancias no generada aún.")
