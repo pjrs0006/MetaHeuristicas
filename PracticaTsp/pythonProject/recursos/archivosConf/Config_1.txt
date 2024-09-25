@@ -1,3 +1,4 @@
-ALG :
-SEM :
-DAT :
+Archivos=archivo1.txt archivo2.txt
+Semillas=77693013 76930137 69301377 93013776
+Algoritmos=RandomGreedy Busquedalocal
+otroparametro=5
