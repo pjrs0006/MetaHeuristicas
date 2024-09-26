@@ -1,5 +1,6 @@
 import os
 import importlib
+import time
 
 import numpy as np
 from numpy import double
@@ -160,7 +161,8 @@ class Configurador:
                 k = int(self.parametros[3])
             else:
                 k = 5  # Valor por defecto si no se especifica
-
+            # Iniciar el cronómetro de alta resolución
+            start_time = time.perf_counter()
             # Ejecutar el algoritmo pasando todos los parámetros necesarios, incluyendo 'tam'
             algoritmo = self.ejecutar_algoritmo(
                 nombre_algoritmo,
@@ -169,6 +171,12 @@ class Configurador:
                 seed=seed,
                 tam=mapautilizado.tam  # Pasar el tamaño del mapa
             )
+            # Finalizar el cronómetro de alta resolución
+            end_time = time.perf_counter()
+
+            # Calcula el tiempo de ejecución
+            execution_time = end_time - start_time
+            print(f"Tiempo de ejecución: {execution_time} segundos")
             distancia_total= algoritmo
             print(f"Distancia Total: {distancia_total}")
         else:
