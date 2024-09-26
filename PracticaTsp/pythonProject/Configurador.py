@@ -182,12 +182,16 @@ class Configurador:
         else:
             print(f"Algoritmo {nombre_algoritmo} no está implementado.")
 
+        #busqueda local
         if nombre_algoritmo.lower() == "busquedalocal":
             # Obtener 'k' de parámetros o usar un valor por defecto
             if len(self.parametros) > 2:
                 k = int(self.parametros[3])
             else:
                 k = 5  # Valor por defecto si no se especifica
+            maxit=int(self.parametros[4])
+            tamentorno=int(self.parametros[5])
+            dismentorno=int()
             # Iniciar el cronómetro de alta resolución
             start_time = time.perf_counter()
             # Ejecutar el algoritmo pasando todos los parámetros necesarios, incluyendo 'tam'
