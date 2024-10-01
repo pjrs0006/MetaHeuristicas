@@ -1,10 +1,6 @@
 import os
 import importlib
 import time
-
-import numpy as np
-from numpy import double
-
 from Ciudad import Ciudad
 from Mapa import Mapa
 
@@ -15,6 +11,7 @@ class Configurador:
         self.algoritmos = []
         self.parametros = []
 
+    # Método para leer el archivo de configuración
     def leer_archivo_config(self, ruta_config):
         if os.path.isfile(ruta_config):
             with open(ruta_config, "r") as archivo_config:
@@ -31,6 +28,7 @@ class Configurador:
         else:
             raise FileNotFoundError(f"El archivo de configuración {ruta_config} no existe.")
 
+    # Método para leer el archivo .tsp y procesarlo
     def leer_archivo(self, archivo):
         miMapa = Mapa()
         seccionCoordenadas = False
@@ -73,6 +71,7 @@ class Configurador:
         print("Archivo procesado con éxito.")
         return miMapa
 
+    # Método para imprimir los detalles del mapa
     def imprimirMapa(self, miMapa):
         print(f"Nombre: {miMapa.nombre}")
         print(f"Comentario: {miMapa.comentario}")
@@ -84,16 +83,14 @@ class Configurador:
         for ciudad in miMapa.ciudades.values():
             print(f"ID: {ciudad.id}, X: {ciudad.x}, Y: {ciudad.y}")
 
+    # Método para ejecutar dinámicamente un algoritmo
     def ejecutar_algoritmo(self, nombre_algoritmo, *args, **kwargs):
-        # try:
-            # Importa dinámicamente el módulo del algoritmo desde la carpeta 'algoritmos'
-            modulo = importlib.import_module(f"algoritmos.{nombre_algoritmo.lower()}")
-            clase_algoritmo = getattr(modulo, nombre_algoritmo)
-            instancia = clase_algoritmo(*args, **kwargs)
-            return instancia.ejecutar()
-        # except (ModuleNotFoundError, AttributeError) as e:
-            # raise ImportError(f"El algoritmo {nombre_algoritmo} no se encontró o está mal definido.") from e
+        modulo = importlib.import_module(f"algoritmos.{nombre_algoritmo.lower()}")
+        clase_algoritmo = getattr(modulo, nombre_algoritmo)
+        instancia = clase_algoritmo(*args, **kwargs)
+        return instancia.ejecutar()
 
+    # Método principal que ejecuta la lógica completa
     def ejecutar(self):
         # Rutas de configuración y TSP
         ruta_config = os.path.join('recursos', 'archivosConf', 'Config_1.txt')
@@ -102,7 +99,7 @@ class Configurador:
         # Leer archivo de configuración
         self.leer_archivo_config(ruta_config)
 
-        # Validar que haya archivos y algoritmos configurados
+        # Validaciones
         if not self.archivos:
             raise ValueError("No se han especificado archivos en la configuración.")
         if not self.algoritmos:
@@ -110,10 +107,8 @@ class Configurador:
         if not self.parametros or len(self.parametros) < 3:
             raise ValueError("Los parámetros de configuración son insuficientes.")
 
-        # Obtener el archivo TSP a utilizar
+        # Seleccionar archivo TSP
         indice_archivo = int(self.parametros[0])
-        if indice_archivo < 0 or indice_archivo >= len(self.archivos):
-            raise IndexError(f"Índice de archivo {indice_archivo} fuera de rango.")
         archivo_seleccionado = self.archivos[indice_archivo]
         ruta_archivo_tsp = os.path.join(ruta_tsp, archivo_seleccionado)
 
@@ -123,92 +118,55 @@ class Configurador:
         # Leer y procesar el archivo TSP
         mapautilizado = self.leer_archivo(ruta_archivo_tsp)
 
-        # Preguntar si se deben mostrar los datos del mapa
-        print('¿Desea mostrar los datos almacenados en la estructura?')
-        mostrarResultados = input('Si/No: ').strip().lower()
-        if mostrarResultados == 'si':
+        # Mostrar datos del mapa si se desea
+        if input('¿Desea mostrar los datos almacenados en la estructura? (Si/No): ').strip().lower() == 'si':
             self.imprimirMapa(mapautilizado)
-        else:
-            print('Perfecto, no se imprimirán los datos almacenados en el mapa.')
 
         # Generar la matriz de distancias
         matriz_d = mapautilizado.generar_matriz_distancias()
 
         # Preguntar si se desea imprimir la matriz de distancias
-        print('¿Desea imprimir la matriz de distancias?')
-        mostrarMatriz = input('Si/No: ').strip().lower()
-        if mostrarMatriz == 'si':
-            print('Mostrando la matriz de distancias:')
+        if input('¿Desea imprimir la matriz de distancias? (Si/No): ').strip().lower() == 'si':
             for fila in matriz_d:
                 print(' '.join(map(str, fila)))
 
-        # Seleccionar el algoritmo a ejecutar
+        # Seleccionar el algoritmo
         indice_algoritmo = int(self.parametros[1])
-        if indice_algoritmo < 0 or indice_algoritmo >= len(self.algoritmos):
-            raise IndexError(f"Índice de algoritmo {indice_algoritmo} fuera de rango.")
         nombre_algoritmo = self.algoritmos[indice_algoritmo]
 
-        # Obtener la semilla correspondiente
-        if self.semillas:
-            seed = self.semillas[int(self.parametros[2])]
-        else:
-            seed = None
+        # Obtener la semilla
+        seed = self.semillas[int(self.parametros[2])] if self.semillas else None
 
-        # Ejecutar el algoritmo seleccionado
-        if nombre_algoritmo.lower() == "randomgreedy":
-            # Obtener 'k' de parámetros o usar un valor por defecto
-            if len(self.parametros) > 2:
-                k = int(self.parametros[3])
-            else:
-                k = 5  # Valor por defecto si no se especifica
-            # Iniciar el cronómetro de alta resolución
-            start_time = time.perf_counter()
-            # Ejecutar el algoritmo pasando todos los parámetros necesarios, incluyendo 'tam'
-            algoritmo = self.ejecutar_algoritmo(
-                nombre_algoritmo,
-                matriz_distancias=matriz_d,
-                k=k,
-                seed=seed,
-                tam=mapautilizado.tam  # Pasar el tamaño del mapa
-            )
-            # Finalizar el cronómetro de alta resolución
-            end_time = time.perf_counter()
+        # Selección de algoritmos con switch (Aqui se usa match)
+        match nombre_algoritmo.lower():
+            case "randomgreedy":
+                k = int(self.parametros[3]) if len(self.parametros) > 3 else 5
+                start_time = time.perf_counter()
+                algoritmo = self.ejecutar_algoritmo(nombre_algoritmo,
+                                                    matriz_distancias=matriz_d,
+                                                    k=k,
+                                                    seed=seed,
+                                                    tam=mapautilizado.tam)
+                end_time = time.perf_counter()
+                print(f"Tiempo de ejecución: {end_time - start_time} segundos")
+                print(f"Distancia Total: {algoritmo}")
 
-            # Calcula el tiempo de ejecución
-            execution_time = end_time - start_time
-            print(f"Tiempo de ejecución: {execution_time} segundos")
-            distancia_total= algoritmo
-            print(f"Distancia Total: {distancia_total}")
-        else:
-            print(f"Algoritmo {nombre_algoritmo} no está implementado.")
-
-        #busqueda local
-        if nombre_algoritmo.lower() == "busquedalocal":
-            # Obtener 'k' de parámetros o usar un valor por defecto
-            if len(self.parametros) > 2:
-                k = int(self.parametros[3])
-            else:
-                k = 5  # Valor por defecto si no se especifica
-            maxit=int(self.parametros[4])
-            tamentorno=int(self.parametros[5])
-            dismentorno=int()
-            # Iniciar el cronómetro de alta resolución
-            start_time = time.perf_counter()
-            # Ejecutar el algoritmo pasando todos los parámetros necesarios, incluyendo 'tam'
-            algoritmo = self.ejecutar_algoritmo(
-                nombre_algoritmo,
-                matriz_distancias=matriz_d,
-                k=k,
-                seed=seed,
-                tam=mapautilizado.tam  # Pasar el tamaño del mapa
-            )
-
-            # Finalizar el cronómetro de alta resolución
-            end_time = time.perf_counter()
-
-            # Calcula el tiempo de ejecución
-            execution_time = end_time - start_time
-
-
-        else:
-            print(f"Algoritmo {nombre_algoritmo} no está implementado.")
+            case "busquedalocal":
+                k = int(self.parametros[3]) if len(self.parametros) > 3 else 5
+                maxit = int(self.parametros[4])
+                tamentorno = int(self.parametros[5])
+                start_time = time.perf_counter()
+                algoritmo = self.ejecutar_algoritmo(nombre_algoritmo,
+                                                    matriz_distancias=matriz_d,
+                                                    k=k,
+                                                    seed=seed,
+                                                    tam=mapautilizado.tam,
+                                                    iteraciones=200,
+                                                    tamentorno=5,
+                                                    dismentorno = 1,
+                                                    italgoritmo = 0
+                                                    )
+                end_time = time.perf_counter()
+                print(f"Tiempo de ejecución: {end_time - start_time} segundos")
+            case _:
+                print(f"Algoritmo {nombre_algoritmo} no está implementado.")
