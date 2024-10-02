@@ -19,38 +19,28 @@ class busquedalocal:
         random.seed(seed)
 
     def dimedistancia(self, camino):
-            if not camino:
-                print("Camino vacío")
-                return float('inf')
+        if not camino:
+            print("Camino vacío")
+            return float('inf')
 
-            sumaDistancias = 0
-            for i in range(len(camino) - 1):
-                ciudad_actual = camino[i]
-                ciudad_siguiente = camino[i + 1]
-                sumaDistancias += self.matriz_distancias[ciudad_actual][ciudad_siguiente]
-            # Añadir distancia de regreso al inicio para cerrar el ciclo
-            sumaDistancias += self.matriz_distancias[camino[-1]][camino[0]]
-
+        sumaDistancias = 0
+        for i in range(len(camino) - 1):
+            ciudad_actual = camino[i]
+            ciudad_siguiente = camino[i + 1]
+            sumaDistancias += self.matriz_distancias[ciudad_actual][ciudad_siguiente]
+        # Añadir distancia de regreso al inicio para cerrar el ciclo
+        sumaDistancias += self.matriz_distancias[camino[-1]][camino[0]]
+        return sumaDistancias
 
     def evaluacion(self, distanciainicial, vecinos):
-            minima = distanciainicial
-            vecinoescogido = None
-            for vecino in vecinos:
-                distancia_vecino = self.dimedistancia(vecino)
-                if distancia_vecino < minima:
-                    minima = distancia_vecino
-                    vecinoescogido = vecino
-            return vecinoescogido, minima, vecinoescogido is not None
-
-    '''distancias_vecinos = np.array([self.dimedistancia(vecino) for vecino in vecinos])
-            mejoras = distancias_vecinos < distanciainicial
-            if np.any(mejoras):
-                idx_mejor = np.argmin(distancias_vecinos)
-                minima = distancias_vecinos[idx_mejor]
-                vecinoescogido = vecinos[idx_mejor]
-                return vecinoescogido, minima, True
-            else:
-                return None, distanciainicial, False'''
+        minima = distanciainicial
+        vecinoescogido = None
+        for vecino in vecinos:
+            distancia_vecino = self.dimedistancia(vecino)
+            if distancia_vecino < minima:
+                minima = distancia_vecino
+                vecinoescogido = vecino
+        return vecinoescogido, minima, vecinoescogido is not None
 
     def randomGreedy(self):
         if self.k <= 0:
@@ -75,31 +65,11 @@ class busquedalocal:
         return ruta, distancia_final
 
     def aplicar_2opt(self, ruta, i, k):
-           if i == 0 and k == len(ruta) - 1:
-               return ruta  # No hacemos nada
-           nuevo_vecino = ruta[:i] + ruta[i:k + 1][::-1] + ruta[k + 1:]
-           return nuevo_vecino
-
-    '''  # Aplicamos 2-opt intercambiando el segmento [i, k]
-           ruta[i:k + 1] = ruta[i:k + 1][::-1]
-           return ruta
-           # Manejo especial si i es 0 y k es la última ciudad'''
-
-    '''vecinos = []
-            n=len(ruta)
-            intentos = 0
-            max_intentos = num_vecinos * 10  # Evitar bucles infinitos
-
-            while len(vecinos) < num_vecinos and intentos < max_intentos:
-                i, j = sorted(np.random.choice(n, 2, replace=False))
-                # Evitar intercambios que no modifiquen la ruta
-                if (i == 0 and j == n - 1) or i == j:
-                    intentos += 1
-                    continue
-                nuevo_vecino = ruta.copy()
-                nuevo_vecino[i:j + 1] = nuevo_vecino[i:j + 1][::-1]
-                vecinos.append(nuevo_vecino)
-                intentos += 1'''
+        # Manejo especial si i es 0 y k es la última ciudad
+        if i == 0 and k == len(ruta) - 1:
+            return ruta  # No hacemos nada
+        nuevo_vecino = ruta[:i] + ruta[i:k + 1][::-1] + ruta[k + 1:]
+        return nuevo_vecino
 
     def generar_vecinos(self, ruta, num_vecinos):
         vecinos = set()
@@ -148,5 +118,17 @@ class busquedalocal:
                 if iteracion_actual == proxima_disminucion:
                     tamaño_entorno = max(1, int(tamaño_entorno * 0.90))  # Reducir en un 10%
                     proxima_disminucion += iteraciones_disminucion
+
+                # Opcional: Imprimir el progreso cada cierto número de iteraciones
+                if iteracion_actual % 500 == 0:
+                    print(f"Iteración {iteracion_actual}/{total_iteraciones}, Mejor distancia: {distancia_inicial}, Tamaño del entorno: {tamaño_entorno}")
+
+            else:
+                # No se encontró mejora; continuamos sin incrementar el contador
+                print("No se encontró mejora en los vecinos generados.")
+
+                # Podemos decidir si queremos terminar el algoritmo aquí o continuar
+                # Si no se encuentran mejoras después de cierto número de intentos, podemos romper el bucle
+                break  # En este caso, terminamos el algoritmo
 
         return punto_inicio, distancia_inicial
