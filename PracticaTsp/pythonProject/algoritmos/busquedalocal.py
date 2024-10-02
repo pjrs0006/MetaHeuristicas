@@ -8,97 +8,132 @@ class busquedalocal:
         self.k = k
         self.seed = seed
         self.tam = tam
-        self.iteraciones = int(iteraciones)
-        self.tamentorno = tamentorno
-        self.dismentorno = int(dismentorno)
-        self.italgoritmo = 0
+        self.iteraciones = int(iteraciones)  # Total de iteraciones exitosas
+        self.tamentorno = float(tamentorno)  # Porcentaje inicial del entorno
+        self.dismentorno = float(dismentorno)  # Porcentaje de disminución
+        self.italgoritmo = 0  # Contador de iteraciones exitosas
 
-        # Verificación de que k es mayor que 0
         if self.k <= 0:
             raise ValueError("El parámetro k no es correcto: debe ser mayor que 0.")
 
-        # Cargamos la semilla en el random
         random.seed(seed)
 
     def dimedistancia(self, camino):
-        if not camino:
-            print("Camino vacio")
-            return float('inf')  # Devolver infinita si el camino está vacío
+            if not camino:
+                print("Camino vacío")
+                return float('inf')
 
-        sumaDistancias = 0  # Para guardar el resultado
-        for i in range(len(camino) - 1):
-            ciudad_actual = camino[i]
-            ciudad_siguiente = camino[i + 1]
-            sumaDistancias += self.matriz_distancias[ciudad_actual][ciudad_siguiente]
-        return sumaDistancias
+            sumaDistancias = 0
+            for i in range(len(camino) - 1):
+                ciudad_actual = camino[i]
+                ciudad_siguiente = camino[i + 1]
+                sumaDistancias += self.matriz_distancias[ciudad_actual][ciudad_siguiente]
+            # Añadir distancia de regreso al inicio para cerrar el ciclo
+            sumaDistancias += self.matriz_distancias[camino[-1]][camino[0]]
+
 
     def evaluacion(self, distanciainicial, vecinos):
-        minima = distanciainicial
-        vecinoescogido = None
+            minima = distanciainicial
+            vecinoescogido = None
+            for vecino in vecinos:
+                distancia_vecino = self.dimedistancia(vecino)
+                if distancia_vecino < minima:
+                    minima = distancia_vecino
+                    vecinoescogido = vecino
+            return vecinoescogido, minima, vecinoescogido is not None
 
-        for vecino in vecinos:
-            distancia_vecino = self.dimedistancia(vecino)
-            if distancia_vecino < minima:
-                minima = distancia_vecino
-                vecinoescogido = vecino
+    '''distancias_vecinos = np.array([self.dimedistancia(vecino) for vecino in vecinos])
+            mejoras = distancias_vecinos < distanciainicial
+            if np.any(mejoras):
+                idx_mejor = np.argmin(distancias_vecinos)
+                minima = distancias_vecinos[idx_mejor]
+                vecinoescogido = vecinos[idx_mejor]
+                return vecinoescogido, minima, True
             else:
-                print("Vecino Cabron")
-
-        return vecinoescogido, minima, minima < distanciainicial
+                return None, distanciainicial, False'''
 
     def randomGreedy(self):
         if self.k <= 0:
             raise ValueError("El parámetro k no es correcto: debe ser mayor que 0.")
 
         nc = self.tam
-        suma = 0
-        marcaje = [False] * nc  # Lista para marcar las ciudades visitadas
+        marcaje = [False] * nc
         ruta = []
         suma_distancias = [(i, np.sum(self.matriz_distancias[i])) for i in range(nc)]
         suma_distancias.sort(key=lambda x: x[1])
 
-        inicio = suma_distancias[0][0]
-        while suma_distancias:
-            if len(suma_distancias) < self.k:
-                self.k = len(suma_distancias)
-
-            filaSel = random.randint(0, self.k - 1)
-            ciudad_actual = suma_distancias[filaSel][0]
-
+        while len(ruta) < nc:
+            disponibles = [ciudad for ciudad, _ in suma_distancias if not marcaje[ciudad]]
+            if not disponibles:
+                break
+            k_actual = min(self.k, len(disponibles))
+            ciudad_actual = random.choice(disponibles[:k_actual])
             ruta.append(ciudad_actual)
             marcaje[ciudad_actual] = True
-            suma += self.matriz_distancias[inicio][ciudad_actual]
-            inicio = ciudad_actual
-            suma_distancias.pop(filaSel)
 
-        diatanciaFinal = self.dimedistancia(ruta)
-        return ruta, diatanciaFinal
+        distancia_final = self.dimedistancia(ruta)
+        return ruta, distancia_final
 
     def aplicar_2opt(self, ruta, i, k):
-        nuevo_vecino = ruta[:i] + ruta[i:k + 1][::-1] + ruta[k + 1:]
-        return nuevo_vecino
+           if i == 0 and k == len(ruta) - 1:
+               return ruta  # No hacemos nada
+           nuevo_vecino = ruta[:i] + ruta[i:k + 1][::-1] + ruta[k + 1:]
+           return nuevo_vecino
 
-    def generar_vecinos(self, ruta, agenerar):
-        vecinos = []
-        for i in range(self.tam - 1):
-            for k in range(i + 1, self.tam):
-                if len(vecinos) >= agenerar:
-                    return vecinos  # Retorna si se alcanza el límite
-                nuevo_vecino = self.aplicar_2opt(ruta, i, k)
-                if nuevo_vecino not in vecinos:  # Evitar duplicados
-                    vecinos.append(nuevo_vecino)
-        return vecinos
+    '''  # Aplicamos 2-opt intercambiando el segmento [i, k]
+           ruta[i:k + 1] = ruta[i:k + 1][::-1]
+           return ruta
+           # Manejo especial si i es 0 y k es la última ciudad'''
+
+    '''vecinos = []
+            n=len(ruta)
+            intentos = 0
+            max_intentos = num_vecinos * 10  # Evitar bucles infinitos
+
+            while len(vecinos) < num_vecinos and intentos < max_intentos:
+                i, j = sorted(np.random.choice(n, 2, replace=False))
+                # Evitar intercambios que no modifiquen la ruta
+                if (i == 0 and j == n - 1) or i == j:
+                    intentos += 1
+                    continue
+                nuevo_vecino = ruta.copy()
+                nuevo_vecino[i:j + 1] = nuevo_vecino[i:j + 1][::-1]
+                vecinos.append(nuevo_vecino)
+                intentos += 1'''
+
+    def generar_vecinos(self, ruta, num_vecinos):
+        vecinos = set()
+        intentos = 0
+        max_intentos = num_vecinos * 10  # Evitar bucles infinitos
+
+        while len(vecinos) < num_vecinos and intentos < max_intentos:
+            i, j = sorted(random.sample(range(len(ruta)), 2))
+            # Evitar intercambios que no modifiquen la ruta
+            if (i == 0 and j == len(ruta) - 1) or i == j:
+                intentos += 1
+                continue
+            nuevo_vecino = tuple(self.aplicar_2opt(ruta, i, j))
+            vecinos.add(nuevo_vecino)
+            intentos += 1
+
+        return [list(vecino) for vecino in vecinos]
 
     def ejecutar(self):
         punto_inicio, distancia_inicial = self.randomGreedy()
+        iteracion_actual = 0  # Iteraciones exitosas
+        total_iteraciones = self.iteraciones
 
-        # Inicialización del entorno
-        iteracion_actual = 0
-        tamaño_entorno = int((self.tamentorno / 100) * self.iteraciones)
+        # Tamaño inicial del entorno dinámico
+        tamaño_entorno = int(total_iteraciones * self.tamentorno / 100)
 
-        while iteracion_actual < self.iteraciones:
+        # Cada 10% de iteraciones exitosas, reduciremos el tamaño del entorno
+        iteraciones_disminucion = int(total_iteraciones * 0.10)
+        proxima_disminucion = iteraciones_disminucion
+
+        while iteracion_actual < total_iteraciones:
             # Generar vecinos con el tamaño del entorno actual
             vecinos = self.generar_vecinos(punto_inicio, tamaño_entorno)
+
             # Evaluar vecinos
             vecino_mejorado, mejor_distancia, siesmejor = self.evaluacion(distancia_inicial, vecinos)
 
@@ -106,13 +141,12 @@ class busquedalocal:
             if siesmejor:
                 punto_inicio = vecino_mejorado
                 distancia_inicial = mejor_distancia
-                iteracion_actual += 1  # Solo incrementa si se encontró una mejora
+                iteracion_actual += 1  # Incrementar solo si se encontró una mejora
+                self.italgoritmo += 1
 
-            # Ajustar el tamaño del entorno después de cada 500 iteraciones
-            if (iteracion_actual + 1) % (self.iteraciones // self.dismentorno) == 0 and iteracion_actual != 0:
-                tamaño_entorno = max(1, int(tamaño_entorno * self.dismentorno))  # Asegurar que no se reduzca a 0
+                # Reducir el tamaño del entorno cada 10% de las iteraciones exitosas
+                if iteracion_actual == proxima_disminucion:
+                    tamaño_entorno = max(1, int(tamaño_entorno * 0.90))  # Reducir en un 10%
+                    proxima_disminucion += iteraciones_disminucion
 
-            iteracion_actual += 1  # Incrementar el contador de iteraciones
-
-        print("He encontrado un amigo")
-        return punto_inicio, distancia_inicial  # Esto devolverá el mejor camino y su distancia
+        return punto_inicio, distancia_inicial
