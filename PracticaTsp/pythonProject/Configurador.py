@@ -174,7 +174,7 @@ class Configurador:
                 end_time = time.perf_counter()
                 minutos = (end_time - start_time) / 60
                 print(f"Tiempo de ejecución: {minutos} minutos")
-                print(f"Camino optimo: {algoritmo}")
-
+                print(f"Camino optimo: {algoritmo[0]}")
+                print(f"distancia optima: {algoritmo[1]}")
             case _:
                 print(f"Algoritmo {nombre_algoritmo} no está implementado.")
