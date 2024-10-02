@@ -156,17 +156,25 @@ class Configurador:
                 maxit = int(self.parametros[4])
                 tamentorno = int(self.parametros[5])
                 start_time = time.perf_counter()
+                dismentorno=self.parametros[6];
+                print(k)
+                print(seed)
+                print(maxit)
+                print(tamentorno)
+                print(dismentorno)
                 algoritmo = self.ejecutar_algoritmo(nombre_algoritmo,
                                                     matriz_distancias=matriz_d,
                                                     k=k,
                                                     seed=seed,
                                                     tam=mapautilizado.tam,
-                                                    iteraciones=200,
-                                                    tamentorno=5,
-                                                    dismentorno = 1,
-                                                    italgoritmo = 0
+                                                    iteraciones=maxit,
+                                                    tamentorno=tamentorno,
+                                                    dismentorno = dismentorno,
                                                     )
                 end_time = time.perf_counter()
-                print(f"Tiempo de ejecución: {end_time - start_time} segundos")
+                minutos = (end_time - start_time) / 60
+                print(f"Tiempo de ejecución: {minutos} minutos")
+                print(f"Camino optimo: {algoritmo}")
+
             case _:
                 print(f"Algoritmo {nombre_algoritmo} no está implementado.")

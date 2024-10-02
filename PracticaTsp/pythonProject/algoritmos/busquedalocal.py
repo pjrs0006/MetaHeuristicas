@@ -3,14 +3,14 @@ import random
 
 
 class busquedalocal:
-    def __init__(self, matriz_distancias, k, seed, tam, it, tamentorno, dismentorno):
+    def __init__(self, matriz_distancias, k, seed, tam, iteraciones, tamentorno, dismentorno):
         self.matriz_distancias = matriz_distancias
         self.k = k
         self.seed = seed
         self.tam = tam
-        self.iteraciones = it
+        self.iteraciones = int(iteraciones)
         self.tamentorno = tamentorno
-        self.dismentorno = dismentorno
+        self.dismentorno = int(dismentorno)
         self.italgoritmo = 0
 
         # Verificación de que k es mayor que 0
@@ -41,6 +41,8 @@ class busquedalocal:
             if distancia_vecino < minima:
                 minima = distancia_vecino
                 vecinoescogido = vecino
+            else:
+                print("Vecino Cabron")
 
         return vecinoescogido, minima, minima < distanciainicial
 
@@ -97,15 +99,14 @@ class busquedalocal:
         while iteracion_actual < self.iteraciones:
             # Generar vecinos con el tamaño del entorno actual
             vecinos = self.generar_vecinos(punto_inicio, tamaño_entorno)
-
             # Evaluar vecinos
-            vecino_mejorado, mejor_distancia, mejorado = self.evaluacion(distancia_inicial, vecinos)
+            vecino_mejorado, mejor_distancia, siesmejor = self.evaluacion(distancia_inicial, vecinos)
 
             # Si se encuentra un mejor vecino, actualizar la solución actual
-            if mejorado:
+            if siesmejor:
                 punto_inicio = vecino_mejorado
                 distancia_inicial = mejor_distancia
-                self.italgoritmo += 1  # Solo incrementa si se encontró una mejora
+                iteracion_actual += 1  # Solo incrementa si se encontró una mejora
 
             # Ajustar el tamaño del entorno después de cada 500 iteraciones
             if (iteracion_actual + 1) % (self.iteraciones // self.dismentorno) == 0 and iteracion_actual != 0:
@@ -113,4 +114,5 @@ class busquedalocal:
 
             iteracion_actual += 1  # Incrementar el contador de iteraciones
 
+        print("He encontrado un amigo")
         return punto_inicio, distancia_inicial  # Esto devolverá el mejor camino y su distancia
