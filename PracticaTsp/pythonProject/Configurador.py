@@ -156,12 +156,7 @@ class Configurador:
                 maxit = int(self.parametros[4])
                 tamentorno = int(self.parametros[5])
                 start_time = time.perf_counter()
-                dismentorno=self.parametros[6];
-                print(k)
-                print(seed)
-                print(maxit)
-                print(tamentorno)
-                print(dismentorno)
+                dismentorno=self.parametros[6]
                 algoritmo = self.ejecutar_algoritmo(nombre_algoritmo,
                                                     matriz_distancias=matriz_d,
                                                     k=k,
