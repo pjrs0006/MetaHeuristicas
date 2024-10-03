@@ -18,19 +18,25 @@ class busquedalocal:
 
         random.seed(seed)
 
+    #Funcion optimizada para eliminar el bucle
     def dimedistancia(self, camino):
-        if not camino:
-            print("Camino vacío")
-            return float('inf')
+        camino_shifted = np.roll(camino, -1)
+        distancias = self.matriz_distancias[camino, camino_shifted]
+        return np.sum(distancias)
 
-        sumaDistancias = 0
-        for i in range(len(camino) - 1):
-            ciudad_actual = camino[i]
-            ciudad_siguiente = camino[i + 1]
-            sumaDistancias += self.matriz_distancias[ciudad_actual][ciudad_siguiente]
-        # Añadir distancia de regreso al inicio para cerrar el ciclo
-        sumaDistancias += self.matriz_distancias[camino[-1]][camino[0]]
-        return sumaDistancias
+    # def dimedistancia(self, camino):
+    #     if not camino:
+    #         print("Camino vacío")
+    #         return float('inf')
+    #
+    #     sumaDistancias = 0
+    #     for i in range(len(camino) - 1):
+    #         ciudad_actual = camino[i]
+    #         ciudad_siguiente = camino[i + 1]
+    #         sumaDistancias += self.matriz_distancias[ciudad_actual][ciudad_siguiente]
+    #     # Añadir distancia de regreso al inicio para cerrar el ciclo
+    #     sumaDistancias += self.matriz_distancias[camino[-1]][camino[0]]
+    #     return sumaDistancias
 
     def evaluacion(self, distanciainicial, vecinos):
         minima = distanciainicial
@@ -71,22 +77,35 @@ class busquedalocal:
         nuevo_vecino = ruta[:i] + ruta[i:k + 1][::-1] + ruta[k + 1:]
         return nuevo_vecino
 
+
+    # Funcion Optimizada
+
     def generar_vecinos(self, ruta, num_vecinos):
-        vecinos = set()
-        intentos = 0
-        max_intentos = num_vecinos * 10  # Evitar bucles infinitos
-
-        while len(vecinos) < num_vecinos and intentos < max_intentos:
+        vecinos = []
+        for _ in range(num_vecinos):
             i, j = sorted(random.sample(range(len(ruta)), 2))
-            # Evitar intercambios que no modifiquen la ruta
-            if (i == 0 and j == len(ruta) - 1) or i == j:
-                intentos += 1
-                continue
-            nuevo_vecino = tuple(self.aplicar_2opt(ruta, i, j))
-            vecinos.add(nuevo_vecino)
-            intentos += 1
+            if i != j:
+                vecino = self.aplicar_2opt(ruta, i, j)
+                vecinos.append(vecino)
 
-        return [list(vecino) for vecino in vecinos]
+        return vecinos
+
+    # def generar_vecinos(self, ruta, num_vecinos):
+    #     vecinos = set()
+    #     intentos = 0
+    #     max_intentos = num_vecinos * 10  # Evitar bucles infinitos
+    #
+    #     while len(vecinos) < num_vecinos and intentos < max_intentos:
+    #         i, j = sorted(random.sample(range(len(ruta)), 2))
+    #         # Evitar intercambios que no modifiquen la ruta
+    #         if (i == 0 and j == len(ruta) - 1) or i == j:
+    #             intentos += 1
+    #             continue
+    #         nuevo_vecino = tuple(self.aplicar_2opt(ruta, i, j))
+    #         vecinos.add(nuevo_vecino)
+    #         intentos += 1
+    #
+    #     return [list(vecino) for vecino in vecinos]
 
     def ejecutar(self):
         punto_inicio, distancia_inicial = self.randomGreedy()
