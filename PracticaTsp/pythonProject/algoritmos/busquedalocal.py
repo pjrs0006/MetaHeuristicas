@@ -137,11 +137,6 @@ class busquedalocal:
                 if iteracion_actual == proxima_disminucion:
                     tamaño_entorno = max(1, int(tamaño_entorno * 0.90))  # Reducir en un 10%
                     proxima_disminucion += iteraciones_disminucion
-
-                # Opcional: Imprimir el progreso cada cierto número de iteraciones
-                if iteracion_actual % 500 == 0:
-                    print(f"Iteración {iteracion_actual}/{total_iteraciones}, Mejor distancia: {distancia_inicial}, Tamaño del entorno: {tamaño_entorno}")
-
             else:
                 # No se encontró mejora; continuamos sin incrementar el contador
                 print("No se encontró mejora en los vecinos generados.")
