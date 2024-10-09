@@ -171,5 +171,49 @@ class Configurador:
                 print(f"Tiempo de ejecución: {tiempo} segundos")
                 print(f"Camino optimo: {algoritmo[0]}")
                 print(f"distancia optima: {algoritmo[1]}")
+
+            case "blh":
+                k = int(self.parametros[3]) if len(self.parametros) > 3 else 5
+                maxit = int(self.parametros[4])
+                tamentorno = int(self.parametros[5])
+                start_time = time.perf_counter()
+                dismentorno = self.parametros[6]
+                algoritmo = self.ejecutar_algoritmo(nombre_algoritmo,
+                                                    matriz_distancias=matriz_d,
+                                                    k=k,
+                                                    seed=seed,
+                                                    tam=mapautilizado.tam,
+                                                    iteraciones=maxit,
+                                                    tamentorno=tamentorno,
+                                                    dismentorno=dismentorno,
+                                                    )
+                end_time = time.perf_counter()
+                tiempo = (end_time - start_time)
+                print(f"Tiempo de ejecución: {tiempo} segundos")
+                print(f"Camino optimo: {algoritmo[0]}")
+                print(f"distancia optima: {algoritmo[1]}")
+
+            case "tabu":
+                k = int(self.parametros[3]) if len(self.parametros) > 3 else 5
+                maxit = int(self.parametros[4])
+                tamentorno = int(self.parametros[5])
+                dismentorno = self.parametros[6]
+                porcentaje = int(self.parametros[7])
+                start_time = time.perf_counter()
+                algoritmo = self.ejecutar_algoritmo(nombre_algoritmo,
+                                                    matriz_distancias=matriz_d,
+                                                    k=k,
+                                                    seed=seed,
+                                                    tam=mapautilizado.tam,
+                                                    iteraciones=maxit,
+                                                    tamentorno=tamentorno,
+                                                    dismentorno=dismentorno,
+                                                    porcentajel=porcentaje
+                                                    )
+                end_time = time.perf_counter()
+                tiempo = (end_time - start_time)
+                print(f"Tiempo de ejecución: {tiempo} segundos")
+                print(f"Camino optimo: {algoritmo[0]}")
+                print(f"distancia optima: {algoritmo[1]}")
             case _:
                 print(f"Algoritmo {nombre_algoritmo} no está implementado.")
