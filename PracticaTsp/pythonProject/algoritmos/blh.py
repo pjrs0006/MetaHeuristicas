@@ -1,22 +1,8 @@
 import numpy as np
 import random
-import multiprocessing as mp
 
 
-# Variable global para compartir la matriz de distancias entre los procesos trabajadores
-global_matriz_distancias = None
-
-def init_worker(matriz):
-    global global_matriz_distancias
-    global_matriz_distancias = matriz
-
-def compute_distance(camino):
-    camino_shifted = np.roll(camino, -1)
-    distancias = global_matriz_distancias[camino, camino_shifted]
-    return np.sum(distancias)
-
-
-class busquedalocal:
+class blh:
     def __init__(self, matriz_distancias, k, seed, tam, iteraciones, tamentorno, dismentorno):
         self.matriz_distancias = matriz_distancias
         self.k = k
@@ -32,22 +18,22 @@ class busquedalocal:
 
         random.seed(seed)
 
-    # Función optimizada para eliminar el bucle
+    # Funcion optimizada para eliminar el bucle, usando operaciones numpy vectorizadas
     def dimedistancia(self, camino):
-        camino_shifted = np.roll(camino, -1)
-        distancias = self.matriz_distancias[camino, camino_shifted]
-        return np.sum(distancias)
+        # Aseguramos que los índices de camino sean de tipo entero
+        camino = np.array(camino, dtype=int)
+        camino_shifted = np.roll(camino, -1)  # Desplazar el camino para calcular distancias entre pares
+        return np.sum(self.matriz_distancias[camino, camino_shifted])  # Calcular la suma de las distancias
 
+    # Método optimizado para la evaluación de vecinos
     def evaluacion(self, distanciainicial, vecinos):
-        with mp.Pool(initializer=init_worker, initargs=(self.matriz_distancias,)) as pool:
-            distancias = pool.map(compute_distance, vecinos)
-        minima = distanciainicial
-        vecinoescogido = None
-        for vecino, distancia_vecino in zip(vecinos, distancias):
-            if distancia_vecino < minima:
-                minima = distancia_vecino
-                vecinoescogido = vecino
-        return vecinoescogido, minima, vecinoescogido is not None
+        distancias = np.array([self.dimedistancia(vecino) for vecino in vecinos])
+        mejor_vecino_idx = np.argmin(distancias)  # Encontrar el índice del mejor vecino
+        mejor_distancia = distancias[mejor_vecino_idx]
+
+        if mejor_distancia < distanciainicial:
+            return vecinos[mejor_vecino_idx], mejor_distancia, True
+        return None, distanciainicial, False
 
     def randomGreedy(self):
         if self.k <= 0:
@@ -71,20 +57,21 @@ class busquedalocal:
         distancia_final = self.dimedistancia(ruta)
         return ruta, distancia_final
 
+    # Optimización del algoritmo 2-opt, evitando cálculos innecesarios
     def aplicar_2opt(self, ruta, i, k):
-        # Manejo especial si i es 0 y k es la última ciudad
         if i == 0 and k == len(ruta) - 1:
-            return ruta  # No hacemos nada
-        nuevo_vecino = ruta[:i] + ruta[i:k + 1][::-1] + ruta[k + 1:]
+            return ruta
+        nuevo_vecino = np.concatenate((ruta[:i], ruta[i:k + 1][::-1], ruta[k + 1:]))
         return nuevo_vecino
 
+    # Generación eficiente de vecinos
     def generar_vecinos(self, ruta, num_vecinos):
         vecinos = []
-        for _ in range(num_vecinos):
-            i, j = sorted(random.sample(range(len(ruta)), 2))
-            if i != j:
-                vecino = self.aplicar_2opt(ruta, i, j)
-                vecinos.append(vecino)
+        nc = len(ruta)
+        indices = np.random.choice(np.arange(nc), (num_vecinos, 2), replace=False)
+        for i, j in indices:
+            vecino = self.aplicar_2opt(ruta, min(i, j), max(i, j))
+            vecinos.append(vecino)
         return vecinos
 
     def ejecutar(self):
@@ -100,6 +87,7 @@ class busquedalocal:
         proxima_disminucion = iteraciones_disminucion
 
         while iteracion_actual < total_iteraciones:
+            print(iteracion_actual)
             # Generar vecinos con el tamaño del entorno actual
             vecinos = self.generar_vecinos(punto_inicio, tamaño_entorno)
 
@@ -118,9 +106,7 @@ class busquedalocal:
                     tamaño_entorno = max(1, int(tamaño_entorno * 0.90))  # Reducir en un 10%
                     proxima_disminucion += iteraciones_disminucion
             else:
-                # No se encontró mejora; continuamos sin incrementar el contador
                 print("No se encontró mejora en los vecinos generados.")
-                break  # En este caso, terminamos el algoritmo
+                break
 
         return punto_inicio, distancia_inicial
-
