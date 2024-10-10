@@ -1,6 +1,8 @@
+from operator import truediv
+
 import numpy as np
 import random
-
+from itertools import combinations
 
 class busquedalocal:
     def __init__(self, matriz_distancias, k, seed, tam, iteraciones, tamentorno, dismentorno):
@@ -80,16 +82,39 @@ class busquedalocal:
 
     # Funcion Optimizada
 
-    def generar_vecinos(self, ruta, num_vecinos):
-        vecinos = []
-        for _ in range(num_vecinos):
-            i, j = sorted(random.sample(range(len(ruta)), 2))
-            if i != j:
-                vecino = self.aplicar_2opt(ruta, i, j)
-                vecinos.append(vecino)
+    #def generar_vecinos(self, ruta, num_vecinos):
+    #    nc = len(ruta)
+    #    max_vecinos = (nc * (nc - 1)) // 2  # Número máximo de pares posibles de ciudades
+    #    num_vecinos = min(num_vecinos, max_vecinos)  # Limitar el número de vecinos al número de pares posibles
+    #
+    #    vecinos = []
+    #    indices = np.random.choice(np.arange(nc), (num_vecinos, 2), replace=False)
+    #    for i, j in indices:
+    #        vecino = self.aplicar_2opt(ruta, min(i, j), max(i, j))
+    #        vecinos.append(vecino)
+    #    return vecinos
 
-        return vecinos
-
+    #def generar_vecinos(self, ruta, num_vecinos):
+    #    nc = len(ruta)
+    #    max_vecinos = (nc * (nc - 1)) // 2  # Número máximo de pares posibles de ciudades
+    #    num_vecinos = min(num_vecinos, max_vecinos)  # Limitar el número de vecinos al número de pares posibles
+    #
+    #    vecinos = []
+    #    # Generar todos los pares posibles de índices
+    #    posibles_indices = list(combinations(range(nc), 2))
+    #
+    #    # Seleccionar aleatoriamente los pares si hay más que el número solicitado
+    #    if num_vecinos < len(posibles_indices):
+    #        indices = np.random.choice(len(posibles_indices), num_vecinos, replace=False)
+    #        pares_seleccionados = [posibles_indices[idx] for idx in indices]
+    #    else:
+    #       pares_seleccionados = posibles_indices
+    #
+    #    for i, j in pares_seleccionados:
+    #        vecino = self.aplicar_2opt(ruta, min(i, j), max(i, j))
+    #        vecinos.append(vecino)
+    #
+    #    return vecinos
     # def generar_vecinos(self, ruta, num_vecinos):
     #     vecinos = set()
     #     intentos = 0
@@ -106,6 +131,39 @@ class busquedalocal:
     #         intentos += 1
     #
     #     return [list(vecino) for vecino in vecinos]
+
+    def obtener_indices(self,ruta, indice_ant_1, indice_ant_2):
+        nc = len(ruta)  # Número de ciudades en la ruta
+        while True:
+            # Generar dos índices aleatorios distintos
+            i, j = random.sample(range(nc), 2)
+
+            # Asegurar que no sean la inversión directa de los anteriores
+            if not (i == indice_ant_2 and j == indice_ant_1):
+                return min(i, j), max(i, j)
+
+    def generar_vecinos(self, ruta, num_vecinos):
+        nc = len(ruta)  # Número de ciudades en la ruta
+        max_vecinos = (nc * (nc - 1)) // 2  # Número máximo de pares posibles de ciudades
+        num_vecinos = min(num_vecinos, max_vecinos)  # Limitar el número de vecinos al máximo posible
+
+        vecinos = []
+
+        # Variables para almacenar los índices anteriores
+        indice_ant_1, indice_ant_2 = -1, -1
+
+        for _ in range(num_vecinos):
+            # Obtener nuevos índices evitando que se repitan como inversión de los anteriores
+            i, j = self.obtener_indices(ruta, indice_ant_1, indice_ant_2)
+
+            # Actualizar los índices anteriores
+            indice_ant_1, indice_ant_2 = i, j
+
+            # Generar el vecino aplicando el movimiento 2-opt
+            vecino = self.aplicar_2opt(ruta, i, j)
+            vecinos.append(vecino)
+
+        return vecinos
 
     def ejecutar(self):
         punto_inicio, distancia_inicial = self.randomGreedy()
@@ -124,7 +182,7 @@ class busquedalocal:
             vecinos = self.generar_vecinos(punto_inicio, tamaño_entorno)
 
             # Evaluar vecinos
-            vecino_mejorado, mejor_distancia, siesmejor = self.evaluacion(distancia_inicial, vecinos)
+            vecino_mejorado, mejor_distancia, siesmejor = self.evaluacion(tamaño_entorno,vecinos)
 
             # Si se encuentra un mejor vecino, actualizar la solución actual
             if siesmejor:

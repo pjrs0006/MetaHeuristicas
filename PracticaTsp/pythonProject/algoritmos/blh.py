@@ -93,6 +93,11 @@ class blh:
 
             # Evaluar vecinos
             vecino_mejorado, mejor_distancia, siesmejor = self.evaluacion(distancia_inicial, vecinos)
+            indices = np.random.choice(np.arange(nc), (num_vecinos, 2), replace=False)
+            for i, j in indices:
+                vecino = self.aplicar_2opt(ruta, min(i, j), max(i, j))
+                vecinos.append(vecino)
+            return vecinos
 
             # Si se encuentra un mejor vecino, actualizar la solución actual
             if siesmejor:
