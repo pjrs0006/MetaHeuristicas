@@ -151,7 +151,7 @@ class Configurador:
                 print(f"Tiempo de ejecución: {end_time - start_time} segundos")
                 print(f"Distancia Total: {algoritmo}")
 
-            case "busquedalocal":
+            case "blnueva":
                 k = int(self.parametros[3]) if len(self.parametros) > 3 else 5
                 maxit = int(self.parametros[4])
                 tamentorno = int(self.parametros[5])

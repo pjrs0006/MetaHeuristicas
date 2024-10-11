@@ -1,5 +1,5 @@
 Archivos=a280.tsp ch130.tsp d18512.tsp pr144.tsp u1060.tsp
 Semillas=77693013 76930137 69301377 93013776 21025743 74321025
-Algoritmos=randomgreedy busquedalocal tabu blh
-otroparametros=0 1 2 5 5000 8 10 5
+Algoritmos=randomgreedy busquedalocal tabu blh blnueva
+otroparametros=2 4 2 5 5000 8 10 5
 
