@@ -146,8 +146,9 @@ class blnueva:
                 mejora_global=True#hay mejora en esta iteracion
                 iteracion_actual += 1  # Incrementamos las iteraciones exitosas
                 print(distancia_actual)
+                print(tamano_entorno)
                 # Disminuir el tamaño del entorno si corresponde
-                if iteracion_actual == iteracion_proxima_disminucion:
+                if iteracion_actual >= iteracion_proxima_disminucion:
                     tamano_entorno = int(tamano_entorno - (tamano_entorno * disminucion_entorno))
                     iteracion_proxima_disminucion += intervalo_disminucion
 
