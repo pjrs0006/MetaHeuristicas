@@ -1,48 +1,31 @@
-from dataclasses import replace
-
 import numpy as np
 import random
 
 
 class tabu:
-    def __init__(self, matriz_distancias, k, seed, tam, iteraciones, tamentorno, dismentorno,porcentajel):
+    def __init__(self, matriz_distancias, k, seed, tam, iteraciones, tamentorno, dismentorno, porcentajel):
         self.matriz_distancias = matriz_distancias
         self.k = k
         self.seed = seed
         self.tam = tam
-        self.iteraciones = int(iteraciones)  # Total de iteraciones exitosas
-        self.tamentorno = float(tamentorno)  # Porcentaje inicial del entorno
-        self.dismentorno = float(dismentorno)  # Porcentaje de disminución
-        self.italgoritmo = 0  # Contador de iteraciones exitosas
-        self.movimientos_empeoramiento = 0  # Contador de movimientos de empeoramiento consecutivos
-        self.porcentajedeempeoramiento = porcentajel
-        self.limite_empeoramiento = int(self.iteraciones * self.porcentajedeempeoramiento)  # Límite de movimientos de empeoramiento consecutivos
+        #He introducido casting para asegurar los tipos porque daba error
+        self.iteraciones = int(iteraciones)
+        self.tamentorno = float(tamentorno)
+        self.dismentorno = float(dismentorno)
+        self.porcentajel = float(porcentajel)  # Oscilación estratégica
+        self.tenencia_tabu = 10
+        self.MCP = np.zeros((tam, tam), dtype=int)  # Memoria a corto plazo
+        self.MLP = np.zeros((tam, tam), dtype=int)  # Memoria a largo plazo
+        self.limiteEstancamiento = int(0.05 * iteraciones)  # 5% de iteraciones para considerar estancamiento
+        self.contadorEstancamiento = 0  # Contador movimientos de empeoramiento
 
         if self.k <= 0:
             raise ValueError("El parámetro k no es correcto: debe ser mayor que 0.")
 
         random.seed(seed)
-
-    # Funcion optimizada para eliminar el bucle
-    def dimedistancia(self, camino):
-        camino_shifted = np.roll(camino, -1)
-        distancias = self.matriz_distancias[camino, camino_shifted]
-        return np.sum(distancias)
-
-    def evaluacion(self, distanciainicial, vecinos):
-        minima = distanciainicial
-        vecinoescogido = None
-        for vecino in vecinos:
-            distancia_vecino = self.dimedistancia(vecino)
-            if distancia_vecino < minima:
-                minima = distancia_vecino
-                vecinoescogido = vecino
-        return vecinoescogido, minima, vecinoescogido is not None
+        np.random.seed(seed)
 
     def randomGreedy(self):
-        if self.k <= 0:
-            raise ValueError("El parámetro k no es correcto: debe ser mayor que 0.")
-
         nc = self.tam
         marcaje = [False] * nc
         ruta = []
@@ -58,90 +41,95 @@ class tabu:
             ruta.append(ciudad_actual)
             marcaje[ciudad_actual] = True
 
-        distancia_final = self.dimedistancia(ruta)
+        distancia_final = self.calculaDistancia(ruta)
         return ruta, distancia_final
 
-    def aplicar_2opt(self, ruta, i, k):
-        # Manejo especial si i es 0 y k es la última ciudad
-        if i == 0 and k == len(ruta) - 1:
-            return ruta  # No hacemos nada
-        nuevo_vecino = ruta[:i] + ruta[i:k + 1][::-1] + ruta[k + 1:]
-        return nuevo_vecino
+    #Calculamos la distancia total de una ruta proporcionando un camino
+    def calculaDistancia(self, camino):
+        camino_shifted = np.roll(camino, -1)
+        distancias = self.matriz_distancias[camino, camino_shifted]
+        return np.sum(distancias)
+    #Generamos vecinos y nos quedamos con el mejor
+    def generar_vecinos(self, ruta, nv):
+        mejor_ruta = ruta.copy()
+        mejor_distancia = self.calculaDistancia(mejor_ruta)
+        n = len(ruta)
+        mejora = False
 
-    # Funcion Optimizada
-    def generar_vecinos(self, ruta, num_vecinos):
-        vecinos = []
-        for _ in range(num_vecinos):
-            i, j = sorted(random.sample(range(len(ruta)), 2))
-            if i != j:
-                vecino = self.aplicar_2opt(ruta, i, j)
-                vecinos.append(vecino)
+        for _ in range(nv):
+            i, j = sorted(random.sample(range(1, n - 1), 2))
+            nuevo_ruta, delta = self.delta_two_opt(mejor_ruta, i, j)
 
-        return vecinos
+            if delta < 0:
+                mejor_ruta = nuevo_ruta
+                mejor_distancia += delta
+                mejora = True
+
+        return mejor_ruta, mejor_distancia, mejora
+
+    def delta_two_opt(self, ruta, i, j):
+        """Calcula el delta de un movimiento 2-opt."""
+        n = len(ruta)
+        ciudad_i_prev = ruta[i - 1]
+        ciudad_i = ruta[i]
+        ciudad_j = ruta[j]
+        ciudad_j_next = ruta[(j + 1) % n]
+
+        delta = 0
+        delta -= self.matriz_distancias[ciudad_i_prev, ciudad_i]
+        delta -= self.matriz_distancias[ciudad_j, ciudad_j_next]
+        delta += self.matriz_distancias[ciudad_i_prev, ciudad_j]
+        delta += self.matriz_distancias[ciudad_i, ciudad_j_next]
+
+        nuevo_ruta = ruta.copy()
+        nuevo_ruta[i:j + 1] = ruta[i:j + 1][::-1]
+
+        return nuevo_ruta, delta
+
+    def actualizar_mcp(self):
+        self.MCP[self.MCP > 0] -= 1
 
     def ejecutar(self):
-        punto_inicio, distancia_inicial = self.randomGreedy()
-        mejor_momento_actual = punto_inicio[:]
-        mejor_distancia_actual = distancia_inicial
-        mejor_global = punto_inicio[:]
-        mejor_distancia_global = distancia_inicial
-        iteracion_actual = 0  # Iteraciones exitosas
-        total_iteraciones = self.iteraciones
+        ruta_actual, distancia_actual = self.randomGreedy()
+        mejor_global = ruta_actual.copy()
+        mejor_distancia_global = distancia_actual
 
-        # Tamaño inicial del entorno dinámico
-        tamaño_entorno = int(total_iteraciones * self.tamentorno / 100)
+        iteracion_actual = 0
+        tamano_entorno = int(self.iteraciones * self.tamentorno / 100)
+        intervalo_disminucion = int(self.iteraciones * self.dismentorno / 100)
 
-        # Cada 10% de iteraciones exitosas, reduciremos el tamaño del entorno
-        iteraciones_disminucion = int(total_iteraciones * 0.10)
-        proxima_disminucion = iteraciones_disminucion
+        while iteracion_actual < self.iteraciones:
+            self.actualizar_mcp()
+            ruta_nueva, distancia_nueva, mejora = self.generar_vecinos(ruta_actual, tamano_entorno)
 
-        while iteracion_actual < total_iteraciones:
-            # Generar vecinos con el tamaño del entorno actual
-            vecinos = self.generar_vecinos(punto_inicio, tamaño_entorno)
-
-            # Evaluar vecinos
-            vecino_mejorado, mejor_distancia, siesmejor = self.evaluacion(distancia_inicial, vecinos)
-
-            # Actualizar solución actual y distancia actual
-            solucion_actual = vecino_mejorado
-            distancia_actual = mejor_distancia
-            if siesmejor:
-                # Se encontró una mejora
-                self.movimientos_empeoramiento = 0  # Reiniciar el contador de empeoramiento
-
-                # Actualizar mejor momento actual si es mejor
-                if distancia_actual < mejor_distancia_actual:
-                    mejor_momento_actual = solucion_actual[:]
-                    mejor_distancia_actual = distancia_actual
-
-                iteracion_actual += 1  # Incrementar iteraciones exitosas
-
-                # Actualizar mejor global si corresponde
-                if distancia_actual < mejor_distancia_global:
-                    mejor_global = solucion_actual[:]
-                    mejor_distancia_global = distancia_actual
-
-                # Reducir el tamaño del entorno cada 10% de las iteraciones exitosas
-                if iteracion_actual >= proxima_disminucion:
-                    tamaño_entorno = max(1, int(tamaño_entorno * (
-                                1 - self.dismentorno / 100)))  # Reducir según dismentorno
-                    proxima_disminucion += iteraciones_disminucion
-
+            if mejora:
+                ruta_actual = ruta_nueva
+                distancia_actual = distancia_nueva
+                if distancia_nueva < mejor_distancia_global:
+                    mejor_global = ruta_nueva
+                    mejor_distancia_global = distancia_nueva
+                    self.contadorEstancamiento = 0  # Reinicia el contador de estancamiento
             else:
-                # No se encontró mejora en la solución actual
-                self.movimientos_empeoramiento += 1
+                self.contadorEstancamiento += 1
 
-                # Verificar si se ha alcanzado el límite de movimientos de empeoramiento
-                if self.movimientos_empeoramiento >= self.limite_empeoramiento:
-                    print("El algoritmo se ha estancado tras varios movimientos de empeoramiento consecutivos.")
-                    # Reiniciar con nueva solución
-                    punto_inicio, distancia_inicial = self.randomGreedy()
-                    solucion_actual = punto_inicio[:]
-                    distancia_actual = distancia_inicial
-                    mejor_momento_actual = punto_inicio[:]
-                    mejor_distancia_actual = distancia_inicial
-                    self.movimientos_empeoramiento = 0
-                    # Continuar con el algoritmo
-                    continue
+            if self.contadorEstancamiento >= self.limiteEstancamiento:
+                ruta_actual = self.oscilacion_estrategica()
+                self.contadorEstancamiento = 0
 
-            return mejor_global, mejor_distancia_global
+            iteracion_actual += 1
+            if iteracion_actual % intervalo_disminucion == 0:
+                tamano_entorno = max(1, int(tamano_entorno * 0.9))
+
+        return mejor_global, mejor_distancia_global
+
+    def oscilacion_estrategica(self):
+        if random.random() < self.porcentajel:
+            return self.diversificacion()
+        else:
+            return self.intensificacion()
+
+    def diversificacion(self):
+        return random.sample(range(self.tam), self.tam)
+
+    def intensificacion(self):
+        return np.argmax(self.MLP, axis=1)
