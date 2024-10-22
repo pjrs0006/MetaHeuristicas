@@ -47,7 +47,7 @@ class tabu:
     def calculaDistancia(self, camino):
         camino_shifted = np.roll(camino, -1)
         distancias = self.matriz_distancias[camino, camino_shifted]
-        return np.sum(distancias)
+        return np.sum(distancias)+ self.matriz_distancias[camino[-1], camino[0]]
     #Generamos vecinos y nos quedamos con el mejor
     def generar_vecinos(self, ruta, nv):
         mejor_ruta = ruta.copy()
