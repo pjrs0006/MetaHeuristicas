@@ -21,7 +21,6 @@ class tabu:
 
         if self.k <= 0:
             raise ValueError("El parámetro k no es correcto: debe ser mayor que 0.")
-
         random.seed(seed)
         np.random.seed(seed)
 

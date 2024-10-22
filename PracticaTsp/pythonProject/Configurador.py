@@ -172,26 +172,7 @@ class Configurador:
                 print(f"Camino optimo: {algoritmo[0]}")
                 print(f"distancia optima: {algoritmo[1]}")
 
-            case "blh":
-                k = int(self.parametros[3]) if len(self.parametros) > 3 else 5
-                maxit = int(self.parametros[4])
-                tamentorno = int(self.parametros[5])
-                start_time = time.perf_counter()
-                dismentorno = self.parametros[6]
-                algoritmo = self.ejecutar_algoritmo(nombre_algoritmo,
-                                                    matriz_distancias=matriz_d,
-                                                    k=k,
-                                                    seed=seed,
-                                                    tam=mapautilizado.tam,
-                                                    iteraciones=maxit,
-                                                    tamentorno=tamentorno,
-                                                    dismentorno=dismentorno,
-                                                    )
-                end_time = time.perf_counter()
-                tiempo = (end_time - start_time)
-                print(f"Tiempo de ejecución: {tiempo} segundos")
-                print(f"Camino optimo: {algoritmo[0]}")
-                print(f"distancia optima: {algoritmo[1]}")
+
 
             case "tabu":
                 k = int(self.parametros[3]) if len(self.parametros) > 3 else 5
@@ -199,15 +180,17 @@ class Configurador:
                 tamentorno = int(self.parametros[5])
                 dismentorno = float(self.parametros[6])
                 porcentajel = float(self.parametros[7])
+                iteraciones = int (self.parametros[4])
 
                 start_time = time.perf_counter()
-                algoritmo = self.ejecutar_algoritmo(nombre_algoritmo,matriz_distancias=matriz_d,k=k,seed=seed,tam=mapautilizado.tam, maxit=maxit,tamentorno=tamentorno,dismentorno=dismentorno,porcentajel=porcentajel)
+                algoritmo = self.ejecutar_algoritmo(nombre_algoritmo,matriz_distancias=matriz_d,k=k,seed=seed,tam=mapautilizado.tam,iteraciones =iteraciones ,tamentorno=tamentorno,dismentorno=dismentorno,porcentajel=porcentajel)
 
-                ruta, distancia = algoritmo.ejecutar()
+
                 end_time = time.perf_counter()
-
+                mGlobal = algoritmo[0]
+                mDisGlobal= algoritmo[1]
                 print(f"Tiempo de ejecución: {end_time - start_time} segundos")
-                print(f"Ruta óptima: {ruta}")
-                print(f"Distancia óptima: {distancia}")
+                print(f"Mejor camino: {mGlobal}")
+                print(f"Distancia del mejor camino: {mDisGlobal}")
             case _:
                 print(f"Algoritmo {nombre_algoritmo} no está implementado.")
