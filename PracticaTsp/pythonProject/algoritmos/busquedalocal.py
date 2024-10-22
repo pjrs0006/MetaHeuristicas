@@ -1,7 +1,7 @@
 import numpy as np
 import random
 
-class blnueva:
+class busquedalocal:
     def __init__(self, matriz_distancias, k, seed, tam, iteraciones, tamentorno, dismentorno):
         self.matriz_distancias = matriz_distancias
         self.k = k
@@ -135,7 +135,7 @@ class blnueva:
         mejora_global = True  # Indica si hubo mejora en la última iteración
 
         while iteracion_actual < total_iteraciones and mejora_global:
-        
+
             # Generar 'tamano_entorno' vecinos y quedarnos con el mejor
             ruta_nueva, distancia_nueva,mejora = self.generarymequedoconelmejor(ruta_actual, tamano_entorno)
             # Si encontramos una mejor ruta, actualizamos
@@ -144,8 +144,6 @@ class blnueva:
                 distancia_actual = distancia_nueva
                 mejora_global=True#hay mejora en esta iteracion
                 iteracion_actual += 1  # Incrementamos las iteraciones exitosas
-                print(distancia_actual)
-                print(tamano_entorno)
                 # Disminuir el tamaño del entorno si corresponde
                 if iteracion_actual >= iteracion_proxima_disminucion:
                     tamano_entorno = int(tamano_entorno - (tamano_entorno * disminucion_entorno))

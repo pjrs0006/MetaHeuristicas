@@ -3,7 +3,7 @@ import random
 
 
 class tabu:
-    def __init__(self, matriz_distancias, k, seed, tam, iteraciones, tamentorno, dismentorno, porcentajel):
+    def __init__(self, matriz_distancias, k, seed, tam, iteraciones, tamentorno, dismentorno, porcentajel, tendencia_tabu):
         self.matriz_distancias = matriz_distancias
         self.k = k
         self.seed = seed
@@ -13,7 +13,7 @@ class tabu:
         self.tamentorno = float(tamentorno)
         self.dismentorno = float(dismentorno)
         self.porcentajel = float(porcentajel)  # Oscilación estratégica
-        self.tenencia_tabu = 10
+        self.tenencia_tabu = int(tendencia_tabu)
         self.MCP = np.zeros((tam, tam), dtype=int)  # Memoria a corto plazo
         self.MLP = np.zeros((tam, tam), dtype=int)  # Memoria a largo plazo
         self.limiteEstancamiento = int(0.05 * iteraciones)  # 5% de iteraciones para considerar estancamiento

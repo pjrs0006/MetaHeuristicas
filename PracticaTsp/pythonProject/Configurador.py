@@ -151,7 +151,7 @@ class Configurador:
                 print(f"Tiempo de ejecución: {end_time - start_time} segundos")
                 print(f"Distancia Total: {algoritmo}")
 
-            case "blnueva":
+            case "busquedalocal":
                 k = int(self.parametros[3]) if len(self.parametros) > 3 else 5
                 maxit = int(self.parametros[4])
                 tamentorno = int(self.parametros[5])
@@ -181,9 +181,10 @@ class Configurador:
                 dismentorno = float(self.parametros[6])
                 porcentajel = float(self.parametros[7])
                 iteraciones = int (self.parametros[4])
+                tendencia=int(self.parametros[8])
 
                 start_time = time.perf_counter()
-                algoritmo = self.ejecutar_algoritmo(nombre_algoritmo,matriz_distancias=matriz_d,k=k,seed=seed,tam=mapautilizado.tam,iteraciones =iteraciones ,tamentorno=tamentorno,dismentorno=dismentorno,porcentajel=porcentajel)
+                algoritmo = self.ejecutar_algoritmo(nombre_algoritmo,matriz_distancias=matriz_d,k=k,seed=seed,tam=mapautilizado.tam,iteraciones =iteraciones ,tamentorno=tamentorno,dismentorno=dismentorno,porcentajel=porcentajel,tendencia_tabu=tendencia)
 
 
                 end_time = time.perf_counter()
