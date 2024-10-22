@@ -135,8 +135,7 @@ class blnueva:
         mejora_global = True  # Indica si hubo mejora en la última iteración
 
         while iteracion_actual < total_iteraciones and mejora_global:
-            #("pollas")
-            mejora_global=False
+        
             # Generar 'tamano_entorno' vecinos y quedarnos con el mejor
             ruta_nueva, distancia_nueva,mejora = self.generarymequedoconelmejor(ruta_actual, tamano_entorno)
             # Si encontramos una mejor ruta, actualizamos
