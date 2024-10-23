@@ -169,13 +169,14 @@ class EjecucionesAutomaticas:
         maxit = int(self.parametros[4])
         tamentorno = int(self.parametros[5])
         dismentorno=self.parametros[6]
+        itDismin= self.parametros[7]
         for i in range(5):
             seed = self.semillas[i]
             print(f"{chr(9635)} Ejecucion numero {i+1} del algoritmo de Busqueda Local sobre el fichero {mapautilizado.nombre}, con la semilla {seed}:")
             start_time = time.perf_counter()
             algoritmo = self.ejecutar_algoritmo(nombre_algoritmo, matriz_distancias=matriz_d, k=k, seed=seed,
                                                 tam=mapautilizado.tam, iteraciones=maxit, tamentorno=tamentorno,
-                                                dismentorno=dismentorno, )
+                                                dismentorno=dismentorno, itDismin=itDismin)
 
             end_time = time.perf_counter()
             tiempo = (end_time - start_time)
@@ -189,17 +190,17 @@ class EjecucionesAutomaticas:
         indice_algoritmo = 2
         nombre_algoritmo = self.algoritmos[indice_algoritmo]
         k = int(self.parametros[3]) if len(self.parametros) > 3 else 5
-        maxit = int(self.parametros[4])
         tamentorno = int(self.parametros[5])
         dismentorno = float(self.parametros[6])
-        porcentajel = float(self.parametros[7])
+        porcentajel = float(self.parametros[10])
         iteraciones = int (self.parametros[4])
-        tendencia=int(self.parametros[8])
+        tendencia=int(self.parametros[9])
+        estanca=int(self.parametros[8])
         for i in range(5):
             seed = self.semillas[i]
             print(f"{chr(9635)} Ejecucion numero {i + 1} del algoritmo de Busqueda Tabu sobre el fichero {mapautilizado.nombre}, con la semilla {seed}:")
             start_time = time.perf_counter()
-            algoritmo = self.ejecutar_algoritmo(nombre_algoritmo,matriz_distancias=matriz_d,k=k,seed=seed,tam=mapautilizado.tam,iteraciones =iteraciones ,tamentorno=tamentorno,dismentorno=dismentorno,porcentajel=porcentajel,tendencia_tabu=tendencia)
+            algoritmo = self.ejecutar_algoritmo(nombre_algoritmo,matriz_distancias=matriz_d,k=k,seed=seed,tam=mapautilizado.tam,iteraciones =iteraciones ,tamentorno=tamentorno,dismentorno=dismentorno,porcentajel=porcentajel,tendencia_tabu=tendencia,estanca=estanca,itDismin=itDismin)
             end_time = time.perf_counter()
             tiempo = (end_time - start_time)
             mGlobal = algoritmo[0]
@@ -209,4 +210,4 @@ class EjecucionesAutomaticas:
             print(f"\t{chr(10147)}Distancia del mejor camino: {mDisGlobal:.2f}")
 
         #Ejecuciones concluidas:
-        print(f"Se han concluido todas las ejecuciones sobre el fichero{mapautilizado.nombre}")
+        print(f"Se han concluido todas las ejecuciones sobre el fichero {mapautilizado.nombre}")

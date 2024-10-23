@@ -2,7 +2,7 @@ import numpy as np
 import random
 
 class busquedalocal:
-    def __init__(self, matriz_distancias, k, seed, tam, iteraciones, tamentorno, dismentorno):
+    def __init__(self, matriz_distancias, k, seed, tam, iteraciones, tamentorno, dismentorno, itDismin):
         self.matriz_distancias = matriz_distancias
         self.k = k
         self.seed = seed
@@ -10,6 +10,7 @@ class busquedalocal:
         self.iteraciones = int(iteraciones)  # Total de iteraciones exitosas
         self.tamentorno = float(tamentorno)  # Porcentaje inicial del entorno
         self.dismentorno = float(dismentorno)  # Porcentaje de disminución
+        self.itDismin = float(itDismin)
         self.italgoritmo = 0  # Contador de iteraciones exitosas
 
         if self.k <= 0:
@@ -43,7 +44,7 @@ class busquedalocal:
     def dimedistancia(self, camino):
         camino_shifted = np.roll(camino, -1) # si hay la (123) se calcula la (231) y accediendo a la matriz se calculan sus distancias
         distancias = self.matriz_distancias[camino, camino_shifted] #genera un vector con las distancias obtenidas
-        return np.sum(distancias) #np.sum suma las distancias de todos
+        return np.sum(distancias)+ self.matriz_distancias[camino[-1], camino[0]] #np.sum suma las distancias de todos
 
     def two_opt_swap(self,camino, i, k):
         """
@@ -130,7 +131,7 @@ class busquedalocal:
         total_iteraciones = self.iteraciones  # 5000
         tamano_entorno = int(total_iteraciones * self.tamentorno / 100)  # Tamaño inicial del entorno
         disminucion_entorno = self.dismentorno / 100  # Porcentaje de disminución por intervalo
-        intervalo_disminucion = int(total_iteraciones * self.dismentorno/100)  # Cada 10% del total de iteraciones
+        intervalo_disminucion = int(total_iteraciones * self.itDismin/100)  # Cada 10% del total de iteraciones
         iteracion_proxima_disminucion = intervalo_disminucion
         mejora_global = True  # Indica si hubo mejora en la última iteración
 

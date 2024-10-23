@@ -3,7 +3,7 @@ import random
 
 
 class tabu:
-    def __init__(self, matriz_distancias, k, seed, tam, iteraciones, tamentorno, dismentorno, porcentajel, tendencia_tabu):
+    def __init__(self, matriz_distancias, k, seed, tam, iteraciones, tamentorno, dismentorno, porcentajel, tendencia_tabu,itDismin,estanca):
         self.matriz_distancias = matriz_distancias
         self.k = k
         self.seed = seed
@@ -12,11 +12,12 @@ class tabu:
         self.iteraciones = int(iteraciones)
         self.tamentorno = float(tamentorno)
         self.dismentorno = float(dismentorno)
+        self.itDismin = float(itDismin)
         self.porcentajel = float(porcentajel)  # Oscilación estratégica
         self.tenencia_tabu = int(tendencia_tabu)
         self.MCP = np.zeros((tam, tam), dtype=int)  # Memoria a corto plazo
         self.MLP = np.zeros((tam, tam), dtype=int)  # Memoria a largo plazo
-        self.limiteEstancamiento = int(0.05 * iteraciones)  # 5% de iteraciones para considerar estancamiento
+        self.limiteEstancamiento = int((estanca/100) * iteraciones)  # 5% de iteraciones para considerar estancamiento
         self.contadorEstancamiento = 0  # Contador movimientos de empeoramiento
 
         if self.k <= 0:
@@ -95,7 +96,7 @@ class tabu:
 
         iteracion_actual = 0
         tamano_entorno = int(self.iteraciones * self.tamentorno / 100)
-        intervalo_disminucion = int(self.iteraciones * self.dismentorno / 100)
+        intervalo_disminucion = int(self.iteraciones * self.itDismin / 100)
 
         while iteracion_actual < self.iteraciones:
             self.actualizar_mcp()
