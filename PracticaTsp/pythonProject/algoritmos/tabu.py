@@ -1,6 +1,6 @@
 import numpy as np
 import random
-
+import logging
 
 class tabu:
     def __init__(self, matriz_distancias, k, seed, tam, iteraciones, tamentorno, dismentorno, porcentajel, tendencia_tabu,itDismin,estanca):

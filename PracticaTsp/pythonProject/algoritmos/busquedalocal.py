@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import logging
 
 class busquedalocal:
     def __init__(self, matriz_distancias, k, seed, tam, iteraciones, tamentorno, dismentorno, itDismin):
@@ -125,7 +126,6 @@ class busquedalocal:
         return nuevo_ruta, delta
 
     def ejecutar(self):
-
         ruta_actual, distancia_actual = self.randomGreedy()
         iteracion_actual = 0#contador de iteraciones
         total_iteraciones = self.iteraciones  # 5000
@@ -142,9 +142,11 @@ class busquedalocal:
             if mejora :
                 ruta_actual = ruta_nueva
                 distancia_actual = distancia_nueva
-                mejora_global=True#hay mejora en esta iteracion
+                mejora_global=True  #hay mejora en esta iteracion
                 iteracion_actual += 1  # Incrementamos las iteraciones exitosas
-                #print(distancia_actual)
+                #logging.info(f'Iteracion{iteracion_actual}')
+                #logging.info(ruta_actual)
+                #logging.info(distancia_actual)
                 #print(tamano_entorno)
                 # Disminuir el tamaño del entorno si corresponde
                 if iteracion_actual >= iteracion_proxima_disminucion:

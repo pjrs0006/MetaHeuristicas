@@ -3,9 +3,19 @@ import importlib
 import time
 from Ciudad import Ciudad
 from Mapa import Mapa
+import logging
 
 class EjecucionesAutomaticas:
+
+
     def __init__(self):
+        # Definimos el nivel y formato de los loggins
+        logging.basicConfig(
+            filename='EjecucionesAutomaticas.log',
+            level=logging.DEBUG,
+            format='%(message)s'
+        )
+
         self.archivos = []
         self.semillas = []
         self.algoritmos = []
@@ -25,6 +35,7 @@ class EjecucionesAutomaticas:
                     elif "otroparametros=" in linea:
                         self.parametros = linea.split("=")[1].strip().split()
         else:
+            logging.critical(f"El archivo de configuración {ruta_config} no existe.")
             raise FileNotFoundError(f"El archivo de configuración {ruta_config} no existe.")
 
     # El siguiente metodo lee y procesa los .tsp
@@ -73,14 +84,20 @@ class EjecucionesAutomaticas:
     # Metodo que imprime el mapa
     def imprimirMapa(self, miMapa):
         print(f"\tNombre: {miMapa.nombre}")
+        logging.info(f"\tNombre: {miMapa.nombre}")
         print(f"\tComentario: {miMapa.comentario}")
+        logging.info(f"\tComentario: {miMapa.comentario}")
         print(f"\tTipo: {miMapa.tipo}")
+        logging.info(f"\tTipo: {miMapa.tipo}")
         print(f"\tDimensión: {miMapa.tam}")
+        logging.info(f"\tDimension: {miMapa.tam}")
         print(f"\tTipo de peso de arista: {miMapa.edge_type}")
-
+        logging.info(f"\tTipo de peso de arista: {miMapa.edge_type}")
         print("\tCoordenadas de las ciudades:")
+        logging.info(f"\tCoordenadas de las ciudades:")
         for ciudad in miMapa.ciudades.values():
             print(f"\t\tID: {ciudad.id}, X: {ciudad.x}, Y: {ciudad.y}")
+            logging.info(f"\t\tID: {ciudad.id}, X: {ciudad.x}, Y: {ciudad.y}")
 
     # Metodo para ejecutar dinamicamente un algoritmo
     def ejecutar_algoritmo(self, nombre_algoritmo, *args, **kwargs):
@@ -94,16 +111,21 @@ class EjecucionesAutomaticas:
         # Rutas de configuración y TSP
         ruta_config = os.path.join('recursos', 'archivosConf', 'Config_1.txt')
         ruta_tsp = os.path.join('recursos', 'archivosTSP')
-
+        logging.warning(f"Comenzando ejecuciones")
         # Leer archivo de configuración
         self.leer_archivo_config(ruta_config)
+        logging.info(f"Fichero de configuracion procesado con exito")
 
         # Validaciones
         if not self.archivos:
+            logging.critical("No se han especificado archivos en la configuración.")
             raise ValueError("No se han especificado archivos en la configuración.")
         if not self.algoritmos:
+            logging.critical("No se han especificado algoritmos en la configuración.")
             raise ValueError("No se han especificado algoritmos en la configuración.")
-        if not self.parametros or len(self.parametros) < 3:
+
+        if not self.parametros or len(self.parametros) < 11:
+            logging.critical("Los parámetros de configuración son insuficientes.")
             raise ValueError("Los parámetros de configuración son insuficientes.")
 
         # Seleccionar archivo TSP
@@ -130,9 +152,11 @@ class EjecucionesAutomaticas:
         # Generar la matriz de distancias
         matriz_d = mapautilizado.generar_matriz_distancias()
         print(f"Matriz de Distancias correspondiente al Mapa {mapautilizado.nombre}")
+        logging.info("Matriz de distancias generada con exito")
         # Imprimimos la matriz de distancias
-        # for fila in matriz_d:
-        #     print('\t'.join(map(str, fila)))
+        #for fila in matriz_d:
+            #print('\t'.join(map(str, fila)))
+            #logging.info('\t'.join(map(str, fila)))
 
         # Comenzamos la ejecucion con el primer algoritmo
         indice_algoritmo = 0
@@ -144,10 +168,15 @@ class EjecucionesAutomaticas:
         #Algoritmo Greedy Aleatorio
         print(f"Algoritmo Greedy Aleatorio:")
         print(f"---------------------------")
+        logging.info(f"Algoritmo Greedy Aleatorio:")
+        logging.info(f"---------------------------")
         k = int(self.parametros[3]) if len(self.parametros) > 3 else 5
+        logging.info(f"\tParametros del Algoritmo:")
+        logging.info(f"\t\tK:\t{k}")
         for i in range(5):
             seed = self.semillas[i]
             print(f"{chr(9635)} Ejecucion numero {i+1} del algoritmo Greedy Aleatorio sobre el fichero {mapautilizado.nombre}, con la semilla {seed}:")
+            logging.info(f"\tEjecucion numero {i+1} del algoritmo Greedy Aleatorio sobre el fichero {mapautilizado.nombre}, con la semilla {seed}:")
             start_time = time.perf_counter()
             algoritmo = self.ejecutar_algoritmo(nombre_algoritmo,
                                                 matriz_distancias=matriz_d,
@@ -156,23 +185,35 @@ class EjecucionesAutomaticas:
                                                 tam=mapautilizado.tam)
             end_time = time.perf_counter()
             tiempo = end_time - start_time
-            print(f"\t{chr(10147)}Tiempo de ejecución: {tiempo:.4f} segundos")
-            print(f"\t{chr(10147)}Distancia Total: {algoritmo:.2f}")
+            print(f"\t{chr(223)}Tiempo de ejecución: {tiempo:.4f} segundos")
+            logging.info(f"\t\tTiempo de ejecucion: {tiempo:.4f} segundos")
+            print(f"\t{chr(223)}Distancia Total: {algoritmo:.2f}")
+            logging.info(f"\t\tDistancia Total: {algoritmo:.2f}")
 
         #Busqueda Local
         print(f"Algoritmo de Busqueda Local:")
         print(f"----------------------------")
+        logging.info(f"Algoritmo de Busqueda Local:")
+        logging.info(f"----------------------------")
         #Seleccionamos el algoritmo:
         indice_algoritmo = 1
         nombre_algoritmo = self.algoritmos[indice_algoritmo]
+        logging.info(f"\tParametros del Algoritmo:")
+
         k = int(self.parametros[3]) if len(self.parametros) > 3 else 5
+        logging.info(f"\t\tK:\t{k}")
         maxit = int(self.parametros[4])
+        logging.info(f"\t\tNumero iteraciones:\t{maxit}")
         tamentorno = int(self.parametros[5])
+        logging.info(f"\t\tTam entorno dinamico:\t{tamentorno}")
         dismentorno=self.parametros[6]
+        logging.info(f"\t\tDisminucion entorno:\t{dismentorno}")
         itDismin= self.parametros[7]
+        logging.info(f"\t\tIndice de disminucion:\t{itDismin}")
         for i in range(5):
             seed = self.semillas[i]
             print(f"{chr(9635)} Ejecucion numero {i+1} del algoritmo de Busqueda Local sobre el fichero {mapautilizado.nombre}, con la semilla {seed}:")
+            logging.info(f"\tEjecucion numero {i+1} del algoritmo de Busqueda Local sobre el fichero {mapautilizado.nombre}, con la semilla {seed}:")
             start_time = time.perf_counter()
             algoritmo = self.ejecutar_algoritmo(nombre_algoritmo, matriz_distancias=matriz_d, k=k, seed=seed,
                                                 tam=mapautilizado.tam, iteraciones=maxit, tamentorno=tamentorno,
@@ -181,24 +222,40 @@ class EjecucionesAutomaticas:
             end_time = time.perf_counter()
             tiempo = (end_time - start_time)
             print(f"\t{chr(10147)}Tiempo de ejecución: {tiempo:.4f} segundos")
+            logging.info(f"\t\tTiempo de ejecucion: {tiempo:.4f} segundos")
             print(f"\t{chr(10147)}Camino optimo: {algoritmo[0]}")
+            logging.info(f"\t\tCamino optimo: {algoritmo[0]}")
             print(f"\t{chr(10147)}distancia optima: {algoritmo[1]:.2f}")
+            logging.info(f"\t\tdistancia optima: {algoritmo[1]:.2f}")
+
         # Tabu
         print(f"Algoritmo de Busqueda Tabu:")
-        print(f"----------------------------")
+        print(f"---------------------------")
+        logging.info(f"Algoritmo de Busqueda Tabu:")
+        logging.info(f"---------------------------")
         # Seleccionamos el algoritmo:
         indice_algoritmo = 2
         nombre_algoritmo = self.algoritmos[indice_algoritmo]
+        logging.info(f"\tParametros del Algoritmo:")
         k = int(self.parametros[3]) if len(self.parametros) > 3 else 5
+        logging.info(f"\t\tK:\t{k}")
         tamentorno = int(self.parametros[5])
+        logging.info(f"\t\tTam entorno inicial:\t{tamentorno}")
         dismentorno = float(self.parametros[6])
+        logging.info(f"\t\tDisminucion del entorno:\t{dismentorno}")
         porcentajel = float(self.parametros[10])
+        logging.info(f"\t\tOscilacion Estrategica:\t{porcentajel}")
         iteraciones = int (self.parametros[4])
+        logging.info(f"\t\tIteraciones:\t{iteraciones}")
         tendencia=int(self.parametros[9])
+        logging.info(f"\t\tTendencia Tabu:\t{tendencia}")
         estanca=int(self.parametros[8])
+        logging.info(f"\t\tPorcentaje de estancamiento:\t{estanca}")
         for i in range(5):
             seed = self.semillas[i]
             print(f"{chr(9635)} Ejecucion numero {i + 1} del algoritmo de Busqueda Tabu sobre el fichero {mapautilizado.nombre}, con la semilla {seed}:")
+            logging.info(f"\tEjecucion numero {i+1} del algoritmo de Busqueda Tabu sobre el fichero {mapautilizado.nombre}, con la semilla {seed}:")
+
             start_time = time.perf_counter()
             algoritmo = self.ejecutar_algoritmo(nombre_algoritmo,matriz_distancias=matriz_d,k=k,seed=seed,tam=mapautilizado.tam,iteraciones =iteraciones ,tamentorno=tamentorno,dismentorno=dismentorno,porcentajel=porcentajel,tendencia_tabu=tendencia,estanca=estanca,itDismin=itDismin)
             end_time = time.perf_counter()
@@ -206,8 +263,12 @@ class EjecucionesAutomaticas:
             mGlobal = algoritmo[0]
             mDisGlobal= algoritmo[1]
             print(f"\t{chr(10147)}Tiempo de ejecución: {tiempo:.4f} segundos")
+            logging.info(f"\t\tTiempo de ejecucion: {tiempo:.4f} segundos")
             print(f"\t{chr(10147)}Mejor camino: {mGlobal}")
+            logging.info(f"\t\tMejor camino: {mGlobal}")
             print(f"\t{chr(10147)}Distancia del mejor camino: {mDisGlobal:.2f}")
+            logging.info(f"\t\tDistancia del mejor camino: {mDisGlobal:.2f}")
 
         #Ejecuciones concluidas:
         print(f"Se han concluido todas las ejecuciones sobre el fichero {mapautilizado.nombre}")
+        logging.info(f"Se han concluido todas las ejecuciones sobre el fichero {mapautilizado.nombre}")
