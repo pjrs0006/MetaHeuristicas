@@ -43,7 +43,7 @@ class busquedalocal:
     def dimedistancia(self, camino):
         camino_shifted = np.roll(camino, -1) # si hay la (123) se calcula la (231) y accediendo a la matriz se calculan sus distancias
         distancias = self.matriz_distancias[camino, camino_shifted] #genera un vector con las distancias obtenidas
-        return np.sum(distancias)+self.matriz_distancias[camino[-1], camino[0]] #np.sum suma las distancias de todos
+        return np.sum(distancias) #np.sum suma las distancias de todos
 
     def two_opt_swap(self,camino, i, k):
         """
@@ -135,7 +135,6 @@ class busquedalocal:
         mejora_global = True  # Indica si hubo mejora en la última iteración
 
         while iteracion_actual < total_iteraciones and mejora_global:
-
             # Generar 'tamano_entorno' vecinos y quedarnos con el mejor
             ruta_nueva, distancia_nueva,mejora = self.generarymequedoconelmejor(ruta_actual, tamano_entorno)
             # Si encontramos una mejor ruta, actualizamos
@@ -144,12 +143,14 @@ class busquedalocal:
                 distancia_actual = distancia_nueva
                 mejora_global=True#hay mejora en esta iteracion
                 iteracion_actual += 1  # Incrementamos las iteraciones exitosas
+                #print(distancia_actual)
+                #print(tamano_entorno)
                 # Disminuir el tamaño del entorno si corresponde
                 if iteracion_actual >= iteracion_proxima_disminucion:
                     tamano_entorno = int(tamano_entorno - (tamano_entorno * disminucion_entorno))
                     iteracion_proxima_disminucion += intervalo_disminucion
 
             else:
-                print("No se encontró mejora en los vecinos generados.")
+                #print("No se encontró mejora en los vecinos generados.")
                 break
         return ruta_actual, distancia_actual

@@ -157,7 +157,7 @@ class EjecucionesAutomaticas:
             end_time = time.perf_counter()
             tiempo = end_time - start_time
             print(f"\t{chr(10147)}Tiempo de ejecución: {tiempo:.4f} segundos")
-            print(f"\t{chr(10147)}Distancia Total: {algoritmo}")
+            print(f"\t{chr(10147)}Distancia Total: {algoritmo:.2f}")
 
         #Busqueda Local
         print(f"Algoritmo de Busqueda Local:")
@@ -181,7 +181,7 @@ class EjecucionesAutomaticas:
             tiempo = (end_time - start_time)
             print(f"\t{chr(10147)}Tiempo de ejecución: {tiempo:.4f} segundos")
             print(f"\t{chr(10147)}Camino optimo: {algoritmo[0]}")
-            print(f"\t{chr(10147)}distancia optima: {algoritmo[1]}")
+            print(f"\t{chr(10147)}distancia optima: {algoritmo[1]:.2f}")
         # Tabu
         print(f"Algoritmo de Busqueda Tabu:")
         print(f"----------------------------")
@@ -197,43 +197,16 @@ class EjecucionesAutomaticas:
         tendencia=int(self.parametros[8])
         for i in range(5):
             seed = self.semillas[i]
-            print(
-                f"{chr(9635)} Ejecucion numero {i + 1} del algoritmo de Busqueda Tabu sobre el fichero {mapautilizado.nombre}, con la semilla {seed}:")
+            print(f"{chr(9635)} Ejecucion numero {i + 1} del algoritmo de Busqueda Tabu sobre el fichero {mapautilizado.nombre}, con la semilla {seed}:")
             start_time = time.perf_counter()
-            algoritmo = self.ejecutar_algoritmo(nombre_algoritmo, matriz_distancias=matriz_d, k=k, seed=seed,
-                                                tam=mapautilizado.tam, iteraciones=maxit, tamentorno=tamentorno,
-                                                dismentorno=dismentorno, )
-
+            algoritmo = self.ejecutar_algoritmo(nombre_algoritmo,matriz_distancias=matriz_d,k=k,seed=seed,tam=mapautilizado.tam,iteraciones =iteraciones ,tamentorno=tamentorno,dismentorno=dismentorno,porcentajel=porcentajel,tendencia_tabu=tendencia)
             end_time = time.perf_counter()
             tiempo = (end_time - start_time)
+            mGlobal = algoritmo[0]
+            mDisGlobal= algoritmo[1]
             print(f"\t{chr(10147)}Tiempo de ejecución: {tiempo:.4f} segundos")
-            print(f"\t{chr(10147)}Camino optimo: {algoritmo[0]}")
-            print(f"\t{chr(10147)}distancia optima: {algoritmo[1]}")
+            print(f"\t{chr(10147)}Mejor camino: {mGlobal}")
+            print(f"\t{chr(10147)}Distancia del mejor camino: {mDisGlobal:.2f}")
 
-
-
-        # match nombre_algoritmo.lower():
-        #
-        #
-        #
-        #     case "tabu":
-        #         k = int(self.parametros[3]) if len(self.parametros) > 3 else 5
-        #         maxit = int(self.parametros[4])
-        #         tamentorno = int(self.parametros[5])
-        #         dismentorno = float(self.parametros[6])
-        #         porcentajel = float(self.parametros[7])
-        #         iteraciones = int (self.parametros[4])
-        #         tendencia=int(self.parametros[8])
-        #
-        #         start_time = time.perf_counter()
-        #         algoritmo = self.ejecutar_algoritmo(nombre_algoritmo,matriz_distancias=matriz_d,k=k,seed=seed,tam=mapautilizado.tam,iteraciones =iteraciones ,tamentorno=tamentorno,dismentorno=dismentorno,porcentajel=porcentajel,tendencia_tabu=tendencia)
-        #
-        #
-        #         end_time = time.perf_counter()
-        #         mGlobal = algoritmo[0]
-        #         mDisGlobal= algoritmo[1]
-        #         print(f"Tiempo de ejecución: {end_time - start_time} segundos")
-        #         print(f"Mejor camino: {mGlobal}")
-        #         print(f"Distancia del mejor camino: {mDisGlobal}")
-        #     case _:
-        #         print(f"Algoritmo {nombre_algoritmo} no está implementado.")
+        #Ejecuciones concluidas:
+        print(f"Se han concluido todas las ejecuciones sobre el fichero{mapautilizado.nombre}")
