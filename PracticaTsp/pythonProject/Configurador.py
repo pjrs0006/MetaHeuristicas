@@ -10,7 +10,6 @@ class Configurador:
         self.semillas = []
         self.algoritmos = []
         self.parametros = []
-
     # Método para leer el archivo de configuración
     def leer_archivo_config(self, ruta_config):
         if os.path.isfile(ruta_config):
