@@ -185,9 +185,9 @@ class EjecucionesAutomaticas:
                                                 tam=mapautilizado.tam)
             end_time = time.perf_counter()
             tiempo = end_time - start_time
-            print(f"\t{chr(223)}Tiempo de ejecución: {tiempo:.4f} segundos")
+            print(f"\t{(chr(10147))}Tiempo de ejecución: {tiempo:.4f} segundos")
             logging.info(f"\t\tTiempo de ejecucion: {tiempo:.4f} segundos")
-            print(f"\t{chr(223)}Distancia Total: {algoritmo:.2f}")
+            print(f"\t{chr(10147)}Distancia Total: {algoritmo:.2f}")
             logging.info(f"\t\tDistancia Total: {algoritmo:.2f}")
 
         #Busqueda Local

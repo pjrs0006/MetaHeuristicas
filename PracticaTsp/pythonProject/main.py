@@ -6,10 +6,20 @@ from ejecucionesAutomaticas import EjecucionesAutomaticas
 
 
 def main():
-    # Crear una instancia del objeto Configurador
-    configurador = Configurador()
-    # Ejecutar el proceso de configuración, lectura de archivo y ejecución de algoritmo
-    configurador.ejecutar()
+    print("¿Que modalidad desea ejecutar?")
+    print("\t1",chr(10147), "Realizar todos los algoritmos automaticamente sobre el mismo fichero")
+    print("\t2", chr(10147),"Realizar la ejecucion sobre el archivo indicado en el configurador con el algoritmo indicado en el configurador")
+    print("\t0", chr(10147), "Cerrar programa")
+    seleccion = int( input("Introduzca su eleccion:\t"))
+    match seleccion:
+        case 1:
+            configurador=EjecucionesAutomaticas()
+            configurador.ejecutar()
+        case 2:
+            configurador = Configurador()
+            configurador.ejecutar()
+        case 0:
+            exit()
 
 main()
 
