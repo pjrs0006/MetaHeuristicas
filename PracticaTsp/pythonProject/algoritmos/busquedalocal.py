@@ -15,6 +15,7 @@ class busquedalocal:
         self.italgoritmo = 0  # Contador de iteraciones exitosas
 
         if self.k <= 0:
+            logging.critical(f"\t\t\tEl parámetro k no es correcto: debe ser mayor que 0.")
             raise ValueError("El parámetro k no es correcto: debe ser mayor que 0.")
 
         random.seed(seed)
@@ -22,6 +23,7 @@ class busquedalocal:
 
     def randomGreedy(self):
         if self.k <= 0:
+            logging.critical(f"\t\t\tEl parámetro k no es correcto: debe ser mayor que 0.")
             raise ValueError("El parámetro k no es correcto: debe ser mayor que 0.")
 
         nc = self.tam
@@ -61,6 +63,7 @@ class busquedalocal:
         return nuevo_camino
 
     def generarymequedoconelmejor(self, ruta, nv):
+
         """
         Genera nv vecinos usando el operador 2-opt y se queda con el mejor encontrado.
 
@@ -68,7 +71,6 @@ class busquedalocal:
         :param nv: número de vecinos a generar.
         :return: mejor ruta encontrada y su distancia total.
         """
-
         # Inicializar la mejor ruta y su distancia
         mejor_ruta = ruta.copy()
         mejor_distancia = self.dimedistancia(mejor_ruta)
@@ -140,20 +142,21 @@ class busquedalocal:
             ruta_nueva, distancia_nueva,mejora = self.generarymequedoconelmejor(ruta_actual, tamano_entorno)
             # Si encontramos una mejor ruta, actualizamos
             if mejora :
+                logging.info(f"\t\t\tEncontrada mejora")
                 ruta_actual = ruta_nueva
                 distancia_actual = distancia_nueva
                 mejora_global=True  #hay mejora en esta iteracion
                 iteracion_actual += 1  # Incrementamos las iteraciones exitosas
-                #logging.info(f'Iteracion{iteracion_actual}')
-                #logging.info(ruta_actual)
-                #logging.info(distancia_actual)
-                #print(tamano_entorno)
+                logging.info(f'\t\t\tIteracion: {iteracion_actual}')
+                logging.info(f'\t\t\tRuta solucion local: {ruta_actual}')
+                logging.info(f'\t\t\tDistancia solucion local: {distancia_actual}')
                 # Disminuir el tamaño del entorno si corresponde
                 if iteracion_actual >= iteracion_proxima_disminucion:
                     tamano_entorno = int(tamano_entorno - (tamano_entorno * disminucion_entorno))
+                    logging.info(f'\t\t\tSe reduce el tam del entorno:{tamano_entorno}')
                     iteracion_proxima_disminucion += intervalo_disminucion
 
             else:
-                #print("No se encontró mejora en los vecinos generados.")
+                logging.info(f"\t\t\tNo se encontro mejora en los vecinos generados.")
                 break
         return ruta_actual, distancia_actual

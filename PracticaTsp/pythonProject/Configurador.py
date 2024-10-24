@@ -3,9 +3,11 @@ import importlib
 import time
 from Ciudad import Ciudad
 from Mapa import Mapa
+import logging
 
 class Configurador:
     def __init__(self):
+        logging.getLogger().addHandler(logging.NullHandler())
         self.archivos = []
         self.semillas = []
         self.algoritmos = []
@@ -139,6 +141,8 @@ class Configurador:
         # Selección de algoritmos con switch (Aqui se usa match)
         match nombre_algoritmo.lower():
             case "randomgreedy":
+                print(f"Algoritmo Greedy Aleatorio:")
+                print(f"---------------------------")
                 k = int(self.parametros[3]) if len(self.parametros) > 3 else 5
                 start_time = time.perf_counter()
                 algoritmo = self.ejecutar_algoritmo(nombre_algoritmo,
@@ -147,50 +151,55 @@ class Configurador:
                                                     seed=seed,
                                                     tam=mapautilizado.tam)
                 end_time = time.perf_counter()
-                print(f"Tiempo de ejecución: {end_time - start_time} segundos")
-                print(f"Distancia Total: {algoritmo}")
+                tiempo = end_time - start_time
+                print(f"\t{chr(223)}Tiempo de ejecución: {tiempo:.4f} segundos")
+                print(f"\t{chr(223)}Distancia Total: {algoritmo:.2f}")
 
             case "busquedalocal":
+                print(f"Algoritmo de Busqueda Local:")
+                print(f"----------------------------")
                 k = int(self.parametros[3]) if len(self.parametros) > 3 else 5
                 maxit = int(self.parametros[4])
                 tamentorno = int(self.parametros[5])
+                dismentorno = self.parametros[6]
+                itDismin = self.parametros[7]
                 start_time = time.perf_counter()
-                dismentorno=self.parametros[6]
-                algoritmo = self.ejecutar_algoritmo(nombre_algoritmo,
-                                                    matriz_distancias=matriz_d,
-                                                    k=k,
-                                                    seed=seed,
-                                                    tam=mapautilizado.tam,
-                                                    iteraciones=maxit,
-                                                    tamentorno=tamentorno,
-                                                    dismentorno = dismentorno,
-                                                    )
+                algoritmo = self.ejecutar_algoritmo(nombre_algoritmo, matriz_distancias=matriz_d, k=k, seed=seed,
+                                                    tam=mapautilizado.tam, iteraciones=maxit, tamentorno=tamentorno,
+                                                    dismentorno=dismentorno, itDismin=itDismin)
+
                 end_time = time.perf_counter()
                 tiempo = (end_time - start_time)
-                print(f"Tiempo de ejecución: {tiempo} segundos")
-                print(f"Camino optimo: {algoritmo[0]}")
-                print(f"distancia optima: {algoritmo[1]}")
+                print(f"\t{chr(10147)}Tiempo de ejecución: {tiempo:.4f} segundos")
+                print(f"\t{chr(10147)}Camino optimo: {algoritmo[0]}")
+                print(f"\t{chr(10147)}distancia optima: {algoritmo[1]:.2f}")
 
 
 
             case "tabu":
+                print(f"Algoritmo de Busqueda Tabu:")
+                print(f"---------------------------")
                 k = int(self.parametros[3]) if len(self.parametros) > 3 else 5
-                maxit = int(self.parametros[4])
                 tamentorno = int(self.parametros[5])
                 dismentorno = float(self.parametros[6])
-                porcentajel = float(self.parametros[7])
-                iteraciones = int (self.parametros[4])
-                tendencia=int(self.parametros[8])
-
+                porcentajel = float(self.parametros[10])
+                iteraciones = int(self.parametros[4])
+                itDismin = self.parametros[7]
+                tendencia = int(self.parametros[9])
+                estanca = int(self.parametros[8])
                 start_time = time.perf_counter()
-                algoritmo = self.ejecutar_algoritmo(nombre_algoritmo,matriz_distancias=matriz_d,k=k,seed=seed,tam=mapautilizado.tam,iteraciones =iteraciones ,tamentorno=tamentorno,dismentorno=dismentorno,porcentajel=porcentajel,tendencia_tabu=tendencia)
-
+                algoritmo = self.ejecutar_algoritmo(nombre_algoritmo, matriz_distancias=matriz_d, k=k, seed=seed,
+                                                    tam=mapautilizado.tam, iteraciones=iteraciones,
+                                                    tamentorno=tamentorno, dismentorno=dismentorno,
+                                                    porcentajel=porcentajel, tendencia_tabu=tendencia, estanca=estanca,
+                                                    itDismin=itDismin)
 
                 end_time = time.perf_counter()
+                tiempo = (end_time - start_time)
                 mGlobal = algoritmo[0]
-                mDisGlobal= algoritmo[1]
-                print(f"Tiempo de ejecución: {end_time - start_time} segundos")
-                print(f"Mejor camino: {mGlobal}")
-                print(f"Distancia del mejor camino: {mDisGlobal}")
+                mDisGlobal = algoritmo[1]
+                print(f"\t{chr(10147)}Tiempo de ejecución: {tiempo:.4f} segundos")
+                print(f"\t{chr(10147)}Mejor camino: {mGlobal}")
+                print(f"\t{chr(10147)}Distancia del mejor camino: {mDisGlobal:.2f}")
             case _:
                 print(f"Algoritmo {nombre_algoritmo} no está implementado.")

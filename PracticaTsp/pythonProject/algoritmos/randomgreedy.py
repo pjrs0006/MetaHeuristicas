@@ -1,6 +1,6 @@
 import numpy as np
 import random
-
+import logging
 class randomgreedy:
     def __init__(self, matriz_distancias, k, seed,tam):
         self.matriz_distancias = matriz_distancias
@@ -9,6 +9,7 @@ class randomgreedy:
         self.tam=tam
         # Verificación de que k es mayor que 0
         if self.k <= 0:
+            logging.critical(f'\t\t\tEl parámetro k no es correcto: debe ser mayor que 0.')
             raise ValueError("El parámetro k no es correcto: debe ser mayor que 0.")
 
         # Cargamos la semilla en el random
@@ -17,6 +18,7 @@ class randomgreedy:
     def ejecutar(self):
         # Verificación de que k es mayor que 0
         if self.k <= 0:
+            logging.critical(f'\t\t\tEl parámetro k no es correcto: debe ser mayor que 0.')
             raise ValueError("El parámetro k no es correcto: debe ser mayor que 0.")
         # En primer lugar tomaremos los datos que necesitaremos:
         nc = self.tam
@@ -41,7 +43,7 @@ class randomgreedy:
                 # print(filaSel)
 
                 ciudad_actual = suma_distancias[filaSel][0]
-
+                logging.info(f'\t\t\tCiudad seleccionada: {ciudad_actual}')
                 # Ahora añadiremos la ciudad actual a la ruta que recorremos
                 ruta.append(ciudad_actual)
                 # Marcamos la ciudad en el vector de marcaje

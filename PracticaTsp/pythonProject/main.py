@@ -7,7 +7,7 @@ from ejecucionesAutomaticas import EjecucionesAutomaticas
 
 def main():
     # Crear una instancia del objeto Configurador
-    configurador = EjecucionesAutomaticas()
+    configurador = Configurador()
     # Ejecutar el proceso de configuración, lectura de archivo y ejecución de algoritmo
     configurador.ejecutar()
 

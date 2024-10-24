@@ -103,29 +103,37 @@ class tabu:
             ruta_nueva, distancia_nueva, mejora = self.generar_vecinos(ruta_actual, tamano_entorno)
 
             if mejora:
+                logging.critical(f'\t\t\tEncontrada mejora')
                 ruta_actual = ruta_nueva
                 distancia_actual = distancia_nueva
                 if distancia_nueva < mejor_distancia_global:
                     mejor_global = ruta_nueva
                     mejor_distancia_global = distancia_nueva
+                    logging.critical(f'\t\t\tMejora global: {mejor_global}')
+                    logging.critical(f'\t\t\tMejora distancia: {mejor_distancia_global}')
                     self.contadorEstancamiento = 0  # Reinicia el contador de estancamiento
             else:
+                logging.critical(f'\t\t\tEstancamiento detectatado')
                 self.contadorEstancamiento += 1
 
             if self.contadorEstancamiento >= self.limiteEstancamiento:
+                logging.critical(f'\t\t\tSuperado limite de estancamiento')
                 ruta_actual = self.oscilacion_estrategica()
                 self.contadorEstancamiento = 0
 
             iteracion_actual += 1
             if iteracion_actual % intervalo_disminucion == 0:
+                logging.info(f'\t\t\tSe reduce el tam del entorno:{tamano_entorno}')
                 tamano_entorno = max(1, int(tamano_entorno * 0.9))
 
         return mejor_global, mejor_distancia_global
 
     def oscilacion_estrategica(self):
         if random.random() < self.porcentajel:
+            logging.info(f'\t\t\tDiversificando')
             return self.diversificacion()
         else:
+            logging.info(f'\t\t\tIntensificando')
             return self.intensificacion()
 
     def diversificacion(self):
