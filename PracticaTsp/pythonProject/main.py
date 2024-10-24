@@ -15,9 +15,11 @@ def main():
         case 1:
             configurador=EjecucionesAutomaticas()
             configurador.ejecutar()
+            input("Pulse ENTER para terminar la ejecucion")
         case 2:
             configurador = Configurador()
             configurador.ejecutar()
+            input("Pulse ENTER para terminar la ejecucion")
         case 0:
             exit()
 

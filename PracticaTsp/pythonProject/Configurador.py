@@ -152,8 +152,8 @@ class Configurador:
                                                     tam=mapautilizado.tam)
                 end_time = time.perf_counter()
                 tiempo = end_time - start_time
-                print(f"\t{chr(223)}Tiempo de ejecución: {tiempo:.4f} segundos")
-                print(f"\t{chr(223)}Distancia Total: {algoritmo:.2f}")
+                print(f"\t{chr(223)} Tiempo de ejecución: {tiempo:.4f} segundos")
+                print(f"\t{chr(223)} Distancia Total: {algoritmo:.2f}")
 
             case "busquedalocal":
                 print(f"Algoritmo de Busqueda Local:")
@@ -170,9 +170,9 @@ class Configurador:
 
                 end_time = time.perf_counter()
                 tiempo = (end_time - start_time)
-                print(f"\t{chr(10147)}Tiempo de ejecución: {tiempo:.4f} segundos")
-                print(f"\t{chr(10147)}Camino optimo: {algoritmo[0]}")
-                print(f"\t{chr(10147)}distancia optima: {algoritmo[1]:.2f}")
+                print(f"\t{chr(10147)} Tiempo de ejecución: {tiempo:.4f} segundos")
+                print(f"\t{chr(10147)} Camino optimo: {algoritmo[0]}")
+                print(f"\t{chr(10147)} distancia optima: {algoritmo[1]:.2f}")
 
 
 
@@ -198,8 +198,8 @@ class Configurador:
                 tiempo = (end_time - start_time)
                 mGlobal = algoritmo[0]
                 mDisGlobal = algoritmo[1]
-                print(f"\t{chr(10147)}Tiempo de ejecución: {tiempo:.4f} segundos")
-                print(f"\t{chr(10147)}Mejor camino: {mGlobal}")
-                print(f"\t{chr(10147)}Distancia del mejor camino: {mDisGlobal:.2f}")
+                print(f"\t{chr(10147)} Tiempo de ejecución: {tiempo:.4f} segundos")
+                print(f"\t{chr(10147)} Mejor camino: {mGlobal}")
+                print(f"\t{chr(10147)} Distancia del mejor camino: {mDisGlobal:.2f}")
             case _:
                 print(f"Algoritmo {nombre_algoritmo} no está implementado.")

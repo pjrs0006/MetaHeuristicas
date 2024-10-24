@@ -132,7 +132,7 @@ class EjecucionesAutomaticas:
         print("Mostrando los archivos TSP disponibles en el directorio:")
         selIndice=0
         for archivo in self.archivos:
-            print("\t",selIndice,chr(10147),"...............",archivo)
+            print("\t",selIndice," ",chr(10147),"...............",archivo)
             selIndice+=1
         indice_archivo=int(input("Seleccione el archivo sobre el que desea realizar las ejecuciones de los distintos algoritmos:\t"))
         #Cargamos el archivo seleccionado por el usuario:
@@ -185,9 +185,9 @@ class EjecucionesAutomaticas:
                                                 tam=mapautilizado.tam)
             end_time = time.perf_counter()
             tiempo = end_time - start_time
-            print(f"\t{(chr(10147))}Tiempo de ejecución: {tiempo:.4f} segundos")
+            print(f"\t{(chr(10147))} Tiempo de ejecución: {tiempo:.4f} segundos")
             logging.info(f"\t\tTiempo de ejecucion: {tiempo:.4f} segundos")
-            print(f"\t{chr(10147)}Distancia Total: {algoritmo:.2f}")
+            print(f"\t{chr(10147)} Distancia Total: {algoritmo:.2f}")
             logging.info(f"\t\tDistancia Total: {algoritmo:.2f}")
 
         #Busqueda Local
@@ -221,11 +221,11 @@ class EjecucionesAutomaticas:
 
             end_time = time.perf_counter()
             tiempo = (end_time - start_time)
-            print(f"\t{chr(10147)}Tiempo de ejecución: {tiempo:.4f} segundos")
+            print(f"\t{chr(10147)} Tiempo de ejecución: {tiempo:.4f} segundos")
             logging.info(f"\t\tTiempo de ejecucion: {tiempo:.4f} segundos")
-            print(f"\t{chr(10147)}Camino optimo: {algoritmo[0]}")
+            print(f"\t{chr(10147)} Camino optimo: {algoritmo[0]}")
             logging.info(f"\t\tCamino optimo: {algoritmo[0]}")
-            print(f"\t{chr(10147)}distancia optima: {algoritmo[1]:.2f}")
+            print(f"\t{chr(10147)} distancia optima: {algoritmo[1]:.2f}")
             logging.info(f"\t\tdistancia optima: {algoritmo[1]:.2f}")
 
         # Tabu
@@ -262,11 +262,11 @@ class EjecucionesAutomaticas:
             tiempo = (end_time - start_time)
             mGlobal = algoritmo[0]
             mDisGlobal= algoritmo[1]
-            print(f"\t{chr(10147)}Tiempo de ejecución: {tiempo:.4f} segundos")
+            print(f"\t{chr(10147)} Tiempo de ejecución: {tiempo:.4f} segundos")
             logging.info(f"\t\tTiempo de ejecucion: {tiempo:.4f} segundos")
-            print(f"\t{chr(10147)}Mejor camino: {mGlobal}")
+            print(f"\t{chr(10147)} Mejor camino: {mGlobal}")
             logging.info(f"\t\tMejor camino: {mGlobal}")
-            print(f"\t{chr(10147)}Distancia del mejor camino: {mDisGlobal:.2f}")
+            print(f"\t{chr(10147)} Distancia del mejor camino: {mDisGlobal:.2f}")
             logging.info(f"\t\tDistancia del mejor camino: {mDisGlobal:.2f}")
 
         #Ejecuciones concluidas:
