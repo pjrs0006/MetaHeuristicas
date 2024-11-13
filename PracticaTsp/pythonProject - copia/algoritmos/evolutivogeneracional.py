@@ -7,7 +7,7 @@ from algoritmos.randomgreedy import randomgreedy
 
 
 class evolutivogeneracional:
-    def __init__(self,  matriz_distancias, k, seed, tam, poblacionmax, porcentajealeatorio, Evmax, Tmax, kbest, kworst, procruce, promut):
+    def __init__(self,  matriz_distancias, k, seed, tam, poblacionmax, porcentajealeatorio, Evmax, Tmax, kbest, kworst, procruce, promut, tipocruce):
         self.matriz_distancias = matriz_distancias
         self.k = k
         self.seed = seed
@@ -20,6 +20,7 @@ class evolutivogeneracional:
         self.kworst = kworst
         self.probcruce=procruce
         self.probmut=promut
+        self.tipocruce=tipocruce
 
         if self.k <= 0:
             raise ValueError("El parámetro k no es correcto: debe ser mayor que 0.")
@@ -61,16 +62,22 @@ class evolutivogeneracional:
         random.shuffle(ruta)
         return ruta
 
-    def torneo_binario(self,poblacion, k_best):
+    def torneo_ganadores(self, poblacion, k_best):
+        #Lista que contiene los mejores
         ganadores = []
         for _ in range(len(poblacion)):
+            #Seleccionamos K participantes aleatoriamente de la poblacion
             participantes = random.sample(poblacion, k_best)
+            #Cogemos el que tenga el menor numero en el campo fitness
             mejor = min(participantes, key=lambda ind: ind['fitness'])
+            #Añadimos el ganador a la lista de ganadores
             ganadores.append(mejor)
         return ganadores
 
     def torneo_perdedores(self,poblacion, k_worst):
+        #Se seleccionan k elementos para participar
         participantes = random.sample(poblacion, k_worst)
+        #El ganador del torneo sera aquel que tenga el valor fitness mas alto
         peor = max(participantes, key=lambda ind: ind['fitness'])
         return peor
 
@@ -130,46 +137,62 @@ class evolutivogeneracional:
     def ejecutar(self):
         poblacion = self.inicializar_poblacion()
         evaluaciones = len(poblacion)
+        #Introduciremos un contador de tiempo para establecer la condicion de parada si se llega a Tmax.
         inicio = time.time()
         mejor_global = min(poblacion, key=lambda ind: ind['fitness'])
         while evaluaciones < self.Evmax and (time.time() - inicio) < self.Tmax:
-            # Selección
-            padres = self.torneo_binario(poblacion, self.kbest)
-            # Cruce
+            # Selección: Lista con los ganadores del torneo (Menor Fitness)
+            padres = self.torneo_ganadores(poblacion, self.kbest)
+            # Cruce: Lista de descendientes que contendra la siguiente generacion en estado base
             descendientes = []
             for i in range(0, len(padres), 2):
                 padre1 = padres[i]['ruta']
+                # Al seleccionar el segundo padre usamos el operador modulo de manera que permita el cruce circular
                 padre2 = padres[(i + 1) % len(padres)]['ruta']
+                # Decidimos aleatoriamente si se reralizara el cruce o sera copia de los padres
+                # Si el random generado se menor que la probabilidad se producira el cruce
                 if random.random() < self.probcruce/100:
-                    if random.random() < 0.5:
+                    # Si este parametro es 0 se realizara un tipo de cruce y si es otro valor sera otro
+                    if self.tipocruce==0:
                         hijo1 = self.cruce_OX2(padre1, padre2)
                         hijo2 = self.cruce_OX2(padre2, padre1)
                     else:
                         hijo1 = self.cruce_MOC(padre1, padre2)
                         hijo2 = self.cruce_MOC(padre2, padre1)
                 else:
+                    # Si el resultado del random hace que no se realice cruce se copian directamente los padres:
                     hijo1 = padre1[:]
                     hijo2 = padre2[:]
+                # Añadimos los dos hijos generados a nuestra lista de descendientes
                 descendientes.append({'ruta': hijo1, 'fitness': self.dimedistancia(hijo1)})
                 descendientes.append({'ruta': hijo2, 'fitness': self.dimedistancia(hijo2)})
                 evaluaciones += 2
-            # Mutación
+            # Mutación: Iteramos sobre cada individuo de los descendientes
             for individuo in descendientes:
+                # Mediante una probabilidad aleatoria decidimos si se produce la mutacion o no:
                 if random.random() < self.probmut/100:
+                    # Si se produce la mutacion, aplicamos un 2-opt
                     individuo['ruta'] = self.mutacion_2opt(individuo['ruta'])
                     individuo['fitness'] = self.dimedistancia(individuo['ruta'])
                     evaluaciones += 1
-            # Reemplazamiento
+            # Reemplazamiento: Reemplazamos totalmente la generacion anterior por la nueva
             poblacion_nueva = descendientes
-            # Elitismo
+            # Elitismo:
+            # Seleccionamos el individuo con menor distancia (mejor fitness)
             mejor_nuevo = min(poblacion_nueva, key=lambda ind: ind['fitness'])
+            # En caso de que el nuevo mejor sea peor que el mejor global, realizamos un torneo de perdedores
             if mejor_nuevo['fitness'] > mejor_global['fitness']:
                 peor = self.torneo_perdedores(poblacion_nueva, self.kworst)
+                # Para asegurar que las soluciones no pierdan calidad, preservaremos el elemento mejor global
+                # Para preservar este elemento sustituimos el peor elemento actual por el individuo mejor global
                 poblacion_nueva.remove(peor)
                 poblacion_nueva.append(mejor_global)
             else:
+                # Si no se da el caso anterior sustituiremos el mejor global por el nuevo mejor
                 mejor_global = mejor_nuevo
+            # Realizamos finalmente la siustitucion, dando paso a una nueva generacion
             poblacion = poblacion_nueva
+        # Cuando ya se cumplen las condiciones de parada devolvemos el mejor individuo obtenido
         return mejor_global
 
     '''# Ejecución del algoritmo

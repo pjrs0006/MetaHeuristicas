@@ -217,10 +217,11 @@ class Configurador:
                 promut=int(self.parametros[18])
                 Evmax = int(self.parametros[17])
                 Tmax = int(self.parametros[18])
+                tipocruce = int(self.parametros[19])
                 start_time = time.perf_counter()
                 algoritmo = self.ejecutar_algoritmo(nombre_algoritmo, matriz_distancias=matriz_d, k=k, seed=seed,
                                                     tam=mapautilizado.tam, poblacionmax=poblacionmax, porcentajealeatorio=porcentajealeatorio,kbest=kbest,
-                                                    kworst=kworst, procruce=procruce, promut=promut, Evmax=Evmax, Tmax=Tmax)
+                                                    kworst=kworst, procruce=procruce, promut=promut, Evmax=Evmax, Tmax=Tmax, tipocruce=tipocruce,)
 
                 end_time = time.perf_counter()
                 tiempo = (end_time - start_time)
