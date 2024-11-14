@@ -5,9 +5,6 @@ from Ciudad import Ciudad
 from Mapa import Mapa
 import logging
 
-from algoritmos.evolutivoestacionario import evolutivoestacionario
-
-
 class Configurador:
     def __init__(self):
         logging.getLogger().addHandler(logging.NullHandler())
@@ -218,10 +215,11 @@ class Configurador:
                 Evmax = int(self.parametros[17])
                 Tmax = int(self.parametros[18])
                 tipocruce = int(self.parametros[19])
+                #num_elites = int(self.parametros[20])
                 start_time = time.perf_counter()
                 algoritmo = self.ejecutar_algoritmo(nombre_algoritmo, matriz_distancias=matriz_d, k=k, seed=seed,
                                                     tam=mapautilizado.tam, poblacionmax=poblacionmax, porcentajealeatorio=porcentajealeatorio,kbest=kbest,
-                                                    kworst=kworst, procruce=procruce, promut=promut, Evmax=Evmax, Tmax=Tmax, tipocruce=tipocruce,)
+                                                    kworst=kworst, procruce=procruce, promut=promut, Evmax=Evmax, Tmax=Tmax, tipocruce=tipocruce)#,num_elites=num_elites)
 
                 end_time = time.perf_counter()
                 tiempo = (end_time - start_time)
@@ -232,7 +230,7 @@ class Configurador:
                 print(f"\t{chr(10147)} Mejor camino: {mGlobal}")
                 print(f"\t{chr(10147)} Distancia del mejor camino: {mDisGlobal:.2f}")
 
-            case "nuevo":
+            case "evolutivoestacionario":
                 print(f"Algoritmo evolutivoestacionario:")
                 print(f"---------------------------")
                 k = int(self.parametros[3]) if len(self.parametros) > 3 else 5
@@ -245,12 +243,13 @@ class Configurador:
                 Evmax = int(self.parametros[17])
                 Tmax = int(self.parametros[18])
                 tipocruce = int(self.parametros[19])
+                num_elites = int(self.parametros[20])
                 start_time = time.perf_counter()
                 algoritmo = self.ejecutar_algoritmo(nombre_algoritmo, matriz_distancias=matriz_d, k=k, seed=seed,
                                                     tam=mapautilizado.tam, poblacionmax=poblacionmax,
                                                     porcentajealeatorio=porcentajealeatorio, kbest=kbest,
                                                     kworst=kworst, procruce=procruce, promut=promut, Evmax=Evmax,
-                                                    Tmax=Tmax,tipocruce=tipocruce)
+                                                    Tmax=Tmax,tipocruce=tipocruce)#num_elites=num_elites)
 
                 end_time = time.perf_counter()
                 tiempo = (end_time - start_time)
