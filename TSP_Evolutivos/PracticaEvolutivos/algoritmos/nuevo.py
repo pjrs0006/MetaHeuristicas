@@ -161,20 +161,14 @@ class nuevo:
             padre2 = self.torneo_binario(poblacion, self.kbest)
 
             # Cruce: con probabilidad del 100% (siempre se realiza cruce en este caso)
-            if random.random() < 1.0:
-                # Decidimos aleatoriamente qué tipo de cruce utilizar (OX2 o MOC)
-                if random.random() < 0.5:
-                    # Realizamos cruce OX2 para generar los hijos
-                    hijo1 = self.cruce_OX2(padre1['ruta'], padre2['ruta'])
-                    hijo2 = self.cruce_OX2(padre2['ruta'], padre1['ruta'])
-                else:
-                    # Realizamos cruce MOC para generar los hijos
-                    hijo1 = self.cruce_MOC(padre1['ruta'], padre2['ruta'])
-                    hijo2 = self.cruce_MOC(padre2['ruta'], padre1['ruta'])
+            if self.tipocruce==0:
+                # Realizamos cruce OX2 para generar los hijos
+                hijo1 = self.cruce_OX2(padre1['ruta'], padre2['ruta'])
+                hijo2 = self.cruce_OX2(padre2['ruta'], padre1['ruta'])
             else:
-                # Si no se realiza cruce (aunque aquí siempre se realiza), copiamos los padres
-                hijo1 = padre1['ruta'][:]
-                hijo2 = padre2['ruta'][:]
+                # Realizamos cruce MOC para generar los hijos
+                hijo1 = self.cruce_MOC(padre1['ruta'], padre2['ruta'])
+                hijo2 = self.cruce_MOC(padre2['ruta'], padre1['ruta'])
 
             # Evaluamos los hijos calculando su fitness (distancia recorrida)
             fitness_hijo1 = self.dimedistancia(hijo1)
