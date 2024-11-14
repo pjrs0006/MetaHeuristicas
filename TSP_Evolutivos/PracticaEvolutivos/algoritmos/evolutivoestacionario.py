@@ -68,17 +68,30 @@ class evolutivoestacionario:
         return peor
 
     def cruce_OX2(self, padre1, padre2):
+        # obtenemos el tamaño de la permutacion
         size = len(padre1)
+        # incializa el hijo como una lista vacia
         hijo = [None] * size
+        # Genera una lista de indices aleatorios, en este caso la mitad de los indices posibles
+        # Sorted se asegura que los indices esten ordenadoos de forma ascendente
+        # Esta listaes de enteros que simbolizan la posicion que se copiara del padre al hijo
         indices = sorted(random.sample(range(size), size // 2))
+        # Asigna los valores de 'padre1' a las posiciones correspondientes en 'hijo'
+        # según los índices seleccionados aleatoriamente
         for idx in indices:
             hijo[idx] = padre1[idx]
+        # Inicializa un puntero que ayudará a ubicar los valores restantes en 'hijo'
         puntero = 0
+        # Itera a través de cada gen (elemento) en 'padre2'
         for gen in padre2:
+            # Si el gen no está presente en 'hijo' (evitando duplicados)
             if gen not in hijo:
+                # Busca la primera posición libre en 'hijo' (donde el valor es None)
                 while hijo[puntero] is not None:
                     puntero += 1
+                # Coloca el gen de 'padre2' en la posición libre
                 hijo[puntero] = gen
+        # Devuelve el hijo generado como una nueva permutación
         return hijo
 
     def cruce_MOC(self, padre1, padre2):
