@@ -123,9 +123,14 @@ class evolutivogeneracional:
                 hijo[i] = padre2[i]
         return hijo
 
-    def mutacion_2opt(self,individuo):
-        a, b = random.sample(range(len(individuo)), 2)
-        individuo[a], individuo[b] = individuo[b], individuo[a]
+    # def mutacion_2opt(self,individuo):
+    #     a, b = random.sample(range(len(individuo)), 2)
+    #     individuo[a], individuo[b] = individuo[b], individuo[a]
+    #     return individuo
+
+    def mutacion_2opt(self, individuo):
+        a, b = sorted(random.sample(range(len(individuo)), 2))
+        individuo[a:b + 1] = reversed(individuo[a:b + 1])
         return individuo
 
     # Inicialización
