@@ -6,8 +6,8 @@ import time
 from algoritmos.randomgreedy import randomgreedy
 
 
-class evolutivoestacionario:
-    def __init__(self,  matriz_distancias, k, seed, tam, poblacionmax, porcentajealeatorio, Evmax, Tmax, kbest, kworst, procruce, promut, tipocruce):#num_elites):
+class eee2:
+    def __init__(self,  matriz_distancias, k, seed, tam, poblacionmax, porcentajealeatorio, Evmax, Tmax, kbest, kworst, procruce, promut, tipocruce,num_elites):
         self.matriz_distancias = matriz_distancias
         self.k = k
         self.seed = seed
@@ -21,7 +21,7 @@ class evolutivoestacionario:
         self.probcruce=procruce
         self.probmut=promut
         self.tipocruce=tipocruce
-        #self.num_elites = num_elites
+        self.num_elites = num_elites
         if self.k <= 0:
             raise ValueError("El parámetro k no es correcto: debe ser mayor que 0.")
 
@@ -69,27 +69,27 @@ class evolutivoestacionario:
         # Devolvemos el mejor individuo encontrado en el torneo
         return mejor
 
-    def torneo_perdedores(self, poblacion, k_worst, elite):
-        # Seleccionamos k_worst individuos que no sean el elite
-        participantes = [ind for ind in random.sample(poblacion, min(k_worst, len(poblacion))) if ind != elite]
-        # Si no hay suficientes participantes (porque elite es gran parte de la población), ajustamos
-        #Mientras la lista de participantes esté vacía, se repite el proceso de selección y filtrado.
-        #Esto garantiza que siempre haya al menos un individuo para participar en el torneo de perdedores.
-        while len(participantes) == 0:
-            participantes = [ind for ind in random.sample(poblacion, min(k_worst, len(poblacion))) if ind != elite]
-        # Seleccionamos al peor entre los participantes
-        peor = max(participantes, key=lambda ind: ind['fitness'])
-        return peor
-
-    # def torneo_perdedores(self, poblacion, k_worst, elites):
-    #     # Seleccionamos k_worst individuos que no sean los élites
-    #     participantes = [ind for ind in random.sample(poblacion, min(k_worst, len(poblacion))) if ind not in elites]
-    #     # Si no hay suficientes participantes, repetimos el proceso
+    # def torneo_perdedores(self, poblacion, k_worst, elite):
+    #     # Seleccionamos k_worst individuos que no sean el elite
+    #     participantes = [ind for ind in random.sample(poblacion, min(k_worst, len(poblacion))) if ind != elite]
+    #     # Si no hay suficientes participantes (porque elite es gran parte de la población), ajustamos
+    #     #Mientras la lista de participantes esté vacía, se repite el proceso de selección y filtrado.
+    #     #Esto garantiza que siempre haya al menos un individuo para participar en el torneo de perdedores.
     #     while len(participantes) == 0:
-    #         participantes = [ind for ind in random.sample(poblacion, min(k_worst, len(poblacion))) if ind not in elites]
+    #         participantes = [ind for ind in random.sample(poblacion, min(k_worst, len(poblacion))) if ind != elite]
     #     # Seleccionamos al peor entre los participantes
     #     peor = max(participantes, key=lambda ind: ind['fitness'])
     #     return peor
+
+    def torneo_perdedores(self, poblacion, k_worst, elites):
+        # Seleccionamos k_worst individuos que no sean los élites
+        participantes = [ind for ind in random.sample(poblacion, min(k_worst, len(poblacion))) if ind not in elites]
+        # Si no hay suficientes participantes, repetimos el proceso
+        while len(participantes) == 0:
+            participantes = [ind for ind in random.sample(poblacion, min(k_worst, len(poblacion))) if ind not in elites]
+        # Seleccionamos al peor entre los participantes
+        peor = max(participantes, key=lambda ind: ind['fitness'])
+        return peor
 
     def cruce_OX2(self, padre1, padre2):
         # obtenemos el tamaño de la permutacion
@@ -166,11 +166,10 @@ class evolutivoestacionario:
         evaluaciones = len(poblacion)
         # Registramos el tiempo de inicio para controlar el tiempo máximo de ejecución (Tmax)
         inicio = time.time()
-        # Identificamos el mejor individuo inicial (con menor fitness)
-        mejor_global = min(poblacion, key=lambda ind: ind['fitness'])
-        # # Antes de eliminar individuos, obtenemos los mejores individuos (élites) de la población actual
-        # poblacion_ordenada = sorted(poblacion, key=lambda ind: ind['fitness'])
-        # elites = poblacion_ordenada[:self.num_elites]
+        # Identificamos los mejores individuos iniciales (élites)
+        poblacion_ordenada = sorted(poblacion, key=lambda ind: ind['fitness'])
+        elites = poblacion_ordenada[:self.num_elites]
+        mejor_global = elites[0]
 
         # Bucle principal que se ejecuta hasta alcanzar Evmax evaluaciones o Tmax tiempo
         while evaluaciones < self.Evmax and (time.time() - inicio) < self.Tmax:
@@ -178,71 +177,51 @@ class evolutivoestacionario:
             padre1 = self.torneo_binario(poblacion, self.kbest)
             padre2 = self.torneo_binario(poblacion, self.kbest)
 
-            # Cruce: con probabilidad del 100% (siempre se realiza cruce en este caso)
-            if self.tipocruce==0:
-                # Realizamos cruce OX2 para generar los hijos
+            # Cruce
+            if self.tipocruce == 0:
                 hijo1 = self.cruce_OX2(padre1['ruta'], padre2['ruta'])
                 hijo2 = self.cruce_OX2(padre2['ruta'], padre1['ruta'])
             else:
-                # Realizamos cruce MOC para generar los hijos
                 hijo1 = self.cruce_MOC(padre1['ruta'], padre2['ruta'])
                 hijo2 = self.cruce_MOC(padre2['ruta'], padre1['ruta'])
 
-            # Evaluamos los hijos calculando su fitness (distancia recorrida)
+            # Evaluamos los hijos
             fitness_hijo1 = self.dimedistancia(hijo1)
             fitness_hijo2 = self.dimedistancia(hijo2)
-            # Actualizamos el contador de evaluaciones tras evaluar a los dos hijos
             evaluaciones += 2
 
-            # Mutación: aplicamos mutación a los hijos con una cierta probabilidad
+            # Mutación
             if random.random() < self.probmut / 100:
-                # Aplicamos la mutación 2-opt al primer hijo
                 hijo1 = self.mutacion_2opt(hijo1)
-                # Recalculamos su fitness después de la mutación
                 fitness_hijo1 = self.dimedistancia(hijo1)
-                # Incrementamos el contador de evaluaciones
                 evaluaciones += 1
             if random.random() < self.probmut / 100:
-                # Aplicamos la mutación 2-opt al segundo hijo
                 hijo2 = self.mutacion_2opt(hijo2)
-                # Recalculamos su fitness después de la mutación
                 fitness_hijo2 = self.dimedistancia(hijo2)
-                # Incrementamos el contador de evaluaciones
                 evaluaciones += 1
 
-                # Reemplazamiento con elitismo en algoritmo estacionario
-                # Antes de eliminar individuos, obtenemos el mejor de la población actual
-                mejor_actual = min(poblacion, key=lambda ind: ind['fitness'])
+            # Reemplazamiento con elitismo
+            # Obtenemos los mejores individuos (élites)
+            poblacion_ordenada = sorted(poblacion, key=lambda ind: ind['fitness'])
+            elites = poblacion_ordenada[:self.num_elites]
 
-                # Preparamos los hijos para la inserción en la población
-                nuevos_individuos = [
-                    {'ruta': hijo1, 'fitness': fitness_hijo1},
-                    {'ruta': hijo2, 'fitness': fitness_hijo2}
-                ]
-
-            # Reemplazamiento: eliminamos los peores individuos que no sean el mejor
-            for nuevo_individuo in nuevos_individuos:
-                # Seleccionamos al individuo a eliminar mediante torneo de perdedores, asegurando no eliminar al mejor
-                peor = self.torneo_perdedores(poblacion, self.kworst, mejor_actual)
-                poblacion.remove(peor)
-                # Añadimos el nuevo individuo a la población
-                poblacion.append(nuevo_individuo)
-            # # Reemplazamiento: eliminamos los peores individuos que no sean élites
-            # for nuevo_individuo in nuevos_individuos:
-            #     # Seleccionamos al individuo a eliminar mediante torneo de perdedores, asegurando no eliminar a los élites
-            #     peor = self.torneo_perdedores(poblacion, self.kworst, elites)
-            #     poblacion.remove(peor)
-            #     # Añadimos el nuevo individuo a la población
-            #     poblacion.append(nuevo_individuo)
-
-            # Actualizamos el mejor individuo global si alguno de los nuevos individuos es mejor
-            posibles_mejores = [
-                mejor_global,
+            # Preparamos los hijos para la inserción en la población
+            nuevos_individuos = [
                 {'ruta': hijo1, 'fitness': fitness_hijo1},
                 {'ruta': hijo2, 'fitness': fitness_hijo2}
-                ]
-            # Seleccionamos el individuo con el menor fitness como el nuevo mejor global
-            mejor_global = min(posibles_mejores, key=lambda ind: ind['fitness'])
+            ]
 
-        # Al terminar el bucle, devolvemos el mejor individuo encontrado
+            # Reemplazamiento: eliminamos los peores individuos que no sean élites
+            for nuevo_individuo in nuevos_individuos:
+                peor = self.torneo_perdedores(poblacion, self.kworst, elites)
+                poblacion.remove(peor)
+                poblacion.append(nuevo_individuo)
+
+            # Actualizamos los mejores individuos globales si es necesario
+            posibles_mejores = elites + nuevos_individuos
+            posibles_mejores = sorted(posibles_mejores, key=lambda ind: ind['fitness'])
+            elites = posibles_mejores[:self.num_elites]
+            mejor_global = elites[0]
+
+        # Al terminar el bucle, devolvemos los mejores individuos encontrados
         return mejor_global

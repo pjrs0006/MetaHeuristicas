@@ -260,5 +260,65 @@ class Configurador:
                 print(f"\t{chr(10147)} Mejor camino: {mGlobal}")
                 print(f"\t{chr(10147)} Distancia del mejor camino: {mDisGlobal:.2f}")
 
+            case "eee2":
+                print(f"Algoritmo evolutivoestacionario:")
+                print(f"---------------------------")
+                k = int(self.parametros[3]) if len(self.parametros) > 3 else 5
+                poblacionmax = int(self.parametros[11])
+                porcentajealeatorio = int(self.parametros[12])
+                kbest = int(self.parametros[13])
+                kworst = int(self.parametros[14])
+                procruce = int(self.parametros[17])
+                promut = int(self.parametros[18])
+                Evmax = int(self.parametros[17])
+                Tmax = int(self.parametros[18])
+                tipocruce = int(self.parametros[19])
+                num_elites = int(self.parametros[20])
+                start_time = time.perf_counter()
+                algoritmo = self.ejecutar_algoritmo(nombre_algoritmo, matriz_distancias=matriz_d, k=k, seed=seed,
+                                                    tam=mapautilizado.tam, poblacionmax=poblacionmax,
+                                                    porcentajealeatorio=porcentajealeatorio, kbest=kbest,
+                                                    kworst=kworst, procruce=procruce, promut=promut, Evmax=Evmax,
+                                                    Tmax=Tmax, tipocruce=tipocruce,num_elites=num_elites)
+
+                end_time = time.perf_counter()
+                tiempo = (end_time - start_time)
+                mGlobal = algoritmo['ruta']
+                mDisGlobal = algoritmo['fitness']
+
+                print(f"\t{chr(10147)} Tiempo de ejecución: {tiempo:.4f} segundos")
+                print(f"\t{chr(10147)} Mejor camino: {mGlobal}")
+                print(f"\t{chr(10147)} Distancia del mejor camino: {mDisGlobal:.2f}")
+
+            case "ege2":
+                print(f"Algoritmo evolutivogeneracional:")
+                print(f"---------------------------")
+                k = int(self.parametros[3]) if len(self.parametros) > 3 else 5
+                poblacionmax = int(self.parametros[11])
+                porcentajealeatorio = int(self.parametros[12])
+                kbest = int(self.parametros[13])
+                kworst = int(self.parametros[14])
+                procruce = int(self.parametros[17])
+                promut = int(self.parametros[18])
+                Evmax = int(self.parametros[17])
+                Tmax = int(self.parametros[18])
+                tipocruce = int(self.parametros[19])
+                num_elites = int(self.parametros[20])
+                start_time = time.perf_counter()
+                algoritmo = self.ejecutar_algoritmo(nombre_algoritmo, matriz_distancias=matriz_d, k=k, seed=seed,
+                                                    tam=mapautilizado.tam, poblacionmax=poblacionmax,
+                                                    porcentajealeatorio=porcentajealeatorio, kbest=kbest,
+                                                    kworst=kworst, procruce=procruce, promut=promut, Evmax=Evmax,
+                                                    Tmax=Tmax, tipocruce=tipocruce, num_elites=num_elites)
+
+                end_time = time.perf_counter()
+                tiempo = (end_time - start_time)
+                mGlobal = algoritmo['ruta']
+                mDisGlobal = algoritmo['fitness']
+
+                print(f"\t{chr(10147)} Tiempo de ejecución: {tiempo:.4f} segundos")
+                print(f"\t{chr(10147)} Mejor camino: {mGlobal}")
+                print(f"\t{chr(10147)} Distancia del mejor camino: {mDisGlobal:.2f}")
+
             case _:
                 print(f"Algoritmo {nombre_algoritmo} no está implementado.")
