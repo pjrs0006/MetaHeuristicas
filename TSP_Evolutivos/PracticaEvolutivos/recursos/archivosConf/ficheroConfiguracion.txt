@@ -3,7 +3,7 @@ Semillas=77693013 76930137 69301377 93013776 21025743
 Algoritmos=randomgreedy busquedalocal tabu evolutivogeneracional evolutivoestacionario
 Parametros de seleccion:
 
-Archivo:0
+Archivo:1
 Algoritmo:3
 Semilla:2
 K(Ventana):5

@@ -75,12 +75,13 @@ class evolutivogeneracional:
             ganadores.append(mejor)
         return ganadores
 
-    def torneo_perdedores(self,poblacion, k_worst):
-        #Se seleccionan k elementos para participar
+    def torneo_perdedores(self, poblacion, k_worst):
+        # Seleccionar k participantes aleatorios
         participantes = random.sample(poblacion, k_worst)
-        #El ganador del torneo sera aquel que tenga el valor fitness mas alto
-        peor = max(participantes, key=lambda ind: ind['fitness'])
-        return peor
+        # Ordenar los participantes por fitness en orden descendente (peores primero)
+        participantes_ordenados = sorted(participantes, key=lambda ind: ind['fitness'], reverse=True)
+        # Devolver los peores 'self.elite' individuos
+        return participantes_ordenados[:self.elite]
 
     def cruce_OX2(self, padre1, padre2):
         # obtenemos el tamaño de la permutacion
@@ -155,15 +156,21 @@ class evolutivogeneracional:
     # Algoritmo principal
     def ejecutar(self):
         poblacion = self.inicializar_poblacion()
+        logging.critical(f'\t\t\tPoblación inicial:')
+        logging.critical(f'\t\t\t{poblacion}')
         evaluaciones = len(poblacion)
         #Introduciremos un contador de tiempo para establecer la condicion de parada si se llega a Tmax.
         inicio = time.time()
         mejor_global = min(poblacion, key=lambda ind: ind['fitness'])
+        logging.critical(f'\t\t\tElite: {mejor_global}')
         while evaluaciones < self.Evmax and (time.time() - inicio) < self.Tmax:
             # Selección: Lista con los ganadores del torneo (Menor Fitness)
             padres = self.torneo_ganadores(poblacion, self.kbest)
+            logging.critical(f'\t\t\tPadres: ')
+            logging.critical(f'\t\t\t{poblacion}')
             # Cruce: Lista de descendientes que contendra la siguiente generacion en estado base
             descendientes = []
+            contadorlogging=1
             for i in range(0, len(padres), 2):
                 padre1 = padres[i]['ruta']
                 # Al seleccionar el segundo padre usamos el operador modulo de manera que permita el cruce circular
@@ -186,6 +193,8 @@ class evolutivogeneracional:
                 descendientes.append({'ruta': hijo1, 'fitness': self.dimedistancia(hijo1)})
                 descendientes.append({'ruta': hijo2, 'fitness': self.dimedistancia(hijo2)})
                 evaluaciones += 2
+            logging.critical(f'\t\t\thijos: ')
+            logging.critical(f'\t\t\t{descendientes}')
             # Mutación: Iteramos sobre cada individuo de los descendientes
             for individuo in descendientes:
                 # Mediante una probabilidad aleatoria decidimos si se produce la mutacion o no:
@@ -196,20 +205,19 @@ class evolutivogeneracional:
                     evaluaciones += 1
             # Reemplazamiento: Reemplazamos totalmente la generacion anterior por la nueva
             poblacion_nueva = descendientes
+            logging.critical(f'\t\t\thijos mutantes: ')
+            logging.critical(f'\t\t\t{poblacion_nueva}')
             # Elitismo:
             # Seleccionamos el individuo con menor distancia (mejor fitness)
             elite_individuos = sorted(poblacion_nueva, key=lambda ind: ind['fitness'])[:self.elite]
 
             # En caso de que el nuevo mejor sea peor que el mejor global, realizamos un torneo de perdedores
             if elite_individuos[0]['fitness'] > mejor_global['fitness']:
-                # Encontramos los peores individuos en la población nueva
-                peores_individuos = sorted(poblacion_nueva, key=lambda ind: ind['fitness'], reverse=True)[:self.elite]
-
-                # Para asegurar que las soluciones no pierdan calidad, preservaremos el elemento mejor global
-                # Para preservar este elemento sustituimos el peor elemento actual por el individuo mejor global
+                peores_individuos = self.torneo_perdedores(poblacion_nueva, self.kworst)
+                # Asegúrate de que los peores individuos sean una lista
                 for peor, mejor_elite in zip(peores_individuos, elite_individuos):
-                    poblacion_nueva.remove(peor)
-                    poblacion_nueva.append(mejor_elite)
+                    # Reemplaza los peores individuos por los mejores
+                    poblacion_nueva[poblacion_nueva.index(peor)] = mejor_elite
             else:
                 # Si no se da el caso anterior sustituiremos el mejor global por el nuevo mejor
                 mejor_global = elite_individuos[0]
