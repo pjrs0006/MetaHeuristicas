@@ -7,7 +7,7 @@ from algoritmos.randomgreedy import randomgreedy
 
 
 class evolutivoestacionario:
-    def __init__(self,  matriz_distancias, k, seed, tam, poblacionmax, porcentajealeatorio, Evmax, Tmax, kbest, kworst, procruce, promut, tipocruce):#num_elites):
+    def __init__(self,  matriz_distancias, k, seed, tam, poblacionmax, porcentajealeatorio, Evmax, Tmax, kbest, kworst, promut, tipocruce):#num_elites):
         self.matriz_distancias = matriz_distancias
         self.k = k
         self.seed = seed
@@ -18,7 +18,6 @@ class evolutivoestacionario:
         self.Tmax=Tmax
         self.kbest=kbest
         self.kworst = kworst
-        self.probcruce=procruce
         self.probmut=promut
         self.tipocruce=tipocruce
         #self.num_elites = num_elites

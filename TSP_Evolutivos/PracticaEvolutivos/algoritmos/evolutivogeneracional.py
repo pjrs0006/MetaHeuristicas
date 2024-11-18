@@ -7,7 +7,7 @@ from algoritmos.randomgreedy import randomgreedy
 
 
 class evolutivogeneracional:
-    def __init__(self,  matriz_distancias, k, seed, tam, poblacionmax, porcentajealeatorio, Evmax, Tmax, kbest, kworst, procruce, promut, tipocruce):
+    def __init__(self,  matriz_distancias, k, seed, tam, poblacionmax, porcentajealeatorio, Evmax, Tmax, kbest, kworst, procruce, promut, tipocruce, elite):
         self.matriz_distancias = matriz_distancias
         self.k = k
         self.seed = seed
@@ -21,6 +21,7 @@ class evolutivogeneracional:
         self.probcruce=procruce
         self.probmut=promut
         self.tipocruce=tipocruce
+        self.elite=elite
 
         if self.k <= 0:
             raise ValueError("El parámetro k no es correcto: debe ser mayor que 0.")
@@ -197,17 +198,21 @@ class evolutivogeneracional:
             poblacion_nueva = descendientes
             # Elitismo:
             # Seleccionamos el individuo con menor distancia (mejor fitness)
-            mejor_nuevo = min(poblacion_nueva, key=lambda ind: ind['fitness'])
+            elite_individuos = sorted(poblacion_nueva, key=lambda ind: ind['fitness'])[:self.elite]
+
             # En caso de que el nuevo mejor sea peor que el mejor global, realizamos un torneo de perdedores
-            if mejor_nuevo['fitness'] > mejor_global['fitness']:
-                peor = self.torneo_perdedores(poblacion_nueva, self.kworst)
+            if elite_individuos[0]['fitness'] > mejor_global['fitness']:
+                # Encontramos los peores individuos en la población nueva
+                peores_individuos = sorted(poblacion_nueva, key=lambda ind: ind['fitness'], reverse=True)[:self.elite]
+
                 # Para asegurar que las soluciones no pierdan calidad, preservaremos el elemento mejor global
                 # Para preservar este elemento sustituimos el peor elemento actual por el individuo mejor global
-                poblacion_nueva.remove(peor)
-                poblacion_nueva.append(mejor_global)
+                for peor, mejor_elite in zip(peores_individuos, elite_individuos):
+                    poblacion_nueva.remove(peor)
+                    poblacion_nueva.append(mejor_elite)
             else:
                 # Si no se da el caso anterior sustituiremos el mejor global por el nuevo mejor
-                mejor_global = mejor_nuevo
+                mejor_global = elite_individuos[0]
             # Realizamos finalmente la siustitucion, dando paso a una nueva generacion
             poblacion = poblacion_nueva
         # Cuando ya se cumplen las condiciones de parada devolvemos el mejor individuo obtenido

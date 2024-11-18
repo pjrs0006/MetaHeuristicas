@@ -16,16 +16,28 @@ class Configurador:
     def leer_archivo_config(self, ruta_config):
         if os.path.isfile(ruta_config):
             with open(ruta_config, "r") as archivo_config:
+                seccion_parametros = False
+                self.parametros = []
                 for linea in archivo_config:
                     linea = linea.strip()
+
+                    # Detecta las secciones del archivo
                     if "Archivos=" in linea:
                         self.archivos = linea.split("=")[1].strip().split()
                     elif "Semillas=" in linea:
                         self.semillas = list(map(int, linea.split("=")[1].strip().split()))
                     elif "Algoritmos=" in linea:
                         self.algoritmos = linea.split("=")[1].strip().split()
-                    elif "otroparametros=" in linea:
-                        self.parametros = linea.split("=")[1].strip().split()
+                    elif "Parametros de seleccion:" in linea:
+                        seccion_parametros = True  # Marca el inicio de los parámetros
+                    elif seccion_parametros and ":" in linea:
+                        # Extrae el valor después de ":" ignorando el nombre
+                        valor = linea.split(":")[1].strip()
+                        # Convierte a int si es un número
+                        if valor.isdigit():
+                            valor = int(valor)
+                        # Almacena el valor en la lista de parámetros
+                        self.parametros.append(valor)
         else:
             raise FileNotFoundError(f"El archivo de configuración {ruta_config} no existe.")
 
@@ -94,7 +106,7 @@ class Configurador:
     # Método principal que ejecuta la lógica completa
     def ejecutar(self):
         # Rutas de configuración y TSP
-        ruta_config = os.path.join('recursos', 'archivosConf', 'Config_1.txt')
+        ruta_config = os.path.join('recursos', 'archivosConf', 'ficheroConfiguracion.txt')
         ruta_tsp = os.path.join('recursos', 'archivosTSP')
 
         # Leer archivo de configuración
@@ -133,6 +145,7 @@ class Configurador:
 
         # Seleccionar el algoritmo
         indice_algoritmo = int(self.parametros[1])
+        print(indice_algoritmo)
         nombre_algoritmo = self.algoritmos[indice_algoritmo]
 
         # Obtener la semilla
@@ -215,11 +228,11 @@ class Configurador:
                 Evmax = int(self.parametros[17])
                 Tmax = int(self.parametros[18])
                 tipocruce = int(self.parametros[19])
-                #num_elites = int(self.parametros[20])
+                elite = int(self.parametros[20])
                 start_time = time.perf_counter()
                 algoritmo = self.ejecutar_algoritmo(nombre_algoritmo, matriz_distancias=matriz_d, k=k, seed=seed,
                                                     tam=mapautilizado.tam, poblacionmax=poblacionmax, porcentajealeatorio=porcentajealeatorio,kbest=kbest,
-                                                    kworst=kworst, procruce=procruce, promut=promut, Evmax=Evmax, Tmax=Tmax, tipocruce=tipocruce)#,num_elites=num_elites)
+                                                    kworst=kworst, procruce=procruce, promut=promut, Evmax=Evmax, Tmax=Tmax, tipocruce=tipocruce,elite=elite)#,num_elites=num_elites)
 
                 end_time = time.perf_counter()
                 tiempo = (end_time - start_time)
@@ -238,7 +251,7 @@ class Configurador:
                 porcentajealeatorio = int(self.parametros[12])
                 kbest = int(self.parametros[13])
                 kworst = int(self.parametros[14])
-                procruce = int(self.parametros[17])
+
                 promut = int(self.parametros[18])
                 Evmax = int(self.parametros[17])
                 Tmax = int(self.parametros[18])
@@ -248,7 +261,7 @@ class Configurador:
                 algoritmo = self.ejecutar_algoritmo(nombre_algoritmo, matriz_distancias=matriz_d, k=k, seed=seed,
                                                     tam=mapautilizado.tam, poblacionmax=poblacionmax,
                                                     porcentajealeatorio=porcentajealeatorio, kbest=kbest,
-                                                    kworst=kworst, procruce=procruce, promut=promut, Evmax=Evmax,
+                                                    kworst=kworst,promut=promut, Evmax=Evmax,
                                                     Tmax=Tmax,tipocruce=tipocruce)#num_elites=num_elites)
 
                 end_time = time.perf_counter()
@@ -260,65 +273,7 @@ class Configurador:
                 print(f"\t{chr(10147)} Mejor camino: {mGlobal}")
                 print(f"\t{chr(10147)} Distancia del mejor camino: {mDisGlobal:.2f}")
 
-            case "eee2":
-                print(f"Algoritmo evolutivoestacionario:")
-                print(f"---------------------------")
-                k = int(self.parametros[3]) if len(self.parametros) > 3 else 5
-                poblacionmax = int(self.parametros[11])
-                porcentajealeatorio = int(self.parametros[12])
-                kbest = int(self.parametros[13])
-                kworst = int(self.parametros[14])
-                procruce = int(self.parametros[17])
-                promut = int(self.parametros[18])
-                Evmax = int(self.parametros[17])
-                Tmax = int(self.parametros[18])
-                tipocruce = int(self.parametros[19])
-                num_elites = int(self.parametros[20])
-                start_time = time.perf_counter()
-                algoritmo = self.ejecutar_algoritmo(nombre_algoritmo, matriz_distancias=matriz_d, k=k, seed=seed,
-                                                    tam=mapautilizado.tam, poblacionmax=poblacionmax,
-                                                    porcentajealeatorio=porcentajealeatorio, kbest=kbest,
-                                                    kworst=kworst, procruce=procruce, promut=promut, Evmax=Evmax,
-                                                    Tmax=Tmax, tipocruce=tipocruce,num_elites=num_elites)
 
-                end_time = time.perf_counter()
-                tiempo = (end_time - start_time)
-                mGlobal = algoritmo['ruta']
-                mDisGlobal = algoritmo['fitness']
-
-                print(f"\t{chr(10147)} Tiempo de ejecución: {tiempo:.4f} segundos")
-                print(f"\t{chr(10147)} Mejor camino: {mGlobal}")
-                print(f"\t{chr(10147)} Distancia del mejor camino: {mDisGlobal:.2f}")
-
-            case "ege2":
-                print(f"Algoritmo evolutivogeneracional:")
-                print(f"---------------------------")
-                k = int(self.parametros[3]) if len(self.parametros) > 3 else 5
-                poblacionmax = int(self.parametros[11])
-                porcentajealeatorio = int(self.parametros[12])
-                kbest = int(self.parametros[13])
-                kworst = int(self.parametros[14])
-                procruce = int(self.parametros[17])
-                promut = int(self.parametros[18])
-                Evmax = int(self.parametros[17])
-                Tmax = int(self.parametros[18])
-                tipocruce = int(self.parametros[19])
-                num_elites = int(self.parametros[20])
-                start_time = time.perf_counter()
-                algoritmo = self.ejecutar_algoritmo(nombre_algoritmo, matriz_distancias=matriz_d, k=k, seed=seed,
-                                                    tam=mapautilizado.tam, poblacionmax=poblacionmax,
-                                                    porcentajealeatorio=porcentajealeatorio, kbest=kbest,
-                                                    kworst=kworst, procruce=procruce, promut=promut, Evmax=Evmax,
-                                                    Tmax=Tmax, tipocruce=tipocruce, num_elites=num_elites)
-
-                end_time = time.perf_counter()
-                tiempo = (end_time - start_time)
-                mGlobal = algoritmo['ruta']
-                mDisGlobal = algoritmo['fitness']
-
-                print(f"\t{chr(10147)} Tiempo de ejecución: {tiempo:.4f} segundos")
-                print(f"\t{chr(10147)} Mejor camino: {mGlobal}")
-                print(f"\t{chr(10147)} Distancia del mejor camino: {mDisGlobal:.2f}")
 
             case _:
                 print(f"Algoritmo {nombre_algoritmo} no está implementado.")

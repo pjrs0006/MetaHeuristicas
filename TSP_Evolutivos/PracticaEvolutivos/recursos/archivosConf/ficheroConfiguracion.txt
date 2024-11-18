@@ -1,0 +1,26 @@
+Archivos=a280.tsp ch130.tsp d18512.tsp pr144.tsp u1060.tsp
+Semillas=77693013 76930137 69301377 93013776 21025743
+Algoritmos=randomgreedy busquedalocal tabu evolutivogeneracional evolutivoestacionario
+Parametros de seleccion:
+
+Archivo:0
+Algoritmo:3
+Semilla:2
+K(Ventana):5
+IteracionesTotales:5000
+Tam Entorno:8
+Disminucion Entorno:10
+Disminucion Iteraciones:10
+Estancamiento:5
+Tendencia Tabu:10
+PorcentajeDI:50
+Individuos Poblacion:100
+Porcentaje Aleatorio:80
+Kbest:2
+Kworst:2
+Probabilidad Cruce:70
+Probabilidad Mutacion:10
+Maximas Evaluaciones:50000
+Tiempo Limite:60
+Tipo Cruce:0
+Elite:2
