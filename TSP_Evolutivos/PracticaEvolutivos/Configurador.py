@@ -14,7 +14,7 @@ class Configurador:
         self.parametros = []
 
         logging.basicConfig(
-            level=logging.debug,  # Nivel mínimo que será registrado
+            level=logging.DEBUG,  # Nivel mínimo que será registrado
             format='%(message)s',  # Formato de los mensajes
             handlers=[
                 logging.FileHandler("app.log"),  # Guardar logs en un archivo
@@ -95,11 +95,21 @@ class Configurador:
 
     # Método para imprimir los detalles del mapa
     def imprimirMapa(self, miMapa):
-        print(f"Nombre: {miMapa.nombre}")
-        print(f"Comentario: {miMapa.comentario}")
-        print(f"Tipo: {miMapa.tipo}")
-        print(f"Dimensión: {miMapa.tam}")
-        print(f"Tipo de peso de arista: {miMapa.edge_type}")
+        print(f"\tNombre: {miMapa.nombre}")
+        logging.info(f"\tNombre: {miMapa.nombre}")
+        print(f"\tComentario: {miMapa.comentario}")
+        logging.info(f"\tComentario: {miMapa.comentario}")
+        print(f"\tTipo: {miMapa.tipo}")
+        logging.info(f"\tTipo: {miMapa.tipo}")
+        print(f"\tDimensión: {miMapa.tam}")
+        logging.info(f"\tDimension: {miMapa.tam}")
+        print(f"\tTipo de peso de arista: {miMapa.edge_type}")
+        logging.info(f"\tTipo de peso de arista: {miMapa.edge_type}")
+        print("\tCoordenadas de las ciudades:")
+        logging.info(f"\tCoordenadas de las ciudades:")
+        for ciudad in miMapa.ciudades.values():
+            print(f"\t\tID: {ciudad.id}, X: {ciudad.x}, Y: {ciudad.y}")
+            logging.info(f"\t\tID: {ciudad.id}, X: {ciudad.x}, Y: {ciudad.y}")
 
         print("Coordenadas de las ciudades:")
         for ciudad in miMapa.ciudades.values():
@@ -146,6 +156,7 @@ class Configurador:
 
         # Generar la matriz de distancias
         matriz_d = mapautilizado.generar_matriz_distancias()
+        logging.info("Matriz de distancias generada con exito")
 
         # Preguntar si se desea imprimir la matriz de distancias
         if input('¿Desea imprimir la matriz de distancias? (Si/No): ').strip().lower() == 'si':
@@ -154,7 +165,6 @@ class Configurador:
 
         # Seleccionar el algoritmo
         indice_algoritmo = int(self.parametros[1])
-        print(indice_algoritmo)
         nombre_algoritmo = self.algoritmos[indice_algoritmo]
 
         # Obtener la semilla
@@ -227,17 +237,30 @@ class Configurador:
             case "evolutivogeneracional":
                 print(f"Algoritmo evolutivogeneracional:")
                 print(f"---------------------------")
+                logging.info(f"Algoritmo evolutivogeneracional:")
+                logging.info(f"-------------------------------")
                 k = int(self.parametros[3]) if len(self.parametros) > 3 else 5
+                logging.info(f"\t\tK:\t{k}")
                 poblacionmax=int(self.parametros[11])
+                logging.info(f"\t\tPoblacion Max:\t{poblacionmax}")
                 porcentajealeatorio=int(self.parametros[12])
+                logging.info(f"\t\tPorcentaje Aleatorio:\t{porcentajealeatorio}")
                 kbest=int(self.parametros[13])
+                logging.info(f"\t\tKbest:\t{kbest}")
                 kworst=int(self.parametros[14])
+                logging.info(f"\t\tkworst:\t{kworst}")
                 procruce=int(self.parametros[17])
+                logging.info(f"\t\tProcruce:\t{procruce}")
                 promut=int(self.parametros[18])
+                logging.info(f"\t\tPromut:\t{promut}")
                 Evmax = int(self.parametros[17])
+                logging.info(f"\t\tEvmax:\t{Evmax}")
                 Tmax = int(self.parametros[18])
+                logging.info(f"\t\tTmax:\t{Tmax}")
                 tipocruce = int(self.parametros[19])
+                logging.info(f"\t\tTipocruce:\t{tipocruce}")
                 elite = int(self.parametros[20])
+                logging.info(f"\t\tElite:\t{elite}")
                 start_time = time.perf_counter()
                 algoritmo = self.ejecutar_algoritmo(nombre_algoritmo, matriz_distancias=matriz_d, k=k, seed=seed,
                                                     tam=mapautilizado.tam, poblacionmax=poblacionmax, porcentajealeatorio=porcentajealeatorio,kbest=kbest,
@@ -249,29 +272,41 @@ class Configurador:
                 mDisGlobal = algoritmo['fitness']
 
                 print(f"\t{chr(10147)} Tiempo de ejecución: {tiempo:.4f} segundos")
+                logging.info(f"\t\tTiempo de ejecucion: {tiempo:.4f} segundos")
                 print(f"\t{chr(10147)} Mejor camino: {mGlobal}")
+                logging.info(f"\t\tMejor camino: {mGlobal}")
                 print(f"\t{chr(10147)} Distancia del mejor camino: {mDisGlobal:.2f}")
+                logging.info(f"\t\tDistancia del mejor camino: {mDisGlobal:.2f}")
 
             case "evolutivoestacionario":
                 print(f"Algoritmo evolutivoestacionario:")
                 print(f"---------------------------")
+                logging.info(f"Algoritmo evolutivoestacionario:")
+                logging.info(f"-------------------------------")
                 k = int(self.parametros[3]) if len(self.parametros) > 3 else 5
+                logging.info(f"\t\tK:\t{k}")
                 poblacionmax = int(self.parametros[11])
+                logging.info(f"\t\tPoblacion Max:\t{poblacionmax}")
                 porcentajealeatorio = int(self.parametros[12])
+                logging.info(f"\t\tPorcentaje aleatorio:\t{porcentajealeatorio}")
                 kbest = int(self.parametros[13])
+                logging.info(f"\t\tKbest:\t{kbest}")
                 kworst = int(self.parametros[14])
-
+                logging.info(f"\t\tkworst:\t{kworst}")
                 promut = int(self.parametros[18])
+                logging.info(f"\t\tPromut:\t{promut}")
                 Evmax = int(self.parametros[17])
+                logging.info(f"\t\tEvmax:\t{Evmax}")
                 Tmax = int(self.parametros[18])
+                logging.info(f"\t\tTmax:\t{Tmax}")
                 tipocruce = int(self.parametros[19])
-                num_elites = int(self.parametros[20])
+                logging.info(f"\t\tTipocruce:\t{tipocruce}")
                 start_time = time.perf_counter()
                 algoritmo = self.ejecutar_algoritmo(nombre_algoritmo, matriz_distancias=matriz_d, k=k, seed=seed,
                                                     tam=mapautilizado.tam, poblacionmax=poblacionmax,
                                                     porcentajealeatorio=porcentajealeatorio, kbest=kbest,
                                                     kworst=kworst,promut=promut, Evmax=Evmax,
-                                                    Tmax=Tmax,tipocruce=tipocruce)#num_elites=num_elites)
+                                                    Tmax=Tmax,tipocruce=tipocruce)
 
                 end_time = time.perf_counter()
                 tiempo = (end_time - start_time)
@@ -279,8 +314,11 @@ class Configurador:
                 mDisGlobal = algoritmo['fitness']
 
                 print(f"\t{chr(10147)} Tiempo de ejecución: {tiempo:.4f} segundos")
+                logging.info(f"\t\tTiempo de ejecucion: {tiempo:.4f} segundos")
                 print(f"\t{chr(10147)} Mejor camino: {mGlobal}")
+                logging.info(f"\t\tMejor camino: {mGlobal}")
                 print(f"\t{chr(10147)} Distancia del mejor camino: {mDisGlobal:.2f}")
+                logging.info(f"\t\tDistancia del mejor camino: {mDisGlobal:.2f}")
 
 
 

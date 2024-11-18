@@ -4,7 +4,7 @@ Algoritmos=randomgreedy busquedalocal tabu evolutivogeneracional evolutivoestaci
 Parametros de seleccion:
 
 Archivo:1
-Algoritmo:3
+Algoritmo:4
 Semilla:2
 K(Ventana):5
 IteracionesTotales:5000

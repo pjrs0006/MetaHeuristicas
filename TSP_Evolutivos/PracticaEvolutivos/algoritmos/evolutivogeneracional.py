@@ -213,7 +213,7 @@ class evolutivogeneracional:
             # Comparar el peor nuevo élite con el peor de los élites globales
             if elite_individuos[-1]['fitness'] > max(mejor_global, key=lambda ind: ind['fitness'])['fitness']:
                 if contador == 0:
-                    logging.info(f'\t\t\tel peor de los elites de la nueva generacion es peor que el elite de la antigua->se añaden el/los elite(s) de la generacion pasada')
+                    logging.info(f'\t\t\t\tEl peor de los elites de la nueva generacion es peor que el elite de la antigua se añaden el/los elite(s) de la generacion pasada')
                 # Seleccionar los peores individuos en la nueva población
                 peores_individuos = self.torneo_perdedores(poblacion_nueva, self.kworst)
                 # Reemplazar los peores individuos con los mejores élites globales
@@ -234,7 +234,3 @@ class evolutivogeneracional:
         # Devolver el mejor individuo encontrado en todas las generaciones
         return min(mejor_global, key=lambda ind: ind['fitness'])
 
-    '''# Ejecución del algoritmo
-    mejor_solucion = ejecutar()
-    print("Mejor ruta encontrada:", mejor_solucion['ruta'])
-    print("Costo de la ruta:", mejor_solucion['fitness'])'''
