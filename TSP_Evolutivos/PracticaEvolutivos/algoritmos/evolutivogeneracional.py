@@ -228,9 +228,10 @@ class evolutivogeneracional:
 
             # Actualizar la población con la nueva generación
             poblacion = poblacion_nueva
+            if contador == 0:
+                logging.info(f'\t\t\tNueva poblacion: {poblacion}')
             contador+=1
-        if contador == 0:
-            logging.info(f'\t\t\tNueva poblacion: {poblacion}')
+
         # Devolver el mejor individuo encontrado en todas las generaciones
         return min(mejor_global, key=lambda ind: ind['fitness'])
 
