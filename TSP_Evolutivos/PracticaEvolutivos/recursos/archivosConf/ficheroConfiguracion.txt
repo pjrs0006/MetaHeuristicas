@@ -23,4 +23,4 @@ Probabilidad Mutacion:10
 Maximas Evaluaciones:50000
 Tiempo Limite:60
 Tipo Cruce:0
-Elite:1
+Elite:2

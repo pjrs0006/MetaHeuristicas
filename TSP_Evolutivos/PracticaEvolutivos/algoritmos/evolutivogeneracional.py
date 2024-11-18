@@ -31,7 +31,7 @@ class evolutivogeneracional:
 
     def randomGreedy(self):
         if self.k <= 0:
-            logging.critical(f"\t\t\tEl parámetro k no es correcto: debe ser mayor que 0.")
+            logging.info(f"\t\t\tEl parámetro k no es correcto: debe ser mayor que 0.")
             raise ValueError("El parámetro k no es correcto: debe ser mayor que 0.")
 
         nc = self.tam
@@ -163,15 +163,17 @@ class evolutivogeneracional:
         poblacion = self.inicializar_poblacion()
         evaluaciones = len(poblacion)
         inicio = time.time()
-
+        logging.info(f'\t\t\tpoblacion inicial: {poblacion}')
         # Seleccionar los mejores individuos iniciales como élite
         mejor_global = sorted(poblacion, key=lambda ind: ind['fitness'])[:self.elite]
-
+        logging.info(f'\t\t\telite(s): {mejor_global}')
+        contador=0
         while evaluaciones < self.Evmax and (time.time() - inicio) < self.Tmax:
             # Selección: Elegir padres mediante torneo
             padres = self.torneo_ganadores(poblacion, self.kbest)
             descendientes = []
-
+            if contador == 0:
+                logging.info(f'\t\t\tPadres: {padres}')
             # Cruce: Generar descendientes a partir de los padres seleccionados
             for i in range(0, len(padres), 2):
                 padre1 = padres[i]['ruta']
@@ -191,7 +193,8 @@ class evolutivogeneracional:
                 descendientes.append({'ruta': hijo1, 'fitness': self.dimedistancia(hijo1)})
                 descendientes.append({'ruta': hijo2, 'fitness': self.dimedistancia(hijo2)})
                 evaluaciones += 2
-
+            if contador == 0:
+                logging.info(f'\t\t\thijos: {descendientes}')
             # Mutación: Aplicar mutaciones a los descendientes
             for individuo in descendientes:
                 if random.random() < self.probmut / 100:
@@ -201,15 +204,18 @@ class evolutivogeneracional:
 
             # Reemplazar la población actual con los descendientes
             poblacion_nueva = descendientes
-
             # Seleccionar los mejores individuos de la nueva población como élite
             elite_individuos = sorted(poblacion_nueva, key=lambda ind: ind['fitness'])[:self.elite]
 
+            logging.info(f'\t\t\tGeneracion: {contador+1}')
+            for i in range(self.elite):
+                logging.info(f'\t\t\t\tElite{i}: {elite_individuos[i]}\n') #pasiempre
             # Comparar el peor nuevo élite con el peor de los élites globales
             if elite_individuos[-1]['fitness'] > max(mejor_global, key=lambda ind: ind['fitness'])['fitness']:
+                if contador == 0:
+                    logging.info(f'\t\t\tel peor de los elites de la nueva generacion es peor que el elite de la antigua->se añaden el/los elite(s) de la generacion pasada')
                 # Seleccionar los peores individuos en la nueva población
                 peores_individuos = self.torneo_perdedores(poblacion_nueva, self.kworst)
-
                 # Reemplazar los peores individuos con los mejores élites globales
                 for peor, mejor_elite in zip(peores_individuos, mejor_global):
                     for i, individuo in enumerate(poblacion_nueva):
@@ -222,7 +228,9 @@ class evolutivogeneracional:
 
             # Actualizar la población con la nueva generación
             poblacion = poblacion_nueva
-
+            contador+=1
+        if contador == 0:
+            logging.info(f'\t\t\tNueva poblacion: {poblacion}')
         # Devolver el mejor individuo encontrado en todas las generaciones
         return min(mejor_global, key=lambda ind: ind['fitness'])
 
