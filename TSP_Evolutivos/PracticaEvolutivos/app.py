@@ -1,76 +1,82 @@
-#flet run -d  main.py
-
 import os
 import flet as ft
-from flet_core import TextStyle, Alignment, ButtonStyle
+from flet_core import TextStyle, MainAxisAlignment, Alignment
 
 
 def main(page: ft.Page):
-    #Funciones Auxiliares:
+    # Funciones Auxiliares:
     def listar_archivos(directorio):
         if os.path.exists(directorio) and os.path.isdir(directorio):
             archivos = os.listdir(directorio)
-            dropdowns = []
-            for archivo in archivos:
-                dropdown = ft.Dropdown(
-                    width=220,
-                    border_radius=10,
-                    text_style=TextStyle(size=18, italic=True),
-                    filled=True,
-                    fill_color=ft.colors.TERTIARY,
-                    options=[
-                        ft.dropdown.Option(archivo)  # Cada archivo será una opción
-                    ],
-                )
-                dropdowns.append(dropdown)
-            return dropdowns
+            opciones = [ft.dropdown.Option(archivo) for archivo in archivos]  # Crear opciones dinámicamente
+            dropdown = ft.Dropdown(
+                width=300,
+                border_radius=10,
+                text_style=TextStyle(size=18, italic=True),
+                filled=True,
+                fill_color=ft.colors.TERTIARY,
+                options=opciones,  # Asignar las opciones generadas
+            )
+            return dropdown
         else:
             print(f"El directorio '{directorio}' no existe o no es un directorio.")
-            return []
+            return None
+
+    # Configuración del tema
     page.theme = ft.Theme(
         color_scheme=ft.ColorScheme(
             primary='#202B4B',
-            #on_primary=ft.colors.YELLOW,
-            #primary_container=ft.colors.GREEN_200,
             secondary='#333C58',
-            #on_secondary=ft.colors.YELLOW,
-            #secondary_container=ft.colors.GREEN_200,
             tertiary='#6A738F',
-            #on_secondary_container=ft.colors.YELLOW,
-
         ),
     )
-    page.bgcolor=ft.colors.SECONDARY
+    page.bgcolor = ft.colors.SECONDARY
 
+    # AppBar personalizada
     page.appbar = ft.AppBar(
-        title=ft.Text("Metaheuristicas",style=TextStyle(size=35),),
+        title=ft.Text("Metaheurísticas", style=TextStyle(size=30, color=ft.colors.WHITE)),
         center_title=True,
         bgcolor=ft.colors.PRIMARY,
-
     )
-    #Seleccionar algoritmo:
-    texto_algoritmo = ft.Text("Seleccione el algoritmo que desee ejecutar:",style=TextStyle(size=20),)
+
+    # Títulos y elementos visuales
+    header = ft.Text("Configuración de Parámetros", size=25, weight=ft.FontWeight.BOLD, color=ft.colors.WHITE)
+
+    # Selección de algoritmo
+    texto_algoritmo = ft.Text(
+        "Seleccione el algoritmo que desee ejecutar:",
+        style=TextStyle(size=20, color=ft.colors.WHITE),
+    )
     desplegable_algoritmo = ft.Dropdown(
-        width=220,
+        width=300,
         border_radius=10,
-        text_style=TextStyle(size=18,italic=True),
+        text_style=TextStyle(size=18, italic=True),
         filled=True,
         fill_color=ft.colors.TERTIARY,
         options=[
             ft.dropdown.Option("Random Greedy"),
-            ft.dropdown.Option("Busqueda Local"),
-            ft.dropdown.Option("Busqueda Tabu"),
+            ft.dropdown.Option("Búsqueda Local"),
+            ft.dropdown.Option("Búsqueda Tabú"),
             ft.dropdown.Option("Evolutivo Generacional"),
             ft.dropdown.Option("Evolutivo Estacionario"),
         ],
     )
-    #Seleccionar Archivo:
-    texto_archivo = ft.Text("Seleccione el archivo que desea procesar:", style=TextStyle(size=20), )
-    desplegable_archivo = listar_archivos("recursos/archivosConf")
-    #Selecciona Semilla:
-    texto_semilla = ft.Text("Selecciona la semilla:", style=TextStyle(size=20), )
+
+    # Selección de archivo
+    texto_archivo = ft.Text(
+        "Seleccione el archivo que desea procesar:",
+        style=TextStyle(size=20, color=ft.colors.WHITE),
+    )
+    ruta_tsp = os.path.join('recursos', 'archivosTSP')
+    desplegable_archivo = listar_archivos(ruta_tsp)
+
+    # Selección de semilla
+    texto_semilla = ft.Text(
+        "Seleccione la semilla:",
+        style=TextStyle(size=20, color=ft.colors.WHITE),
+    )
     desplegable_semilla = ft.Dropdown(
-        width=220,
+        width=300,
         border_radius=10,
         text_style=TextStyle(size=18, italic=True),
         filled=True,
@@ -83,27 +89,76 @@ def main(page: ft.Page):
             ft.dropdown.Option("21025743"),
         ],
     )
-    #Boton de opciones
-    # Función para manejar el evento del botón
-    def mostrar_parametros(event):
-        print("Botón presionado")
 
-    boton_seleccion= ft.FilledButton(text="Conficurar Parametros", on_click=mostrar_parametros, icon="SETTINGS", icon_color=ft.colors.WHITE, style=ft.ButtonStyle(
-                bgcolor=ft.colors.PRIMARY,color=ft.colors.WHITE,shape=ft.RoundedRectangleBorder(radius=5)
-            ),)
+    # Botón de opciones
+    def mostrar_parametros(event):
+        #Mostramos ahora una columna u otra en funcion del algoritmo seleccionado
+        print(desplegable_algoritmo.value)
+        if desplegable_algoritmo.value == "Evolutivo Generacional":
+            vistaParametros = ft.SafeArea(
+                ft.Container(
+                    content=ft.Column(
+                        [
+                            ft.Text("K"),
+                            ft.TextField("HolaMundo")
+                        ],
+                        alignment=ft.MainAxisAlignment.CENTER,
+                        spacing=20,
+                    ),
+                    width=600,
+                    bgcolor=ft.colors.PRIMARY,
+                    padding=30,
+                    border_radius=20,
+
+                ),
+            )
+            page.controls.clear()
+            page.add(vistaParametros)
+            page.update()
+        else:
+            print("Aquiestou")
+
+    boton_seleccion = ft.ElevatedButton(
+        text="Configurar Parámetros",
+        on_click=mostrar_parametros,
+        icon="SETTINGS",
+        icon_color=ft.colors.WHITE,
+        style=ft.ButtonStyle(
+            text_style=TextStyle(size=20, color=ft.colors.WHITE),
+            bgcolor=ft.colors.TERTIARY,
+            color=ft.colors.WHITE,
+            shape=ft.RoundedRectangleBorder(radius=5),
+            padding=20,
+        ),
+    )
+
+    # Agregar elementos al diseño
     page.add(
         ft.SafeArea(
-            ft.Row([
-                ft.Column([
-                    texto_algoritmo, desplegable_algoritmo, texto_archivo, desplegable_archivo, texto_semilla,
-                    desplegable_semilla,boton_seleccion
-                ],horizontal_alignment=ft.CrossAxisAlignment.START,expand=True),
-                ft.Column([
-                    texto_algoritmo, desplegable_algoritmo, texto_archivo, desplegable_archivo, texto_semilla,
-                    desplegable_semilla
-                ],horizontal_alignment=ft.CrossAxisAlignment.END,expand=True),
-            ],   expand=True, alignment=ft.MainAxisAlignment.CENTER),
+            ft.Container(
+                content=ft.Column(
+                    [
+                        header,
+                        texto_algoritmo,
+                        desplegable_algoritmo,
+                        texto_archivo,
+                        desplegable_archivo,
+                        texto_semilla,
+                        desplegable_semilla,
+                        boton_seleccion,
+                    ],
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    spacing=20,
+                ),
+                width=600,
+                bgcolor=ft.colors.PRIMARY,
+                padding=30,
+                border_radius=20,
+            ),
         )
     )
 
-ft.app(main)
+
+
+
+ft.app(target=main)
