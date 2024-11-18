@@ -161,22 +161,22 @@ class evolutivoestacionario:
     def ejecutar(self):
         # Inicializamos la población inicial con individuos aleatorios
         poblacion = self.inicializar_poblacion()
+        logging.critical(f'\t\t\tpoblacion inicial: {poblacion}')
         # Contador de evaluaciones igual al número de individuos en la población inicial
         evaluaciones = len(poblacion)
         # Registramos el tiempo de inicio para controlar el tiempo máximo de ejecución (Tmax)
         inicio = time.time()
         # Identificamos el mejor individuo inicial (con menor fitness)
         mejor_global = min(poblacion, key=lambda ind: ind['fitness'])
-        # # Antes de eliminar individuos, obtenemos los mejores individuos (élites) de la población actual
-        # poblacion_ordenada = sorted(poblacion, key=lambda ind: ind['fitness'])
-        # elites = poblacion_ordenada[:self.num_elites]
-
+        logging.critical(f'\t\t\tmejor global: {mejor_global}')
+        contador=0
         # Bucle principal que se ejecuta hasta alcanzar Evmax evaluaciones o Tmax tiempo
         while evaluaciones < self.Evmax and (time.time() - inicio) < self.Tmax:
             # Selección: seleccionamos dos padres mediante torneo binario con 'kbest' participantes
             padre1 = self.torneo_binario(poblacion, self.kbest)
             padre2 = self.torneo_binario(poblacion, self.kbest)
-
+            if contador==0:
+                logging.critical(f'\t\t\tPadres seleccionados: {padre1,padre2}')
             # Cruce: con probabilidad del 100% (siempre se realiza cruce en este caso)
             if self.tipocruce==0:
                 # Realizamos cruce OX2 para generar los hijos
@@ -186,7 +186,8 @@ class evolutivoestacionario:
                 # Realizamos cruce MOC para generar los hijos
                 hijo1 = self.cruce_MOC(padre1['ruta'], padre2['ruta'])
                 hijo2 = self.cruce_MOC(padre2['ruta'], padre1['ruta'])
-
+            if contador == 0:
+                logging.critical(f'\t\t\thijos: {hijo1,hijo2}')
             # Evaluamos los hijos calculando su fitness (distancia recorrida)
             fitness_hijo1 = self.dimedistancia(hijo1)
             fitness_hijo2 = self.dimedistancia(hijo2)
@@ -208,8 +209,8 @@ class evolutivoestacionario:
                 fitness_hijo2 = self.dimedistancia(hijo2)
                 # Incrementamos el contador de evaluaciones
                 evaluaciones += 1
-
-                # Reemplazamiento con elitismo en algoritmo estacionario
+                if contador == 0:
+                    logging.critical(f'\t\t\thijos mutados: {hijo1,hijo2}')
                 # Antes de eliminar individuos, obtenemos el mejor de la población actual
                 mejor_actual = min(poblacion, key=lambda ind: ind['fitness'])
 
@@ -226,13 +227,6 @@ class evolutivoestacionario:
                 poblacion.remove(peor)
                 # Añadimos el nuevo individuo a la población
                 poblacion.append(nuevo_individuo)
-            # # Reemplazamiento: eliminamos los peores individuos que no sean élites
-            # for nuevo_individuo in nuevos_individuos:
-            #     # Seleccionamos al individuo a eliminar mediante torneo de perdedores, asegurando no eliminar a los élites
-            #     peor = self.torneo_perdedores(poblacion, self.kworst, elites)
-            #     poblacion.remove(peor)
-            #     # Añadimos el nuevo individuo a la población
-            #     poblacion.append(nuevo_individuo)
 
             # Actualizamos el mejor individuo global si alguno de los nuevos individuos es mejor
             posibles_mejores = [
@@ -242,6 +236,7 @@ class evolutivoestacionario:
                 ]
             # Seleccionamos el individuo con el menor fitness como el nuevo mejor global
             mejor_global = min(posibles_mejores, key=lambda ind: ind['fitness'])
-
+            contador+=1
+        logging.critical(f'\t\t\tmejor global: {mejor_global}') #paismepre
         # Al terminar el bucle, devolvemos el mejor individuo encontrado
         return mejor_global

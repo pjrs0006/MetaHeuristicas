@@ -7,11 +7,20 @@ import logging
 
 class Configurador:
     def __init__(self):
-        logging.getLogger().addHandler(logging.NullHandler())
+        #logging.getLogger().addHandler(logging.NullHandler())
         self.archivos = []
         self.semillas = []
         self.algoritmos = []
         self.parametros = []
+
+        logging.basicConfig(
+            level=logging.debug,  # Nivel mínimo que será registrado
+            format='%(message)s',  # Formato de los mensajes
+            handlers=[
+                logging.FileHandler("app.log"),  # Guardar logs en un archivo
+            ]
+        )
+
     # Método para leer el archivo de configuración
     def leer_archivo_config(self, ruta_config):
         if os.path.isfile(ruta_config):
