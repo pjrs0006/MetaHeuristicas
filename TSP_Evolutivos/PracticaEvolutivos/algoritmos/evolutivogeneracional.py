@@ -163,17 +163,17 @@ class evolutivogeneracional:
         poblacion = self.inicializar_poblacion()
         evaluaciones = len(poblacion)
         inicio = time.time()
-        logging.info(f'\t\t\tpoblacion inicial: {poblacion}')
+        logging.info(f'\t\t\tpoblacion inicial: {poblacion}\n')
         # Seleccionar los mejores individuos iniciales como élite
         mejor_global = sorted(poblacion, key=lambda ind: ind['fitness'])[:self.elite]
-        logging.info(f'\t\t\telite(s): {mejor_global}')
+        logging.info(f'\t\t\telite(s): {mejor_global}\n')
         contador=0
         while evaluaciones < self.Evmax and (time.time() - inicio) < self.Tmax:
             # Selección: Elegir padres mediante torneo
             padres = self.torneo_ganadores(poblacion, self.kbest)
             descendientes = []
             if contador == 0:
-                logging.info(f'\t\t\tPadres: {padres}')
+                logging.info(f'\t\t\tPadres: {padres}\n')
             # Cruce: Generar descendientes a partir de los padres seleccionados
             for i in range(0, len(padres), 2):
                 padre1 = padres[i]['ruta']
@@ -194,7 +194,7 @@ class evolutivogeneracional:
                 descendientes.append({'ruta': hijo2, 'fitness': self.dimedistancia(hijo2)})
                 evaluaciones += 2
             if contador == 0:
-                logging.info(f'\t\t\thijos: {descendientes}')
+                logging.info(f'\t\t\thijos: {descendientes}\n')
             # Mutación: Aplicar mutaciones a los descendientes
             for individuo in descendientes:
                 if random.random() < self.probmut / 100:
@@ -228,8 +228,6 @@ class evolutivogeneracional:
 
             # Actualizar la población con la nueva generación
             poblacion = poblacion_nueva
-            if contador == 0:
-                logging.info(f'\t\t\tNueva poblacion: {poblacion}')
             contador+=1
 
         # Devolver el mejor individuo encontrado en todas las generaciones

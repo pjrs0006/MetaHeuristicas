@@ -236,6 +236,7 @@ class evolutivoestacionario:
             # Seleccionamos el individuo con el menor fitness como el nuevo mejor global
             mejor_global = min(posibles_mejores, key=lambda ind: ind['fitness'])
             contador+=1
+
             logging.info(f'\t\t\tmejor global: {mejor_global}') #paismepre
         # Al terminar el bucle, devolvemos el mejor individuo encontrado
         return mejor_global

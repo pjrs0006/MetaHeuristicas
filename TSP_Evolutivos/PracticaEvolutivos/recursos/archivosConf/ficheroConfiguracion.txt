@@ -3,9 +3,9 @@ Semillas=77693013 76930137 69301377 93013776 21025743
 Algoritmos=randomgreedy busquedalocal tabu evolutivogeneracional evolutivoestacionario
 Parametros de seleccion:
 
-Archivo:1
+Archivo:0
 Algoritmo:3
-Semilla:2
+Semilla:0
 K(Ventana):5
 IteracionesTotales:5000
 Tam Entorno:8
@@ -17,10 +17,10 @@ PorcentajeDI:50
 Individuos Poblacion:100
 Porcentaje Aleatorio:80
 Kbest:2
-Kworst:2
+Kworst:3
 Probabilidad Cruce:70
 Probabilidad Mutacion:10
 Maximas Evaluaciones:50000
 Tiempo Limite:60
 Tipo Cruce:0
-Elite:2
+Elite:1
