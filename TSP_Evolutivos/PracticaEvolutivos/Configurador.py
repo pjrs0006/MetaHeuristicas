@@ -241,6 +241,7 @@ class Configurador:
                 logging.info(f"-------------------------------")
                 k = int(self.parametros[3]) if len(self.parametros) > 3 else 5
                 logging.info(f"\t\tK:\t{k}")
+                logging.info(f"\t\tsemilla:\t{seed}")
                 poblacionmax=int(self.parametros[11])
                 logging.info(f"\t\tPoblacion Max:\t{poblacionmax}")
                 porcentajealeatorio=int(self.parametros[12])
