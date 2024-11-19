@@ -208,8 +208,6 @@ class evolutivogeneracional:
             elite_individuos = sorted(poblacion_nueva, key=lambda ind: ind['fitness'])[:self.elite]
 
             logging.info(f'\t\t\tGeneracion: {contador+1}')
-            for i in range(self.elite):
-                logging.info(f'\t\t\t\tElite{i}: {elite_individuos[i]}\n') #pasiempre
             # Comparar el peor nuevo élite con el peor de los élites globales
             if elite_individuos[-1]['fitness'] > max(mejor_global, key=lambda ind: ind['fitness'])['fitness']:
                 if contador == 0:
@@ -225,6 +223,9 @@ class evolutivogeneracional:
             else:
                 # Actualizar el conjunto global de élites
                 mejor_global = elite_individuos
+
+            for i in range(self.elite):
+                logging.info(f'\t\t\t\tElite{i + 1}: {mejor_global[i]}\n')  # pasiempre
 
             # Actualizar la población con la nueva generación
             poblacion = poblacion_nueva

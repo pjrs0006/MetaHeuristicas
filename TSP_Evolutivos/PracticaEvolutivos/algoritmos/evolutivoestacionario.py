@@ -192,7 +192,7 @@ class evolutivoestacionario:
             fitness_hijo2 = self.dimedistancia(hijo2)
             # Actualizamos el contador de evaluaciones tras evaluar a los dos hijos
             evaluaciones += 2
-
+            nuevos_individuos =[]
             # Mutación: aplicamos mutación a los hijos con una cierta probabilidad
             if random.random() < self.probmut / 100:
                 # Aplicamos la mutación 2-opt al primer hijo

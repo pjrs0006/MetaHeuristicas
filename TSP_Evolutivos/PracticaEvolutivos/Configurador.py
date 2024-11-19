@@ -17,7 +17,7 @@ class Configurador:
             level=logging.DEBUG,  # Nivel mínimo que será registrado
             format='%(message)s',  # Formato de los mensajes
             handlers=[
-                logging.FileHandler("app.log"),  # Guardar logs en un archivo
+                logging.FileHandler("fichero.log"),  # Guardar logs en un archivo
             ]
         )
 
