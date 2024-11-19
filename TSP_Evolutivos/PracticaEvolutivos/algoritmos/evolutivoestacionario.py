@@ -160,14 +160,14 @@ class evolutivoestacionario:
     def ejecutar(self):
         # Inicializamos la población inicial con individuos aleatorios
         poblacion = self.inicializar_poblacion()
-        logging.info(f'\t\t\tpoblacion inicial: {poblacion}')
+        logging.info(f'\t\t\tpoblacion inicial: {poblacion}\n')
         # Contador de evaluaciones igual al número de individuos en la población inicial
         evaluaciones = len(poblacion)
         # Registramos el tiempo de inicio para controlar el tiempo máximo de ejecución (Tmax)
         inicio = time.time()
         # Identificamos el mejor individuo inicial (con menor fitness)
         mejor_global = min(poblacion, key=lambda ind: ind['fitness'])
-        logging.info(f'\t\t\tmejor global: {mejor_global}')
+        logging.info(f'\t\t\tmejor global: {mejor_global}\n')
         contador=0
         # Bucle principal que se ejecuta hasta alcanzar Evmax evaluaciones o Tmax tiempo
         while evaluaciones < self.Evmax and (time.time() - inicio) < self.Tmax:
@@ -175,7 +175,7 @@ class evolutivoestacionario:
             padre1 = self.torneo_binario(poblacion, self.kbest)
             padre2 = self.torneo_binario(poblacion, self.kbest)
             if contador==0:
-                logging.info(f'\t\t\tPadres seleccionados: {padre1,padre2}')
+                logging.info(f'\t\t\tPadres seleccionados: {padre1,padre2}\n')
             # Cruce: con probabilidad del 100% (siempre se realiza cruce en este caso)
             if self.tipocruce==0:
                 # Realizamos cruce OX2 para generar los hijos
@@ -186,7 +186,7 @@ class evolutivoestacionario:
                 hijo1 = self.cruce_MOC(padre1['ruta'], padre2['ruta'])
                 hijo2 = self.cruce_MOC(padre2['ruta'], padre1['ruta'])
             if contador == 0:
-                logging.info(f'\t\t\thijos: {hijo1,hijo2}')
+                logging.info(f'\t\t\thijos: {hijo1,hijo2}\n')
             # Evaluamos los hijos calculando su fitness (distancia recorrida)
             fitness_hijo1 = self.dimedistancia(hijo1)
             fitness_hijo2 = self.dimedistancia(hijo2)
@@ -209,7 +209,7 @@ class evolutivoestacionario:
                 # Incrementamos el contador de evaluaciones
                 evaluaciones += 1
                 if contador == 0:
-                    logging.info(f'\t\t\thijos mutados: {hijo1,hijo2}')
+                    logging.info(f'\t\t\thijos mutados: {hijo1,hijo2}\n')
                 # Antes de eliminar individuos, obtenemos el mejor de la población actual
                 mejor_actual = min(poblacion, key=lambda ind: ind['fitness'])
 
@@ -237,6 +237,6 @@ class evolutivoestacionario:
             mejor_global = min(posibles_mejores, key=lambda ind: ind['fitness'])
             contador+=1
 
-            logging.info(f'\t\t\tmejor global: {mejor_global}') #paismepre
+            logging.info(f'\t\t\tmejor global: {mejor_global}\n') #paismepre
         # Al terminar el bucle, devolvemos el mejor individuo encontrado
         return mejor_global
