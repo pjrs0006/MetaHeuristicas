@@ -230,7 +230,7 @@ class evolutivos_automaticos:
             logging.info(f"\t\tSeed:\t{seed}")
 
             start_time = time.perf_counter()
-            algoritmo = self.ejecutar_algoritmo(nombre_algoritmo, matriz_distancias=matriz_d, k=k, seed=seed,
+            algoritmo = self.ejecutar_algoritmo(nombre_algoritmo,logging=logging, matriz_distancias=matriz_d, k=k, seed=seed,
                                             tam=mapautilizado.tam, poblacionmax=poblacionmax,
                                             porcentajealeatorio=porcentajealeatorio, kbest=kbest,
                                             kworst=kworst, procruce=procruce, promut=promut, Evmax=Evmax, Tmax=Tmax,
@@ -303,7 +303,7 @@ class evolutivos_automaticos:
             logging.info(f"\t\tSeed:\t{seed}")
 
             start_time = time.perf_counter()
-            algoritmo = self.ejecutar_algoritmo(nombre_algoritmo, matriz_distancias=matriz_d, k=k, seed=seed,
+            algoritmo = self.ejecutar_algoritmo(nombre_algoritmo,logging=logging, matriz_distancias=matriz_d, k=k, seed=seed,
                                                 tam=mapautilizado.tam, poblacionmax=poblacionmax,
                                                 porcentajealeatorio=porcentajealeatorio, kbest=kbest,
                                                 kworst=kworst, procruce=procruce, promut=promut, Evmax=Evmax, Tmax=Tmax,
@@ -376,7 +376,7 @@ class evolutivos_automaticos:
             logging.info(f"\t\tSeed:\t{seed}")
 
             start_time = time.perf_counter()
-            algoritmo = self.ejecutar_algoritmo(nombre_algoritmo, matriz_distancias=matriz_d, k=k, seed=seed,
+            algoritmo = self.ejecutar_algoritmo(nombre_algoritmo,logging=logging, matriz_distancias=matriz_d, k=k, seed=seed,
                                                 tam=mapautilizado.tam, poblacionmax=poblacionmax,
                                                 porcentajealeatorio=porcentajealeatorio, kbest=kbest,
                                                 kworst=kworst, procruce=procruce, promut=promut, Evmax=Evmax, Tmax=Tmax,
@@ -449,7 +449,7 @@ class evolutivos_automaticos:
             logging.info(f"\t\tSeed:\t{seed}")
 
             start_time = time.perf_counter()
-            algoritmo = self.ejecutar_algoritmo(nombre_algoritmo, matriz_distancias=matriz_d, k=k, seed=seed,
+            algoritmo = self.ejecutar_algoritmo(nombre_algoritmo,logging=logging, matriz_distancias=matriz_d, k=k, seed=seed,
                                                 tam=mapautilizado.tam, poblacionmax=poblacionmax,
                                                 porcentajealeatorio=porcentajealeatorio, kbest=kbest,
                                                 kworst=kworst, procruce=procruce, promut=promut, Evmax=Evmax, Tmax=Tmax,
@@ -522,7 +522,7 @@ class evolutivos_automaticos:
             logging.info(f"\t\tSeed:\t{seed}")
 
             start_time = time.perf_counter()
-            algoritmo = self.ejecutar_algoritmo(nombre_algoritmo, matriz_distancias=matriz_d, k=k, seed=seed,
+            algoritmo = self.ejecutar_algoritmo(nombre_algoritmo,logging=logging, matriz_distancias=matriz_d, k=k, seed=seed,
                                                 tam=mapautilizado.tam, poblacionmax=poblacionmax,
                                                 porcentajealeatorio=porcentajealeatorio, kbest=kbest,
                                                 kworst=kworst, procruce=procruce, promut=promut, Evmax=Evmax, Tmax=Tmax,
@@ -595,7 +595,7 @@ class evolutivos_automaticos:
             logging.info(f"\t\tSeed:\t{seed}")
 
             start_time = time.perf_counter()
-            algoritmo = self.ejecutar_algoritmo(nombre_algoritmo, matriz_distancias=matriz_d, k=k, seed=seed,
+            algoritmo = self.ejecutar_algoritmo(nombre_algoritmo,logging=logging, matriz_distancias=matriz_d, k=k, seed=seed,
                                                 tam=mapautilizado.tam, poblacionmax=poblacionmax,
                                                 porcentajealeatorio=porcentajealeatorio, kbest=kbest,
                                                 kworst=kworst, procruce=procruce, promut=promut, Evmax=Evmax, Tmax=Tmax,
@@ -668,7 +668,7 @@ class evolutivos_automaticos:
             logging.info(f"\t\tSeed:\t{seed}")
 
             start_time = time.perf_counter()
-            algoritmo = self.ejecutar_algoritmo(nombre_algoritmo, matriz_distancias=matriz_d, k=k, seed=seed,
+            algoritmo = self.ejecutar_algoritmo(nombre_algoritmo, logging=logging,matriz_distancias=matriz_d, k=k, seed=seed,
                                                 tam=mapautilizado.tam, poblacionmax=poblacionmax,
                                                 porcentajealeatorio=porcentajealeatorio, kbest=kbest,
                                                 kworst=kworst, procruce=procruce, promut=promut, Evmax=Evmax, Tmax=Tmax,
@@ -741,7 +741,7 @@ class evolutivos_automaticos:
             logging.info(f"\t\tSeed:\t{seed}")
 
             start_time = time.perf_counter()
-            algoritmo = self.ejecutar_algoritmo(nombre_algoritmo, matriz_distancias=matriz_d, k=k, seed=seed,
+            algoritmo = self.ejecutar_algoritmo(nombre_algoritmo,logging=logging, matriz_distancias=matriz_d, k=k, seed=seed,
                                                 tam=mapautilizado.tam, poblacionmax=poblacionmax,
                                                 porcentajealeatorio=porcentajealeatorio, kbest=kbest,
                                                 kworst=kworst, procruce=procruce, promut=promut, Evmax=Evmax, Tmax=Tmax,
@@ -814,7 +814,7 @@ class evolutivos_automaticos:
             logging.info(f"\t\tSeed:\t{seed}")
 
             start_time = time.perf_counter()
-            algoritmo = self.ejecutar_algoritmo(nombre_algoritmo, matriz_distancias=matriz_d, k=k, seed=seed,
+            algoritmo = self.ejecutar_algoritmo(nombre_algoritmo,logging=logging, matriz_distancias=matriz_d, k=k, seed=seed,
                                                 tam=mapautilizado.tam, poblacionmax=poblacionmax,
                                                 porcentajealeatorio=porcentajealeatorio, kbest=kbest,
                                                 kworst=kworst, promut=promut, Evmax=Evmax,
@@ -884,7 +884,7 @@ class evolutivos_automaticos:
             logging.info(f"\t\tSeed:\t{seed}")
 
             start_time = time.perf_counter()
-            algoritmo = self.ejecutar_algoritmo(nombre_algoritmo, matriz_distancias=matriz_d, k=k, seed=seed,
+            algoritmo = self.ejecutar_algoritmo(nombre_algoritmo, logging=logging,matriz_distancias=matriz_d, k=k, seed=seed,
                                                 tam=mapautilizado.tam, poblacionmax=poblacionmax,
                                                 porcentajealeatorio=porcentajealeatorio, kbest=kbest,
                                                 kworst=kworst, promut=promut, Evmax=Evmax,

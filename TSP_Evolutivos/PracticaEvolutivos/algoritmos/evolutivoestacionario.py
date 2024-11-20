@@ -6,7 +6,7 @@ import time
 
 
 class evolutivoestacionario:
-    def __init__(self,  matriz_distancias, k, seed, tam, poblacionmax, porcentajealeatorio, Evmax, Tmax, kbest, kworst, promut, tipocruce):#num_elites):
+    def __init__(self, logging, matriz_distancias, k, seed, tam, poblacionmax, porcentajealeatorio, Evmax, Tmax, kbest, kworst, promut, tipocruce):#num_elites):
         self.matriz_distancias = matriz_distancias
         self.k = k
         self.seed = seed
@@ -19,6 +19,7 @@ class evolutivoestacionario:
         self.kworst = kworst
         self.probmut=promut
         self.tipocruce=tipocruce
+        self.logging=logging
 
         if self.k <= 0:
             raise ValueError("El parámetro k no es correcto: debe ser mayor que 0.")
@@ -28,7 +29,7 @@ class evolutivoestacionario:
 
     def randomGreedy(self):
         if self.k <= 0:
-            logging.info(f"\t\t\tEl parámetro k no es correcto: debe ser mayor que 0.")
+            self.logging.info(f"\t\t\tEl parámetro k no es correcto: debe ser mayor que 0.")
             raise ValueError("El parámetro k no es correcto: debe ser mayor que 0.")
 
         nc = self.tam
@@ -160,7 +161,7 @@ class evolutivoestacionario:
     def ejecutar(self):
         # Inicializamos la población inicial con individuos aleatorios
         poblacion = self.inicializar_poblacion()
-        logging.info(f'\t\t\tpoblacion inicial: {poblacion}\n')
+        self.logging.info(f'\t\t\tpoblacion inicial: {poblacion}\n')
         # Contador de evaluaciones igual al número de individuos en la población inicial
         evaluaciones = len(poblacion)
         # Registramos el tiempo de inicio para controlar el tiempo máximo de ejecución (Tmax)
@@ -175,7 +176,7 @@ class evolutivoestacionario:
             padre1 = self.torneo_binario(poblacion, self.kbest)
             padre2 = self.torneo_binario(poblacion, self.kbest)
             if contador==0:
-                logging.info(f'\t\t\tPadres seleccionados: {padre1,padre2}\n')
+                self.logging.info(f'\t\t\tPadres seleccionados: {padre1,padre2}\n')
             # Cruce: con probabilidad del 100% (siempre se realiza cruce en este caso)
             if self.tipocruce==0:
                 # Realizamos cruce OX2 para generar los hijos
@@ -209,7 +210,7 @@ class evolutivoestacionario:
                 # Incrementamos el contador de evaluaciones
                 evaluaciones += 1
                 if contador == 0:
-                    logging.info(f'\t\t\thijos mutados: {hijo1,hijo2}\n')
+                    self.logging.info(f'\t\t\thijos mutados: {hijo1,hijo2}\n')
                 # Antes de eliminar individuos, obtenemos el mejor de la población actual
                 mejor_actual = min(poblacion, key=lambda ind: ind['fitness'])
 
@@ -237,6 +238,6 @@ class evolutivoestacionario:
             mejor_global = min(posibles_mejores, key=lambda ind: ind['fitness'])
             contador+=1
 
-            logging.info(f'\t\t\tmejor global: {mejor_global}\n') #paismepre
+            self.logging.info(f'\t\t\tmejor global: {mejor_global}\n') #paismepre
         # Al terminar el bucle, devolvemos el mejor individuo encontrado
         return mejor_global
