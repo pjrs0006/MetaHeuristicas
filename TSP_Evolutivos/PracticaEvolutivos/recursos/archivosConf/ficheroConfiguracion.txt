@@ -5,7 +5,7 @@ Parametros de seleccion:
 
 Archivo:0
 Algoritmo:3
-Semilla:1
+Semilla:0
 K(Ventana):5
 IteracionesTotales:5000
 Tam Entorno:8
