@@ -3,6 +3,7 @@
 
 from Configurador import Configurador
 from ejecucionesAutomaticas import EjecucionesAutomaticas
+from EvolutivosAutomaticos import evolutivos_automaticos
 
 
 def main():
@@ -13,7 +14,7 @@ def main():
     seleccion = int( input("Introduzca su eleccion:\t"))
     match seleccion:
         case 1:
-            configurador=EjecucionesAutomaticas()
+            configurador=evolutivos_automaticos()
             configurador.ejecutar()
             input("Pulse ENTER para terminar la ejecucion")
         case 2:
