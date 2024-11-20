@@ -100,8 +100,8 @@ class evolutivos_automaticos:
         instancia = clase_algoritmo(*args, **kwargs)
         return instancia.ejecutar()
     # Metodo para configurar el logger de manera dinamica:
-    def configurar_logger(self, nombre_fichero, nombre_algoritmo, version_algoritmo):
-        log_filename = f"{nombre_fichero}_{nombre_algoritmo}_{version_algoritmo}.log"
+    def configurar_logger(self, nombre_fichero, nombre_algoritmo, version_algoritmo, semilla):
+        log_filename = f"{nombre_fichero}_{nombre_algoritmo}_{version_algoritmo}_{semilla}.log"
         logger = logging.getLogger(log_filename)
         logger.setLevel(logging.DEBUG)
 
@@ -112,10 +112,6 @@ class evolutivos_automaticos:
         formatter = logging.Formatter('%(message)s')
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
-
-        console_handler = logging.StreamHandler()
-        console_handler.setFormatter(formatter)
-        logger.addHandler(console_handler)
 
         return logger
 
@@ -136,10 +132,8 @@ class evolutivos_automaticos:
 
         # Validaciones
         if not self.archivos:
-            logging.critical("No se han especificado archivos en la configuración.")
             raise ValueError("No se han especificado archivos en la configuración.")
         if not self.algoritmos:
-            logging.critical("No se han especificado algoritmos en la configuración.")
             raise ValueError("No se han especificado algoritmos en la configuración.")
 
 
@@ -182,8 +176,9 @@ class evolutivos_automaticos:
         # Algoritmo Evolutivo Generacional_Version_1:
 
             #Configuracion del Logger para cada Algoritmo y Version
-            logger = self.configurar_logger(mapautilizado.nombre, nombre_algoritmo, f"Version_1")
-            logger.info(f"Ejecutando {nombre_algoritmo}_Version_1 con semilla {self.semillas[semilla]}")
+            seed = self.semillas[semilla]
+            logging = self.configurar_logger(mapautilizado.nombre, nombre_algoritmo, f"Version_1",seed)
+            logging.info(f"Ejecutando {nombre_algoritmo}_Version_1 con semilla {self.semillas[semilla]}")
 
             print(f"Algoritmo Evolutivo Generacional:")
             print(f"--------------------------------")
@@ -231,7 +226,7 @@ class evolutivos_automaticos:
             elite = int(1)
             logging.info(f"\t\tElite:\t{elite}")
 
-            seed = self.semillas[semilla]
+
             logging.info(f"\t\tSeed:\t{seed}")
 
             start_time = time.perf_counter()
@@ -239,7 +234,7 @@ class evolutivos_automaticos:
                                             tam=mapautilizado.tam, poblacionmax=poblacionmax,
                                             porcentajealeatorio=porcentajealeatorio, kbest=kbest,
                                             kworst=kworst, procruce=procruce, promut=promut, Evmax=Evmax, Tmax=Tmax,
-                                            tipocruce=tipocruce, elite=elite)  # ,num_elites=num_elites)
+                                            tipocruce=tipocruce, elite=elite)
 
             end_time = time.perf_counter()
             tiempo = (end_time - start_time)
@@ -256,8 +251,8 @@ class evolutivos_automaticos:
             # Algoritmo Evolutivo Generacional_Version_2:
 
             # Configuracion del Logger para cada Algoritmo y Version
-            logger = self.configurar_logger(mapautilizado.nombre, nombre_algoritmo, f"Version_2")
-            logger.info(f"Ejecutando {nombre_algoritmo}_Version_2 con semilla {self.semillas[semilla]}")
+            logging = self.configurar_logger(mapautilizado.nombre, nombre_algoritmo, f"Version_2",seed)
+            logging.info(f"Ejecutando {nombre_algoritmo}_Version_2 con semilla {self.semillas[semilla]}")
 
             print(f"Algoritmo Evolutivo Generacional:")
             print(f"--------------------------------")
@@ -329,8 +324,8 @@ class evolutivos_automaticos:
             # Algoritmo Evolutivo Generacional_Version_3:
 
             # Configuracion del Logger para cada Algoritmo y Version
-            logger = self.configurar_logger(mapautilizado.nombre, nombre_algoritmo, f"Version_3")
-            logger.info(f"Ejecutando {nombre_algoritmo}_Version_3 con semilla {self.semillas[semilla]}")
+            logging = self.configurar_logger(mapautilizado.nombre, nombre_algoritmo, f"Version_3",seed)
+            logging.info(f"Ejecutando {nombre_algoritmo}_Version_3 con semilla {self.semillas[semilla]}")
 
             print(f"Algoritmo Evolutivo Generacional:")
             print(f"--------------------------------")
@@ -402,8 +397,8 @@ class evolutivos_automaticos:
             # Algoritmo Evolutivo Generacional_Version_4:
 
             # Configuracion del Logger para cada Algoritmo y Version
-            logger = self.configurar_logger(mapautilizado.nombre, nombre_algoritmo, f"Version_4")
-            logger.info(f"Ejecutando {nombre_algoritmo}_Version_4 con semilla {self.semillas[semilla]}")
+            logging = self.configurar_logger(mapautilizado.nombre, nombre_algoritmo, f"Version_4",seed)
+            logging.info(f"Ejecutando {nombre_algoritmo}_Version_4 con semilla {self.semillas[semilla]}")
 
             print(f"Algoritmo Evolutivo Generacional:")
             print(f"--------------------------------")
@@ -475,8 +470,8 @@ class evolutivos_automaticos:
             # Algoritmo Evolutivo Generacional_Version_5:
 
             # Configuracion del Logger para cada Algoritmo y Version
-            logger = self.configurar_logger(mapautilizado.nombre, nombre_algoritmo, f"Version_5")
-            logger.info(f"Ejecutando {nombre_algoritmo}_Version_5 con semilla {self.semillas[semilla]}")
+            logging = self.configurar_logger(mapautilizado.nombre, nombre_algoritmo, f"Version_5",seed)
+            logging.info(f"Ejecutando {nombre_algoritmo}_Version_5 con semilla {self.semillas[semilla]}")
 
             print(f"Algoritmo Evolutivo Generacional:")
             print(f"--------------------------------")
@@ -548,8 +543,8 @@ class evolutivos_automaticos:
             # Algoritmo Evolutivo Generacional_Version_6:
 
             # Configuracion del Logger para cada Algoritmo y Version
-            logger = self.configurar_logger(mapautilizado.nombre, nombre_algoritmo, f"Version_6")
-            logger.info(f"Ejecutando {nombre_algoritmo}_Version_6 con semilla {self.semillas[semilla]}")
+            logging = self.configurar_logger(mapautilizado.nombre, nombre_algoritmo, f"Version_6",seed)
+            logging.info(f"Ejecutando {nombre_algoritmo}_Version_6 con semilla {self.semillas[semilla]}")
 
             print(f"Algoritmo Evolutivo Generacional:")
             print(f"--------------------------------")
@@ -621,8 +616,8 @@ class evolutivos_automaticos:
             # Algoritmo Evolutivo Generacional_Version_7:
 
             # Configuracion del Logger para cada Algoritmo y Version
-            logger = self.configurar_logger(mapautilizado.nombre, nombre_algoritmo, f"Version_7")
-            logger.info(f"Ejecutando {nombre_algoritmo}_Version_7 con semilla {self.semillas[semilla]}")
+            logging = self.configurar_logger(mapautilizado.nombre, nombre_algoritmo, f"Version_7",seed)
+            logging.info(f"Ejecutando {nombre_algoritmo}_Version_7 con semilla {self.semillas[semilla]}")
 
             print(f"Algoritmo Evolutivo Generacional:")
             print(f"--------------------------------")
@@ -694,8 +689,8 @@ class evolutivos_automaticos:
             # Algoritmo Evolutivo Generacional_Version_8:
 
             # Configuracion del Logger para cada Algoritmo y Version
-            logger = self.configurar_logger(mapautilizado.nombre, nombre_algoritmo, f"Version_8")
-            logger.info(f"Ejecutando {nombre_algoritmo}_Version_8 con semilla {self.semillas[semilla]}")
+            logging = self.configurar_logger(mapautilizado.nombre, nombre_algoritmo, f"Version_8",seed)
+            logging.info(f"Ejecutando {nombre_algoritmo}_Version_8 con semilla {self.semillas[semilla]}")
 
             print(f"Algoritmo Evolutivo Generacional:")
             print(f"--------------------------------")
@@ -770,8 +765,8 @@ class evolutivos_automaticos:
             #Algoritmo Evolutivo Estacionario_Version_1
 
             # Configuracion del Logger para cada Algoritmo y Version
-            logger = self.configurar_logger(mapautilizado.nombre, nombre_algoritmo, f"Version_1")
-            logger.info(f"Ejecutando {nombre_algoritmo}_Version_1 con semilla {self.semillas[semilla]}")
+            logging = self.configurar_logger(mapautilizado.nombre, nombre_algoritmo, f"Version_1",seed)
+            logging.info(f"Ejecutando {nombre_algoritmo}_Version_1 con semilla {self.semillas[semilla]}")
 
             print(f"Algoritmo evolutivoestacionario:")
             print(f"---------------------------")
@@ -840,8 +835,8 @@ class evolutivos_automaticos:
             # Algoritmo Evolutivo Estacionario_Version_2
 
             # Configuracion del Logger para cada Algoritmo y Version
-            logger = self.configurar_logger(mapautilizado.nombre, nombre_algoritmo, f"Version_2")
-            logger.info(f"Ejecutando {nombre_algoritmo}_Version_1 con semilla {self.semillas[semilla]}")
+            logging = self.configurar_logger(mapautilizado.nombre, nombre_algoritmo, f"Version_2",seed)
+            logging.info(f"Ejecutando {nombre_algoritmo}_Version_1 con semilla {self.semillas[semilla]}")
 
             print(f"Algoritmo evolutivoestacionario:")
             print(f"---------------------------")
