@@ -1,0 +1,14 @@
+{
+    "Iteraciones": 10000,
+    "Segundos de ejecución": 600,
+    "Tamaño de la población": 10,
+    "α": 1,
+    "β": 2,
+    "q0": 0.95,
+    "Actualización global de feromona": 0.1,
+    "Actualización local de feromona": 0.1,
+    "Feromona inicial": 100,
+    "Porcentaje de reducción de iteraciones": 0.005,
+    "Porcentaje de iteraciones inicial para usar mejor global": 0.08,
+    "Hormiga que aporta feromona": "mejor global"
+}

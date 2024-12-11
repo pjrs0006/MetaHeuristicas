@@ -1,0 +1,11 @@
+{
+    "Iteraciones": 10000,
+    "Segundos de ejecución": 600,
+    "Tamaño de la población": 10,
+    "α": 1,
+    "β": 2,
+    "Actualización global de feromona": 0.1,
+    "Feromona inicial": 100,
+    "Probabilidad de mutación": 0.01,
+    "Porcentaje de iteraciones para considerar estancamiento": 0.05
+}

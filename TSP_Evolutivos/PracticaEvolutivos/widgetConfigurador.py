@@ -1,6 +1,6 @@
 import os
 import flet as ft
-from click import style
+import Configurador
 
 from flet_core import TextStyle, MainAxisAlignment, CrossAxisAlignment, KeyboardType
 
@@ -86,6 +86,10 @@ def mostrar_parametros(dropdownAlgoritmo):
         case _:
             print("Opción no válida")
 # VISTAS ALGORITMOS
+#Funciones para la ejecucion:
+ruta_tsp = os.path.join('recursos', 'archivosTSP')
+#ruta_archivo_tsp = os.path.join(ruta_tsp, )
+
 # Vista de Random Greedy
 def randomGreedyView(page):
     return ft.View(
@@ -114,7 +118,8 @@ def randomGreedyView(page):
                         color=ft.colors.WHITE,
                         shape=ft.RoundedRectangleBorder(radius=5),
                         padding=10,
-                    ),)
+                    ),),
+                    ft.TextField(width=300, value="5", bgcolor=ft.colors.TERTIARY, color=ft.colors.PRIMARY,),
                 ], alignment=ft.MainAxisAlignment.CENTER,),
             )
         ],
